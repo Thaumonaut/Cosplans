@@ -1,7 +1,7 @@
 <script lang="ts">
 	/**
 	 * TaskCard Component
-	 * 
+	 *
 	 * Displays informative task summary in list/board views.
 	 * Shows title, description, priority, assignee, labels, due date, subtasks, and other relevant info.
 	 * Always shows placeholders for missing data to encourage completion.
@@ -11,7 +11,8 @@
 import { createEventDispatcher } from 'svelte';
 	import ClickableCard from '$lib/components/ui/clickable-card.svelte';
 	import PrioritySelector from '$lib/components/base/PrioritySelector.svelte';
-	import { DatePicker } from '$lib/components/ui';
+	import { DatePicker, DropdownMenu } from '$lib/components/ui';
+	import { MoreVertical, Trash2 } from 'lucide-svelte';
 
 	interface Props {
 		// Task data
@@ -63,10 +64,12 @@ import { createEventDispatcher } from 'svelte';
 		select: { id: string; selected: boolean };
 		statusChange: { id: string; status_id: string };
 		priorityChange: { id: string; priority: string };
-	dueDateChange: { id: string; due_date: string | null };
+		dueDateChange: { id: string; due_date: string | null };
+		delete: { id: string };
 	}>();
 
 	let dateValue = $state(due_date || '');
+	let dropdownOpen = $state(false);
 
 	// Sync dateValue when due_date prop changes
 	$effect(() => {
@@ -98,14 +101,28 @@ import { createEventDispatcher } from 'svelte';
 		dispatch('dueDateChange', { id, due_date: newValue });
 	}
 
+	function handleDelete(event: Event) {
+		event.stopPropagation();
+		dropdownOpen = false; // Close dropdown before opening modal
+		dispatch('delete', { id });
+	}
+
 	function formatDate(dateString: string | null): string {
 		if (!dateString) return 'Not set';
 		const date = new Date(dateString);
 		return date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: '2-digit' });
 	}
 
-	const isOverdue = due_date && new Date(due_date) < new Date();
-	const isDueSoon = due_date && !isOverdue && (new Date(due_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 3;
+	// Helper to safely parse date
+	function parseDateSafe(dateString: string | null): Date | null {
+		if (!dateString) return null;
+		const date = new Date(dateString);
+		return isNaN(date.getTime()) ? null : date;
+	}
+
+	const dueDate = $derived(parseDateSafe(due_date));
+	const isOverdue = dueDate && dueDate < new Date();
+	const isDueSoon = dueDate && !isOverdue && (dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 3;
 
 	// Format description for display (truncate if too long)
 	const displayDescription = $derived(
@@ -123,7 +140,7 @@ import { createEventDispatcher } from 'svelte';
 	class="task-card rounded-lg p-4 hover:shadow-lg transition-all border-[var(--theme-border)] {viewMode === 'board' ? 'mb-5 min-h-[200px]' : 'mb-5'} {isDraggable && viewMode === 'board' ? 'cursor-grab' : ''} relative"
 >
 
-	<!-- Header Row: Checkbox, Title -->
+	<!-- Header Row: Checkbox, Title, Actions -->
 	<div class="flex items-start gap-3 mb-2">
 		<!-- Checkbox (if selectable) -->
 		{#if selectable}
@@ -144,6 +161,30 @@ import { createEventDispatcher } from 'svelte';
 		<h3 class="flex-1 text-base font-semibold line-clamp-2 leading-tight" style="color: var(--theme-foreground, #1c1917);">
 			{title}
 		</h3>
+
+		<!-- Actions Menu -->
+		<div class="shrink-0" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="none">
+			<DropdownMenu bind:open={dropdownOpen}>
+				{#snippet trigger()}
+					<button
+						data-testid="task-{id}-actions"
+						class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+						aria-label="Task actions"
+					>
+						<MoreVertical class="w-4 h-4" style="color: var(--theme-text-muted, #78716c);" />
+					</button>
+				{/snippet}
+				{#snippet children()}
+					<button
+						onclick={handleDelete}
+						class="flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400"
+					>
+						<Trash2 class="w-4 h-4" />
+						<span>Delete</span>
+					</button>
+				{/snippet}
+			</DropdownMenu>
+		</div>
 	</div>
 
 	<!-- Priority Tag (under title) -->
@@ -183,7 +224,7 @@ import { createEventDispatcher } from 'svelte';
 						class="text-sm min-w-[100px] text-[var(--theme-text-muted)]!"
 					/>
 				</div>
-				{#if due_date}
+				{#if dueDate}
 					{#if isOverdue}
 						<span class="text-xs font-medium shrink-0" style="color: var(--theme-error, #ef4444);">Overdue</span>
 					{:else if isDueSoon}
@@ -200,16 +241,16 @@ import { createEventDispatcher } from 'svelte';
 					{#if assignee.avatar_url}
 						<img
 							src={assignee.avatar_url}
-							alt={assignee.first_name || assignee.email}
+							alt={assignee.first_name || assignee.email || ''}
 							class="w-6 h-6 rounded-full"
 						/>
 					{:else}
 						<div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium" style="background-color: var(--theme-primary); color: var(--theme-card-bg);">
-							{(assignee.first_name?.[0] || assignee.email[0]).toUpperCase()}
+							{(assignee.first_name?.[0] || assignee.email?.[0] || '?').toUpperCase()}
 						</div>
 					{/if}
 					<span class="text-sm" style="color: var(--theme-foreground, #1c1917);">
-						{assignee.first_name || assignee.email.split('@')[0]}
+						{assignee.first_name || (assignee.email ? assignee.email.split('@')[0] : 'Unknown')}
 					</span>
 				</div>
 			{:else}
@@ -232,7 +273,7 @@ import { createEventDispatcher } from 'svelte';
 			</span>
 			{#if total_subtasks > 0}
 				<span class="text-xs" style="color: var(--theme-text-muted, #78716c);">
-					({subtask_completion_percentage}% complete)
+					({subtask_completion_percentage || 0}% complete)
 				</span>
 			{:else}
 				<span class="text-xs italic" style="color: var(--theme-text-muted, #78716c);">

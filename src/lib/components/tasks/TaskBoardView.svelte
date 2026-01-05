@@ -167,6 +167,7 @@ function applyStageColorsInPlace(stages: Stage[]): Stage[] {
 		statusChange: { id: string; status_id: string };
 		priorityChange: { id: string; priority: string };
 		dueDateChange: { id: string; due_date: string | null };
+		delete: { id: string };
 		taskDrop: { taskId: string; newStatusId: string };
 		addTask: { stageId: string };
 		stageReorder: { stageIds: string[] };
@@ -300,16 +301,17 @@ $effect(() => {
 	});
 
 
-// Create reactive arrays for each stage's tasks
-let stageTasks: Record<string, Task[]> = $state(
+// Create reactive arrays for each stage's tasks directly from props
+// This ensures immediate updates when tasks prop changes
+const tasksByStage = $derived(
 	stages.reduce((acc, stage) => {
 		acc[stage.id] = tasks.filter((task) => task.status_id === stage.id);
 		return acc;
 	}, {} as Record<string, Task[]>)
 );
 
-	// Use stageTasks state for reactive task arrays
-	const tasksByStage = $derived(stageTasks);
+// Maintain stageTasks for drag-and-drop operations
+let stageTasks: Record<string, Task[]> = $state({});
 
 	// Calculate subtask counts per stage
 	const stageSubtaskCounts = $derived(
@@ -1114,6 +1116,7 @@ function handleFinalize(e: CustomEvent<DndEvent<Task>>, stageId: string) {
 							on:statusChange={handleStatusChange}
 							on:priorityChange={handlePriorityChange}
 							on:dueDateChange={handleDueDateChange}
+							on:delete
 						/>
 						</div>
 					{/each}

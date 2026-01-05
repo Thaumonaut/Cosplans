@@ -54,7 +54,7 @@
   let convertingToIdea = $state(false)
   let showDeleteDialog = $state(false)
   let showConvertToIdeaDialog = $state(false)
-  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery'>('overview')
+  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery' | 'notes'>('overview')
 
   let estimatedBudgetValue = $state(0)
   let progressValue = $state(0)
@@ -367,6 +367,7 @@
   let seriesValue = $state('')
   let statusValue = $state<'planning' | 'in-progress' | 'completed' | 'archived'>('planning')
   let descriptionValue = $state('')
+  let notesValue = $state('')
   let deadlineValue = $state('')
   let imagesValue = $state<string[]>([])
 
@@ -396,6 +397,7 @@
       seriesValue = newProject.series ?? ''
       statusValue = newProject.status || 'planning'
       descriptionValue = newProject.description ?? ''
+      notesValue = ''
       deadlineValue = newProject.deadline ?? ''
       imagesValue = newProject.referenceImages ?? []
     } else if (project) {
@@ -403,6 +405,7 @@
       seriesValue = project.series ?? ''
       statusValue = project.status
       descriptionValue = project.description ?? ''
+      notesValue = project.notes ?? ''
       deadlineValue = project.deadline ?? ''
       imagesValue = project.referenceImages ?? []
     }
@@ -630,6 +633,12 @@
           class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'gallery' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
         >
           Gallery {#if imagesValue.length > 0}({imagesValue.length}){/if}
+        </button>
+        <button
+          onclick={() => activeTab = 'notes'}
+          class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'notes' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
+        >
+          Notes
         </button>
       </div>
     </div>
@@ -930,13 +939,37 @@
         {:else if activeTab === 'tasks' && project}
           <!-- Tasks Tab -->
           <div class="p-8">
-            <TasksTab 
+            <TasksTab
               projectId={project.id}
               onTaskChange={async () => {
                 // Recalculate progress when tasks change
                 await recalculateMetrics()
               }}
             />
+          </div>
+
+        {:else if activeTab === 'notes'}
+          <!-- Notes Tab: Free-form Project Notes -->
+          <!-- Feature: 004-bugfix-testing - T038: Notes persisted from idea phase -->
+          <div class="mx-auto max-w-4xl space-y-6">
+            <div class="rounded-lg bg-background p-6 shadow-sm">
+              <h3 class="mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground">Project Notes</h3>
+              <InlineTextEditor
+                bind:value={notesValue}
+                editable={!isReadOnly}
+                onSave={async (v: string) => {
+                  if (project) {
+                    project.notes = v || undefined
+                    notesValue = v
+                    await handleSaveField('notes', v || undefined)
+                  }
+                }}
+                placeholder="Add notes about materials, techniques, references, or any ideas that come to mind..."
+                variant="body"
+                multiline={true}
+                className="text-base leading-relaxed min-h-[200px]"
+              />
+            </div>
           </div>
 
         {/if}

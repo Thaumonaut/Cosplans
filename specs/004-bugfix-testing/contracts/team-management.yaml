@@ -1,0 +1,354 @@
+openapi: 3.0.0
+info:
+  title: Team Ownership Management
+  version: 1.0.0
+  description: |
+    Manages team ownership transfers and team deletion. Ensures teams always have an owner
+    and prevents orphaned teams by requiring ownership transfer before deletion when
+    other members exist.
+  contact:
+    name: Cosplay Tracker API Support
+
+servers:
+  - url: https://api.cosplaytracker.com
+    description: Production server
+  - url: http://localhost:5173
+    description: Development server
+
+paths:
+  /api/teams/{id}/transfer-ownership:
+    post:
+      summary: Transfer team ownership to another member
+      description: |
+        Transfers ownership of a team from the current owner to another team member.
+        This operation is atomic and includes:
+        - Updating team.owner_id
+        - Recording transfer in team_ownership_history
+        - Sending notification to new owner
+        
+        Only the current team owner can initiate a transfer. The new owner must be
+        an existing team member.
+      operationId: transferTeamOwnership
+      tags:
+        - Teams
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Team UUID
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - new_owner_id
+              properties:
+                new_owner_id:
+                  type: string
+                  format: uuid
+                  description: UUID of the team member who will become the new owner
+                  example: "660e8400-e29b-41d4-a716-446655440001"
+      responses:
+        '200':
+          description: Ownership transferred successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - team
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  team:
+                    $ref: '#/components/schemas/Team'
+                  message:
+                    type: string
+                    example: "Ownership transferred to John Doe"
+        '400':
+          description: Invalid transfer request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [USER_NOT_MEMBER, CANNOT_TRANSFER_TO_SELF, INVALID_USER]
+                    example: "USER_NOT_MEMBER"
+                  message:
+                    type: string
+                    example: "User is not a member of this team"
+                  details:
+                    type: object
+                    additionalProperties: true
+        '403':
+          description: Not authorized (only team owner can transfer ownership)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/teams/{id}:
+    delete:
+      summary: Delete a team
+      description: |
+        Deletes a team. This operation is only allowed if:
+        - The requester is the team owner
+        - The team has no other members (or ownership has been transferred)
+        
+        If the team has other members, the owner must transfer ownership first.
+        This prevents orphaned teams and ensures data integrity.
+      operationId: deleteTeam
+      tags:
+        - Teams
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Team UUID
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Team deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Team deleted successfully"
+        '403':
+          description: Not authorized (only team owner can delete)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Cannot delete - team has active members (must transfer ownership first)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                  - member_count
+                properties:
+                  error:
+                    type: string
+                    example: "TEAM_HAS_MEMBERS"
+                  message:
+                    type: string
+                    example: "Cannot delete team with active members. Transfer ownership first."
+                  member_count:
+                    type: integer
+                    description: Number of team members (excluding owner)
+                    example: 3
+                  members:
+                    type: array
+                    description: List of team member IDs (excluding owner)
+                    items:
+                      type: string
+                      format: uuid
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/teams/{id}/members:
+    get:
+      summary: Get team members list
+      description: |
+        Returns a list of all team members, including their roles.
+        Used by the ownership transfer UI to show available members.
+      operationId: getTeamMembers
+      tags:
+        - Teams
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Team UUID
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Team members list
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - members
+                properties:
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TeamMember'
+        '403':
+          description: Not authorized (user is not a team member)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Team:
+      type: object
+      required:
+        - id
+        - name
+        - owner_id
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Team UUID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: Team name
+          example: "My Cosplay Team"
+        owner_id:
+          type: string
+          format: uuid
+          description: Current owner's user ID
+          example: "660e8400-e29b-41d4-a716-446655440001"
+        previous_owner_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Previous owner's user ID (if ownership was transferred)
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        ownership_transferred_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp of last ownership transfer
+          example: "2026-01-03T10:00:00Z"
+        created_at:
+          type: string
+          format: date-time
+          description: When team was created
+          example: "2026-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: When team was last updated
+          example: "2026-01-03T10:00:00Z"
+
+    TeamMember:
+      type: object
+      required:
+        - user_id
+        - name
+        - email
+        - role
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User UUID
+          example: "660e8400-e29b-41d4-a716-446655440001"
+        name:
+          type: string
+          description: User's display name
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "john@example.com"
+        role:
+          type: string
+          enum: [owner, admin, member]
+          description: User's role in the team
+          example: "member"
+        joined_at:
+          type: string
+          format: date-time
+          description: When user joined the team
+          example: "2026-01-01T00:00:00Z"
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "TEAM_NOT_FOUND"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Team with ID 550e8400-e29b-41d4-a716-446655440000 not found"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from Supabase Auth
+
+security:
+  - BearerAuth: []
+
+
+

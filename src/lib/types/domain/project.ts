@@ -12,6 +12,7 @@ export interface Project {
   spentBudget: number // stored in cents
   deadline?: string | null // ISO date string
   description?: string
+  notes?: string // Feature: 004-bugfix-testing - persists from idea phase
   coverImage?: string
   referenceImages: string[]
   tags: string[]
@@ -27,6 +28,7 @@ export interface ProjectCreate {
   estimatedBudget?: number // in cents
   deadline?: string
   description?: string
+  notes?: string
   coverImage?: string
   referenceImages?: string[]
   tags?: string[]
@@ -40,6 +42,7 @@ export interface ProjectUpdate {
   spentBudget?: number // in cents
   deadline?: string | null
   description?: string
+  notes?: string
   coverImage?: string
   referenceImages?: string[]
   tags?: string[]

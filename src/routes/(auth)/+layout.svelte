@@ -117,7 +117,7 @@
 <!-- Authenticated app layout with sidebar and header -->
 <KeyboardShortcutsHandler />
 <div class="font-sans antialiased">
-  <div class="flex min-h-screen w-full">
+  <div class="flex min-h-screen w-full" style="min-height: 100vh; min-height: 100dvh;">
     <AppSidebar />
     <main class="max-w-full flex-1 overflow-x-hidden flex flex-col">
       <PageHeader />

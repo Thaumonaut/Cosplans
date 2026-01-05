@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { setSidebarContext } from './sidebar-context.svelte.js';
+  import { setSidebarContext } from './sidebar-context.svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -55,7 +55,7 @@
   const state = $derived(open ? 'expanded' : 'collapsed');
   
   $effect(() => {
-    setSidebarContext({
+    const context = {
       state,
       open,
       setOpen,
@@ -63,7 +63,9 @@
       setOpenMobile,
       isMobile,
       toggleSidebar,
-    });
+    };
+    console.log('[SidebarProvider] Setting context:', context);
+    setSidebarContext(context);
   });
 
   onMount(() => {

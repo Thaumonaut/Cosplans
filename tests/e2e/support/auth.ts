@@ -14,16 +14,16 @@ import { Page, expect } from '@playwright/test';
  */
 export async function loginIfNeeded(page: Page): Promise<boolean> {
   // Try multiple common variable name patterns (whatever exists in .env.test)
-  const email = 
-    process.env.TEST_EMAIL || 
-    process.env.EMAIL || 
-    process.env.TEST_USER_EMAIL || 
+  const email =
+    process.env.TEST_EMAIL ||
+    process.env.EMAIL ||
+    process.env.TEST_USER_EMAIL ||
     process.env.E2E_EMAIL;
-    
-  const password = 
-    process.env.TEST_PASSWORD || 
-    process.env.PASSWORD || 
-    process.env.TEST_USER_PASSWORD || 
+
+  const password =
+    process.env.TEST_PASSWORD ||
+    process.env.PASSWORD ||
+    process.env.TEST_USER_PASSWORD ||
     process.env.E2E_PASSWORD;
 
   // Log which variables were found (for debugging/validation)
@@ -32,7 +32,7 @@ export async function loginIfNeeded(page: Page): Promise<boolean> {
   else if (process.env.EMAIL) foundVars.push('EMAIL');
   else if (process.env.TEST_USER_EMAIL) foundVars.push('TEST_USER_EMAIL');
   else if (process.env.E2E_EMAIL) foundVars.push('E2E_EMAIL');
-  
+
   if (email && password) {
     console.log(`[loginIfNeeded] Using credentials from: ${foundVars.join(' / ')}`);
     console.log(`[loginIfNeeded] Email: ${email.replace(/(.{2})(.*)(@.*)/, '$1***$3')}`); // Mask email but show first 2 chars
@@ -45,8 +45,8 @@ export async function loginIfNeeded(page: Page): Promise<boolean> {
     return false;
   }
 
-  // Wait for page to settle and check current URL
-  await page.waitForLoadState('networkidle');
+  // Wait for page to settle - use domcontentloaded instead of networkidle for reliability
+  await page.waitForLoadState('domcontentloaded');
   const currentUrl = page.url();
 
   // Check if we're already authenticated by looking for authenticated indicators
@@ -64,7 +64,7 @@ export async function loginIfNeeded(page: Page): Promise<boolean> {
 
   // Navigate to login page if not already there
   if (!currentUrl.includes('/login')) {
-    await page.goto('/login', { waitUntil: 'networkidle' });
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
   }
 
   // Wait for login form to be ready
@@ -85,10 +85,13 @@ export async function loginIfNeeded(page: Page): Promise<boolean> {
 
   // Verify we're not on login page anymore
   await expect(page).not.toHaveURL(/\/login/);
-  
-  // Wait for page to be ready
-  await page.waitForLoadState('networkidle');
-  
+
+  // Wait for main content to be visible (more reliable than networkidle)
+  await page.waitForSelector('main', { state: 'visible', timeout: 10000 }).catch(() => {
+    // Main element might not exist, that's ok
+    console.log('[loginIfNeeded] main element not found, continuing');
+  });
+
   return true;
 }
 

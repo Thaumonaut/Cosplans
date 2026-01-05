@@ -96,6 +96,9 @@ export const projectService = {
     if (project.description !== undefined && project.description !== null) {
       insertData.description = project.description
     }
+    if (project.notes !== undefined && project.notes !== null) {
+      insertData.notes = project.notes
+    }
     if (project.coverImage !== undefined && project.coverImage !== null) {
       insertData.cover_image = project.coverImage
     }
@@ -138,6 +141,7 @@ export const projectService = {
     if (updates.spentBudget !== undefined) updateData.spent_budget = updates.spentBudget
     if (updates.deadline !== undefined) updateData.deadline = updates.deadline
     if (updates.description !== undefined) updateData.description = updates.description || null
+    if (updates.notes !== undefined) updateData.notes = updates.notes || null
     if (updates.coverImage !== undefined) updateData.cover_image = updates.coverImage || null
     if (updates.referenceImages !== undefined) updateData.reference_images = updates.referenceImages
     if (updates.tags !== undefined) updateData.tags = updates.tags
@@ -557,7 +561,7 @@ export const projectService = {
       estimatedCost: project.estimatedBudget || undefined,
       images: project.referenceImages || (project.coverImage ? [project.coverImage] : []),
       tags: project.tags || [],
-      notes: undefined,
+      notes: project.notes || undefined, // Feature: 004-bugfix-testing - T038: Preserve notes when converting back
     })
 
     // Delete the project after successful conversion
@@ -585,6 +589,7 @@ function mapProjectFromDb(row: any): Project {
     spentBudget: row.spent_budget ? Number(row.spent_budget) : 0,
     deadline: row.deadline ?? undefined,
     description: row.description ?? undefined,
+    notes: row.notes ?? undefined,
     coverImage: row.cover_image ?? undefined,
     referenceImages: row.reference_images || [],
     tags: row.tags || [],

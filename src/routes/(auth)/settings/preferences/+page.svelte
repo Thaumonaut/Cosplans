@@ -56,49 +56,22 @@
 </script>
 
 <svelte:head>
-  <title>Preferences - Settings - Cosplay Tracker</title>
+  <title>Notifications - Settings - Cosplay Tracker</title>
 </svelte:head>
 
 <div class="space-y-6 p-6">
-  <!-- Header -->
+  <!-- Header (Feature: 004-bugfix-testing - User Story 3) -->
   <div>
-    <h1 class="text-3xl font-bold">Preferences</h1>
-    <p class="text-muted-foreground">Customize your application preferences and notification settings</p>
+    <h1 class="text-3xl font-bold">Notifications</h1>
+    <p class="text-muted-foreground">Manage your notification preferences and alerts</p>
   </div>
 
   {#if loading}
     <div class="flex items-center justify-center py-20">
-      <div class="text-sm text-muted-foreground">Loading preferences...</div>
+      <div class="text-sm text-muted-foreground">Loading notification settings...</div>
     </div>
   {:else}
-    <!-- Theme Preferences -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Theme</CardTitle>
-        <CardDescription>Choose between light and dark mode</CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            {#if themeMode === 'light'}
-              <Sun class="size-5 text-muted-foreground" />
-            {:else}
-              <Moon class="size-5 text-muted-foreground" />
-            {/if}
-            <div>
-              <Label for="theme-toggle" class="text-base font-medium">Dark Mode</Label>
-              <p class="text-sm text-muted-foreground">
-                Switch to dark mode for a more comfortable viewing experience in low light
-              </p>
-            </div>
-          </div>
-          <Switch
-            checked={themeMode === 'dark'}
-            onchange={handleThemeToggle}
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <!-- Note: Dark mode toggle removed per Feature 004-bugfix-testing User Story 3 -->
 
     <!-- Notification Preferences -->
     <Card>

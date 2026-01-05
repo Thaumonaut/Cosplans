@@ -15,6 +15,7 @@
 	import ViewModeSelector from '$lib/components/tasks/ViewModeSelector.svelte';
 	import TaskFilterPanel from '$lib/components/tasks/TaskFilterPanel.svelte';
 	import TaskDetailPanel from '$lib/components/tasks/TaskDetailPanel.svelte';
+	import TaskDeleteModal from '$lib/components/tasks/TaskDeleteModal.svelte';
 	import WhatToDoNow from '$lib/components/tasks/WhatToDoNow.svelte';
 	// FocusMode disabled - Post-MVP feature
 	// import FocusMode from '$lib/components/tasks/FocusMode.svelte';
@@ -26,6 +27,7 @@
 	import { keyboardShortcuts } from '$lib/utils/keyboard-shortcuts';
 	import { celebration } from '$lib/stores/celebration';
 	import { taskStageService } from '$lib/api/services/taskStageService';
+	import { taskService as taskApiService } from '$lib/api/services/taskService';
 	import { UserTaskStatsService } from '$lib/services/user-task-stats-service';
 	import StreakDisplay from '$lib/components/tasks/StreakDisplay.svelte';
 	import DailyProgressBar from '$lib/components/tasks/DailyProgressBar.svelte';
@@ -63,6 +65,11 @@
 	let celebrationEnabled = $state(true); // Check localStorage for user preference
 	let celebrationTrigger = $state(false);
 	let celebrationMessage = $state('');
+
+	// Delete modal state
+	let deleteModalOpen = $state(false);
+	let taskToDelete = $state<{ id: string; title: string } | null>(null);
+	let deleteDependencyCount = $state(0);
 
 	// Services
 	const taskService = new TaskService();
@@ -486,6 +493,73 @@
 		// FocusMode disabled - Post-MVP
 		console.log('Focus Mode is disabled - Post-MVP feature');
 	}
+
+	// Delete handlers
+	async function handleTaskDelete(event: CustomEvent<{ id: string }>) {
+		const task = tasks.find(t => t.id === event.detail.id);
+		if (!task) return;
+
+		// Get dependency count from task
+		const dependencyCount = (task as any).dependency_count || 0;
+
+		taskToDelete = { id: task.id, title: task.title };
+		deleteDependencyCount = dependencyCount;
+		deleteModalOpen = true;
+	}
+
+	// Handle delete from detail panel (receives taskId directly, not as event)
+	function handleTaskDeleteFromPanel(taskId: string) {
+		const task = tasks.find(t => t.id === taskId);
+		if (!task) return;
+
+		// Get dependency count from task
+		const dependencyCount = (task as any).dependency_count || 0;
+
+		taskToDelete = { id: task.id, title: task.title };
+		deleteDependencyCount = dependencyCount;
+		deleteModalOpen = true;
+
+		// Close detail panel
+		handleDetailPanelClose();
+	}
+
+	async function confirmDelete() {
+		if (!taskToDelete) return;
+
+		try {
+			loading = true;
+			error = null;
+
+			const currentUser = get(user);
+			if (!currentUser?.id) {
+				throw new Error('User not authenticated');
+			}
+
+			// Perform soft delete
+			await taskApiService.softDelete(taskToDelete.id, currentUser.id);
+
+			// Remove from local state
+			tasks = tasks.filter(t => t.id !== taskToDelete.id);
+
+			// Show success message
+			celebrationMessage = `Task "${taskToDelete.title}" deleted successfully`;
+			celebrationTrigger = true;
+
+			// Close modal
+			deleteModalOpen = false;
+			taskToDelete = null;
+		} catch (err) {
+			console.error('Failed to delete task:', err);
+			error = err instanceof Error ? err.message : 'Failed to delete task';
+		} finally {
+			loading = false;
+		}
+	}
+
+	function cancelDelete() {
+		deleteModalOpen = false;
+		taskToDelete = null;
+	}
 </script>
 
 <svelte:head>
@@ -664,14 +738,15 @@
 				on:statusChange={handleStatusChange}
 				on:priorityChange={handlePriorityChange}
 				on:dueDateChange={handleDueDateChange}
+				on:delete={handleTaskDelete}
 			/>
 		{:else if viewMode === 'board'}
 			{#if statusOptions.length > 0}
 				<TaskBoardView
 					tasks={sortedTasks as any}
-					stages={statusOptions.map(opt => ({ 
-						id: opt.value || '', 
-						name: opt.label || '', 
+					stages={statusOptions.map(opt => ({
+						id: opt.value || '',
+						name: opt.label || '',
 						color: opt.color || undefined
 					}))}
 					{statusOptions}
@@ -679,6 +754,7 @@
 					on:statusChange={handleStatusChange}
 					on:priorityChange={handlePriorityChange}
 					on:dueDateChange={handleDueDateChange}
+					on:delete={handleTaskDelete}
 					on:addTask={handleAddTaskToStage}
 					on:stageReorder={async (e) => {
 						// Reload stages to get updated order
@@ -730,6 +806,7 @@
 						loading = false;
 					}
 				}}
+				on:delete={handleTaskDelete}
 			/>
 		{:else if viewMode === 'calendar'}
 			<TaskCalendarView
@@ -762,6 +839,16 @@
 	onClose={handleDetailPanelClose}
 	onSave={handleTaskSave}
 	onStartWorking={handleStartWorking}
+	onDelete={handleTaskDeleteFromPanel}
+/>
+
+<!-- Task Delete Modal -->
+<TaskDeleteModal
+	bind:open={deleteModalOpen}
+	taskTitle={taskToDelete?.title || ''}
+	dependencyCount={deleteDependencyCount}
+	on:confirm={confirmDelete}
+	on:cancel={cancelDelete}
 />
 
 <!-- Celebration Animation -->

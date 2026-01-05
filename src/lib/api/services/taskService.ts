@@ -32,6 +32,7 @@ export const taskService = {
           is_completion_stage
         )
       `) as any)
+      .is('deleted_at', null) // Filter out soft-deleted tasks
       .order('created_at', { ascending: false })
 
     if (filters?.completed !== undefined) {
@@ -78,6 +79,7 @@ export const taskService = {
           is_completion_stage
         )
       `) as any)
+      .is('deleted_at', null) // Filter out soft-deleted tasks
       .order('created_at', { ascending: false })
 
     if (filters?.projectId !== undefined) {
@@ -357,7 +359,93 @@ export const taskService = {
   },
 
   /**
-   * Delete a task
+   * Get task dependency counts
+   * Returns counts of subtasks, resources, and projects linked to this task
+   */
+  async getDependencyCounts(id: string): Promise<{
+    total: number;
+    subtasks: number;
+    resources: number;
+    projects: number;
+  }> {
+    // Get dependency_count from task (auto-updated by triggers)
+    const { data: task } = await supabase
+      .from('tasks')
+      .select('dependency_count')
+      .eq('id', id)
+      .single()
+
+    // Get detailed counts
+    const [subtasksCount, resourcesCount] = await Promise.all([
+      // Count non-deleted subtasks
+      supabase
+        .from('subtasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('task_id', id)
+        .is('deleted_at', null),
+      // Count task resources if table exists
+      supabase
+        .rpc('count_task_resources', { task_id_param: id })
+        .then(({ data }) => data || 0)
+        .catch(() => 0)
+    ])
+
+    const subtasks = subtasksCount.count || 0
+    const resources = resourcesCount || 0
+    const projects = 0 // Tasks don't have project dependencies in current schema
+
+    return {
+      total: task?.dependency_count || (subtasks + resources + projects),
+      subtasks,
+      resources,
+      projects
+    }
+  },
+
+  /**
+   * Soft delete a task
+   * Sets deleted_at and deleted_by fields instead of removing from database
+   * Uses RPC function to bypass RLS restrictions
+   */
+  async softDelete(id: string, userId: string): Promise<void> {
+    const { error } = await supabase
+      .rpc('soft_delete_task', {
+        task_id: id,
+        user_id: userId
+      })
+
+    if (error) throw error
+  },
+
+  /**
+   * Restore a soft-deleted task
+   */
+  async restore(id: string): Promise<Task> {
+    const { data, error } = await (supabase
+      .from('tasks')
+      .update({
+        deleted_at: null,
+        deleted_by: null
+      })
+      .eq('id', id)
+      .select(`
+        *,
+        task_stages(
+          id,
+          name,
+          display_order,
+          is_completion_stage
+        )
+      `) as any)
+      .single()
+
+    if (error) throw error
+    return mapTaskFromDbWithStage(data)
+  },
+
+  /**
+   * Delete a task (hard delete - use with caution)
+   * @deprecated Use softDelete instead
    */
   async delete(id: string): Promise<void> {
     const { error } = await supabase.from('tasks').delete().eq('id', id)
@@ -453,6 +541,7 @@ export async function listWithFilters(filters: {
   dateRange?: { start: string; end: string }
   search?: string
   includeArchived?: boolean
+  includeDeleted?: boolean
   limit?: number
   offset?: number
 }): Promise<Task[]> {
@@ -468,6 +557,11 @@ export async function listWithFilters(filters: {
       )
     `) as any)
     .order('created_at', { ascending: false })
+
+  // Filter out soft-deleted tasks unless explicitly included
+  if (!filters.includeDeleted) {
+    query = query.is('deleted_at', null)
+  }
 
   // Team filter
   if (filters.teamId) {

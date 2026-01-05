@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Modal } from 'flowbite-svelte';
-  import { X } from 'lucide-svelte';
-  import { Button } from '.';
-  import { cn } from '$lib/utils';
+  import { Modal } from "flowbite-svelte";
+  import { X } from "lucide-svelte";
+  import { Button } from ".";
+  import { cn } from "$lib/utils";
 
   interface Props {
     open?: boolean;
@@ -10,8 +10,17 @@
     title?: string;
     description?: string;
     showCloseButton?: boolean;
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    placement?: 'top-left' | 'top-center' | 'top-right' | 'center-left' | 'center' | 'center-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    placement?:
+      | "top-left"
+      | "top-center"
+      | "top-right"
+      | "center-left"
+      | "center"
+      | "center-right"
+      | "bottom-left"
+      | "bottom-center"
+      | "bottom-right";
     class?: string;
     children?: any;
   }
@@ -21,11 +30,11 @@
     onOpenChange,
     title,
     description,
-    showCloseButton = true,
-    size = 'md',
-    placement = 'center',
+    showCloseButton = false,
+    size = "md",
+    placement = "center",
     class: className,
-    children
+    children,
   }: Props = $props();
 
   function handleOpenChange(isOpen: boolean) {
@@ -39,7 +48,8 @@
   {size}
   {placement}
   outsideclose
-  class={cn('bg-background border shadow-lg', className)}
+  dismissable={false}
+  class={cn("bg-background border shadow-lg", className)}
   on:close={() => handleOpenChange(false)}
 >
   <div class="flex flex-col gap-4">
@@ -48,7 +58,7 @@
         {#if title}
           <h3 class="text-lg font-semibold leading-none">{title}</h3>
         {/if}
-        {#if showCloseButton}
+        <!-- {#if showCloseButton}
           <Button
             variant="ghost"
             size="icon"
@@ -58,7 +68,7 @@
             <X class="size-4" />
             <span class="sr-only">Close</span>
           </Button>
-        {/if}
+        {/if} -->
       </div>
     {/if}
 

@@ -13,6 +13,7 @@
 	import InlineSelect from '$lib/components/base/InlineSelect.svelte';
 	import InlineDatePicker from '$lib/components/base/InlineDatePicker.svelte';
 	import CustomFieldInput from '$lib/components/tasks/custom-fields/CustomFieldInput.svelte';
+	import { Trash2 } from 'lucide-svelte';
 
 	interface Task {
 		id: string;
@@ -45,7 +46,7 @@
 		sortable: boolean;
 		editable: boolean;
 		required: boolean; // Title and Status cannot be removed
-		type: 'row-number' | 'title' | 'status' | 'priority' | 'assignee' | 'due-date' | 'custom-field';
+		type: 'row-number' | 'title' | 'status' | 'priority' | 'assignee' | 'due-date' | 'custom-field' | 'actions';
 		customFieldId?: string; // For custom field columns
 	}
 
@@ -70,6 +71,7 @@
 		dueDateChange: { id: string; due_date: string | null };
 		titleChange: { id: string; title: string };
 		customFieldChange: { id: string; fieldId: string; value: string };
+		delete: { id: string };
 	}>();
 
 	// Column definitions - Title and Status are required
@@ -106,6 +108,17 @@
 			editable: true,
 			required: true,
 			type: 'status'
+		},
+		{
+			id: 'actions',
+			label: 'Actions',
+			width: 80,
+			minWidth: 80,
+			resizable: false,
+			sortable: false,
+			editable: false,
+			required: true,
+			type: 'actions'
 		}
 	];
 
@@ -279,6 +292,11 @@
 
 	function handleTitleChange(taskId: string, title: string) {
 		dispatch('titleChange', { id: taskId, title });
+	}
+
+	function handleDelete(taskId: string, event: Event) {
+		event.stopPropagation();
+		dispatch('delete', { id: taskId });
 	}
 
 	function getStatusLabel(statusId: string): string {
@@ -588,6 +606,7 @@
 					<tbody>
 						{#each virtualItems as virtualItem}
 							{@const task = sortedTasks[virtualItem.index]}
+							{#if task}
 							{@const rowNumber = virtualItem.index + 1}
 							<tr
 								class="table-row"
@@ -694,10 +713,24 @@
 													}}
 												/>
 											{/if}
+										{:else if column.type === 'actions'}
+											<div class="flex items-center justify-center" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
+												<button
+													type="button"
+													class="p-1.5 rounded-md hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+													onclick={(e) => handleDelete(task.id, e)}
+													data-testid="table-delete-{task.id}"
+													aria-label="Delete task"
+													style="color: var(--color-danger, #dc2626);"
+												>
+													<Trash2 class="w-4 h-4" />
+												</button>
+											</div>
 										{/if}
 									</td>
 								{/each}
 							</tr>
+							{/if}
 						{/each}
 					</tbody>
 				</table>

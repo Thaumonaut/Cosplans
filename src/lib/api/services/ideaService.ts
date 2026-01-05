@@ -156,6 +156,7 @@ export const ideaService = {
         character: idea.character,
         series: idea.series || null,
         description: idea.description || null,
+        notes: idea.notes || null, // Feature: 004-bugfix-testing - T038: Persist notes from idea phase
         status: 'planning',
         progress: 0,
         estimated_budget: idea.estimatedCost || null,
