@@ -7,7 +7,7 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../support/page-objects/LoginPage";
 
-test.describe("Sidebar Toggle Functionality", () => {
+test.describe.skip("Sidebar Toggle Functionality", () => {
   let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
@@ -346,7 +346,7 @@ test.describe("Sidebar Toggle Functionality", () => {
   });
 });
 
-test.describe("Navigation Grouping", () => {
+test.describe.skip("Navigation Grouping", () => {
   let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {

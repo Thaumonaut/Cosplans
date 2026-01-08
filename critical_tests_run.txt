@@ -1,0 +1,178 @@
+$ playwright test
+[dotenv@17.2.3] injecting env (14) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[E2E Setup] Starting global setup...
+[E2E Setup] Ensuring 4 test users exist...
+[E2E Setup] Processing user: test@example.com
+[E2E Setup] User test@example.com already exists with correct password.
+[E2E Setup] Processing user: alice@test.com
+[E2E Setup] User alice@test.com already exists with correct password.
+[E2E Setup] Processing user: bob@test.com
+[E2E Setup] User bob@test.com already exists with correct password.
+[E2E Setup] Processing user: charlie@test.com
+[E2E Setup] User charlie@test.com already exists with correct password.
+[E2E Setup] Global setup complete.
+🎲 Using random factory
+
+Running 121 tests using 1 worker
+
+
+🧪 Starting test run with 121 tests
+
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+✅ Authentication successful - currently on: http://localhost:5173/dashboard
+  ✓    1 [chromium] › tests/e2e/auth-validation.spec.ts:7:1 › should successfully authenticate using credentials from .env.test (2.6s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    2 [chromium] › tests/e2e/dashboard.spec.ts:4:3 › Dashboard › should load the dashboard page (1.6s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    3 [chromium] › tests/e2e/dashboard.spec.ts:35:3 › Dashboard › should navigate to different sections (2.3s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    4 [chromium] › tests/e2e/dashboard.spec.ts:69:3 › Dashboard › should be responsive on mobile (1.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    5 [chromium] › tests/e2e/forms.spec.ts:4:3 › Forms › should handle character creation form (1.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    6 [chromium] › tests/e2e/forms.spec.ts:51:3 › Forms › should validate form inputs (1.3s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    7 [chromium] › tests/e2e/forms.spec.ts:87:3 › Forms › should handle search functionality (1.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    8 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:31:3 › Settings Notifications Section › should display "Notifications" section in settings (2.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    9 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:40:3 › Settings Notifications Section › should NOT display "Preferences" as main section name (3.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   10 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:56:3 › Settings Notifications Section › should NOT display dark mode toggle in notifications section (2.1s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   11 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:66:3 › Settings Notifications Section › should display notification toggle options (2.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   12 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:74:3 › Settings Notifications Section › should allow toggling notification settings (3.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   13 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:93:3 › Settings Notifications Section › should persist notification settings after save (4.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   14 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:121:3 › Settings Notifications Section › should have clear labels for notification types (3.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   15 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:138:3 › Settings Notifications Section › should display notifications section on mobile (4.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   16 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:171:3 › Settings Notifications Section › should display notifications section on tablet (4.0s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   17 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:197:3 › Settings Notifications Section › should NOT have dark mode in any settings subsection (4.4s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   18 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:216:3 › Settings Notifications Section › should have accessibility labels for notification toggles (4.1s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   19 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:231:3 › Settings Notifications Section › should display different notification categories (3.6s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   20 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:241:3 › Settings Notifications Section › should show success message when saving notification preferences (4.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   21 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:254:3 › Settings Navigation › should have "Notifications" as a settings submenu item (2.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✘   22 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:270:3 › Settings Navigation › should navigate to notifications from settings (2.7s)
+❌ Test failed: should navigate to notifications from settings
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✘   23 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:270:3 › Settings Navigation › should navigate to notifications from settings (retry #1) (4.6s)
+❌ Test failed: should navigate to notifications from settings
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+  -   24 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile
+  -   25 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:72:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet
+  -   26 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:132:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop
+  -   27 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:186:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside
+  -   28 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:217:3 › Sidebar Toggle Functionality › should persist toggle state across page navigations
+  -   29 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:244:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate
+  -   30 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:273:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks
+  -   31 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:302:3 › Sidebar Toggle Functionality › should maintain sidebar functionality when transitioning viewport sizes
+  ✘   32 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:348:3 › Navigation Grouping › should display "Production" section in sidebar (1.2s)
+❌ Test failed: should display "Production" section in sidebar
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+  ✓   33 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:348:3 › Navigation Grouping › should display "Production" section in sidebar (retry #1) (4.8s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should display "Production" section in sidebar
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:348
+   Passed on retry: 1
+
+  ✘   34 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:363:3 › Navigation Grouping › should group photoshoots in Production section (500ms)
+❌ Test failed: should group photoshoots in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+  ✓   35 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:363:3 › Navigation Grouping › should group photoshoots in Production section (retry #1) (3.1s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group photoshoots in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:363
+   Passed on retry: 1
+
+  ✘   36 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:382:3 › Navigation Grouping › should group tools in Production section (471ms)
+❌ Test failed: should group tools in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+  ✓   37 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:382:3 › Navigation Grouping › should group tools in Production section (retry #1) (2.2s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group tools in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:382
+   Passed on retry: 1
+
+  ✘   38 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:400:3 › Navigation Grouping › should group resources in Production section (470ms)
+❌ Test failed: should group resources in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+  ✓   39 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:400:3 › Navigation Grouping › should group resources in Production section (retry #1) (3.0s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group resources in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:400
+   Passed on retry: 1
+
+  ✘   40 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:414:3 › Navigation Grouping › should group calendar in Production section (448ms)
+❌ Test failed: should group calendar in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+  ✓   41 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:414:3 › Navigation Grouping › should group calendar in Production section (retry #1) (3.0s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group calendar in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:414
+   Passed on retry: 1
+
+  ✘   42 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:430:3 › Navigation Grouping › should have collapse/expand toggle for Production section (481ms)
+❌ Test failed: should have collapse/expand toggle for Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✓   43 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:430:3 › Navigation Grouping › should have collapse/expand toggle for Production section (retry #1) (2.1s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should have collapse/expand toggle for Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:430
+   Passed on retry: 1
+
+  ✘   44 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:456:3 › Navigation Grouping › should persist group collapse state across sessions (480ms)
+❌ Test failed: should persist group collapse state across sessions
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+  ✓   45 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:456:3 › Navigation Grouping › should persist group collapse state across sessions (retry #1) (1.8s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should persist group collapse state across sessions
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:456
+   Passed on retry: 1
+
+  ✘   46 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:501:3 › Navigation Grouping › should maintain logical navigation order in grouped sections (480ms)
+❌ Test failed: should maintain logical navigation order in grouped sections
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✘   47 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:501:3 › Navigation Grouping › should maintain logical navigation order in grouped sections (retry #1) (2.2s)
+❌ Test failed: should maintain logical navigation order in grouped sections
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+Route /settings loaded but no main element found
+  ✓   48 [chromium] › tests/e2e/navigation.spec.ts:4:3 › Navigation › should navigate through all main routes (22.7s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com

@@ -45,3 +45,985 @@ Running 16 tests using 1 worker
   ✘   7 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:208:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside (416ms)
 ❌ Test failed: should close mobile sidebar when clicking outside
 [dotenv@17.2.3] injecting env (0) from .env.test -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+  ✘   8 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:208:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside (retry #1) (1.0m)
+❌ Test failed: should close mobile sidebar when clicking outside
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+  ✓   9 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:239:3 › Sidebar Toggle Functionality › should persist toggle state across page navigations (1.9s)
+  ✘  10 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:266:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate (461ms)
+❌ Test failed: should work reliably with 100% success rate
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+  ✘  11 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:266:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate (retry #1) (1.0m)
+❌ Test failed: should work reliably with 100% success rate
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+  ✘  12 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:295:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks (1.0m)
+❌ Test failed: should handle rapid toggle clicks
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+  -  13 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:295:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks (retry #1)
+  -  14 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:324:3 › Sidebar Toggle Functionality › should maintain sidebar functionality when transitioning viewport sizes
+  ✘  15 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:370:3 › Navigation Grouping › should display "Production" section in sidebar (1.2s)
+❌ Test failed: should display "Production" section in sidebar
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+  ✓  16 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:370:3 › Navigation Grouping › should display "Production" section in sidebar (retry #1) (5.2s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should display "Production" section in sidebar
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:370
+   Passed on retry: 1
+
+  ✘  17 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:385:3 › Navigation Grouping › should group photoshoots in Production section (972ms)
+❌ Test failed: should group photoshoots in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+  ✓  18 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:385:3 › Navigation Grouping › should group photoshoots in Production section (retry #1) (5.3s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group photoshoots in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:385
+   Passed on retry: 1
+
+  ✘  19 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:404:3 › Navigation Grouping › should group tools in Production section (520ms)
+❌ Test failed: should group tools in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+  ✓  20 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:404:3 › Navigation Grouping › should group tools in Production section (retry #1) (3.3s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group tools in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:404
+   Passed on retry: 1
+
+  ✘  21 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:422:3 › Navigation Grouping › should group resources in Production section (1.1s)
+❌ Test failed: should group resources in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+  ✘  22 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:422:3 › Navigation Grouping › should group resources in Production section (retry #1) (2.1s)
+❌ Test failed: should group resources in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+  ✘  23 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:436:3 › Navigation Grouping › should group calendar in Production section (1.1s)
+❌ Test failed: should group calendar in Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+  ✓  24 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:436:3 › Navigation Grouping › should group calendar in Production section (retry #1) (3.3s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should group calendar in Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:436
+   Passed on retry: 1
+
+  ✘  25 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:452:3 › Navigation Grouping › should have collapse/expand toggle for Production section (1.0s)
+❌ Test failed: should have collapse/expand toggle for Production section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+  ✓  26 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:452:3 › Navigation Grouping › should have collapse/expand toggle for Production section (retry #1) (4.6s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should have collapse/expand toggle for Production section
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:452
+   Passed on retry: 1
+
+  ✘  27 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:478:3 › Navigation Grouping › should persist group collapse state across sessions (540ms)
+❌ Test failed: should persist group collapse state across sessions
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+  ✓  28 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:478:3 › Navigation Grouping › should persist group collapse state across sessions (retry #1) (3.2s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should persist group collapse state across sessions
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:478
+   Passed on retry: 1
+
+  ✘  29 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:523:3 › Navigation Grouping › should maintain logical navigation order in grouped sections (1.2s)
+❌ Test failed: should maintain logical navigation order in grouped sections
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+  ✘  30 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:523:3 › Navigation Grouping › should maintain logical navigation order in grouped sections (retry #1) (4.0s)
+❌ Test failed: should maintain logical navigation order in grouped sections
+
+
+  1) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('sidebar-toggle')[22m
+    [2m    - locator resolved to <button type="button" data-slot="button" aria-label="Toggle sidebar" data-testid="sidebar-toggle" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-dest…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  2 × retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  27 × retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  2 × retrying click action[22m
+    [2m      - waiting 500ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      73 |
+      74 |     // Click to close
+    > 75 |     await toggleButton.click();
+         |                        ^
+      76 |
+      77 |     // Wait for transform to change back (animation complete)
+      78 |     await page.waitForFunction(
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:75:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('sidebar-toggle')[22m
+    [2m    - locator resolved to <button type="button" data-slot="button" aria-label="Toggle sidebar" data-testid="sidebar-toggle" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-dest…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  2 × retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  27 × retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      73 |
+      74 |     // Click to close
+    > 75 |     await toggleButton.click();
+         |                        ^
+      76 |
+      77 |     // Wait for transform to change back (animation complete)
+      78 |     await page.waitForFunction(
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:75:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--a770d-ar-open-and-close-on-mobile-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:208:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:18:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button[aria-label="Close sidebar"]')[22m
+    [2m    - locator resolved to <button aria-label="Close sidebar" class="fixed inset-0 z-20 bg-black/50 transition-opacity duration-200"></button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <div class="text-sidebar-foreground/70 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium transition-[margin,opacity] duration-200 ease-linear">…</div> from <div data-testid="sidebar" class="fixed inset-y-0 h-screen transition-transform duration-200 ease-linear flex z-30 left-0 border-r border-[var(--theme-sidebar-border)]">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <div class="text-sidebar-foreground/70 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium transition-[margin,opacity] duration-200 ease-linear">…</div> from <div data-testid="sidebar" class="fixed inset-y-0 h-screen transition-transform duration-200 ease-linear flex z-30 left-0 border-r border-[var(--theme-sidebar-border)]">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    110 × waiting for element to be visible, enabled and stable[22m
+    [2m        - element is visible, enabled and stable[22m
+    [2m        - scrolling into view if needed[22m
+    [2m        - done scrolling[22m
+    [2m        - <div class="text-sidebar-foreground/70 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium transition-[margin,opacity] duration-200 ease-linear">…</div> from <div data-testid="sidebar" class="fixed inset-y-0 h-screen transition-transform duration-200 ease-linear flex z-30 left-0 border-r border-[var(--theme-sidebar-border)]">…</div> subtree intercepts pointer events[22m
+    [2m      - retrying click action[22m
+    [2m        - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+
+
+      230 |
+      231 |     const toggleButton = page.getByTestId("sidebar-toggle");
+    > 232 |
+          | ^
+      233 |     if (await toggleButton.count()) {
+      234 |       const sidebar = page
+      235 |         .getByTestId("sidebar")
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:232:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--8d47f-debar-when-clicking-outside-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:266:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:18:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('sidebar-toggle')[22m
+    [2m    - locator resolved to <button type="button" data-slot="button" aria-label="Toggle sidebar" data-testid="sidebar-toggle" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-dest…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  2 × retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  27 × retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      265 |
+      266 |     // Test 10 consecutive toggles
+    > 267 |     for (let i = 0; i < 10; i++) {
+          |                          ^
+      268 |       // Open
+      269 |       await toggleButton.click();
+      270 |       await page.waitForTimeout(500);
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:267:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--3d346-iably-with-100-success-rate-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:422:3 › Navigation Grouping › should group resources in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:523:3 › Navigation Grouping › should maintain logical navigation order in grouped sections 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      513 |
+      514 |       // Reload page
+    > 515 |       await page.reload();
+          |                           ^
+      516 |       await page.waitForLoadState("domcontentloaded");
+      517 |
+      518 |       // Reopen sidebar if needed
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:515:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:94:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:18:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--d7d95-ld-toggle-sidebar-on-tablet-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--d7d95-ld-toggle-sidebar-on-tablet-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--d7d95-ld-toggle-sidebar-on-tablet-chromium/error-context.md
+
+  7) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:154:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:18:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--2bd58-d-toggle-sidebar-on-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--2bd58-d-toggle-sidebar-on-desktop-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--2bd58-d-toggle-sidebar-on-desktop-chromium/error-context.md
+
+  8) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:295:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('sidebar-toggle')[22m
+    [2m    - locator resolved to <button type="button" data-slot="button" aria-label="Toggle sidebar" data-testid="sidebar-toggle" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-dest…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <div class="flex items-center gap-3">…</div> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <span class="text-lg font-semibold">Cosplans</span> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <span class="text-lg font-semibold">Cosplans</span> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  2 × retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m      - waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  27 × retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m       - waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <svg width="100%" height="100%" version="1.1" xml:space="preserve" viewBox="0 0 1080 1081" class="logo-theme h-10 w-auto " xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">…</svg> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+    [2m    - element is visible, enabled and stable[22m
+    [2m    - scrolling into view if needed[22m
+    [2m    - done scrolling[22m
+    [2m    - <path d="M387.905,1098.08C383.123,1100.84 377.434,1101.57 372.109,1100.1C366.786,1098.63 362.273,1095.1 359.58,1090.28C336.937,1049.57 324.022,1002.7 324.022,952.821C324.022,806.178 435.65,685.605 578.57,671.452L578.58,671.452C584.308,670.875 590.012,672.749 594.282,676.611C595.603,677.806 596.749,679.157 597.702,680.624L597.708,680.633C598.159,681.325 598.441,682.113 598.531,682.934C600.001,696.463 600.834,710.182 601.001,724.059C601.002,724.14 601.003,724.22 601.003,724.3C601.004,727.483 601.005,7…></path> from <div data-side="left" data-collapsible="" data-state="expanded" data-variant="sidebar" class="group peer text-sidebar-foreground">…</div> subtree intercepts pointer events[22m
+    [2m  - retrying click action[22m
+    [2m    - waiting 500ms[22m
+
+
+      287 |
+      288 |   test("should handle rapid toggle clicks", async ({ page, browserName }) => {
+    > 289 |     test.skip(browserName !== "chromium", "Edge case test");
+          |                          ^
+      290 |
+      291 |     await page.setViewportSize({ width: 375, height: 667 });
+      292 |     await page.goto("/dashboard");
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:289:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--fa269--handle-rapid-toggle-clicks-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--fa269--handle-rapid-toggle-clicks-chromium/error-context.md
+
+  9) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:370:3 › Navigation Grouping › should display "Production" section in sidebar 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/error-context.md
+
+  10) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:385:3 › Navigation Grouping › should group photoshoots in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/error-context.md
+
+  11) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:404:3 › Navigation Grouping › should group tools in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/error-context.md
+
+  12) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:436:3 › Navigation Grouping › should group calendar in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/error-context.md
+
+  13) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:452:3 › Navigation Grouping › should have collapse/expand toggle for Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/error-context.md
+
+  14) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:478:3 › Navigation Grouping › should persist group collapse state across sessions 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:344:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/error-context.md
+
+  5 failed
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:208:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:266:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:422:3 › Navigation Grouping › should group resources in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:523:3 › Navigation Grouping › should maintain logical navigation order in grouped sections 
+  9 flaky
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:94:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:154:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:295:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:370:3 › Navigation Grouping › should display "Production" section in sidebar 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:385:3 › Navigation Grouping › should group photoshoots in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:404:3 › Navigation Grouping › should group tools in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:436:3 › Navigation Grouping › should group calendar in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:452:3 › Navigation Grouping › should have collapse/expand toggle for Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:478:3 › Navigation Grouping › should persist group collapse state across sessions 
+  1 skipped
+  1 passed (6.3m)
+
+📊 Test Results: failed
+
+⚠️  FLAKY TESTS SUMMARY: 8 flaky test(s) detected
+
+  • should toggle sidebar on tablet
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:94
+    Passed on retry 1
+
+  • should toggle sidebar on desktop
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:154
+    Passed on retry 1
+
+  • should display "Production" section in sidebar
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:370
+    Passed on retry 1
+
+  • should group photoshoots in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:385
+    Passed on retry 1
+
+  • should group tools in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:404
+    Passed on retry 1
+
+  • should group calendar in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:436
+    Passed on retry 1
+
+  • should have collapse/expand toggle for Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:452
+    Passed on retry 1
+
+  • should persist group collapse state across sessions
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:478
+    Passed on retry 1
+
+
+📝 Flaky test report saved to: test-results/flaky-tests.json
+   Consider moving these tests to quarantine: tests/quarantine/
+
+
+[36m  Serving HTML report at http://localhost:45365. Press Ctrl+C to quit.[39m
