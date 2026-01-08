@@ -49,15 +49,11 @@ test.describe("Sidebar Toggle Functionality", () => {
     // Click to open
     await toggleButton.click();
 
-    // Wait for transform to change (animation complete)
-    await page.waitForFunction(
-      ({ sidebar, initialTransform }) => {
-        const currentTransform = window.getComputedStyle(sidebar).transform;
-        return currentTransform !== initialTransform;
-      },
-      { sidebar: await sidebar.elementHandle(), initialTransform },
-      { timeout: 2000 },
-    );
+    // Wait for sidebar content to be in viewport (animation complete)
+    const sidebarLinks = sidebar.locator("a").first();
+    if ((await sidebarLinks.count()) > 0) {
+      await expect(sidebarLinks).toBeInViewport({ timeout: 2000 });
+    }
 
     // Transform should have changed from initial state
     const openTransform = await sidebar.evaluate(
@@ -65,33 +61,19 @@ test.describe("Sidebar Toggle Functionality", () => {
     );
     expect(openTransform).not.toBe(initialTransform);
 
-    // Check sidebar content is in viewport when open
-    const sidebarLinks = sidebar.locator("a").first();
-    if ((await sidebarLinks.count()) > 0) {
-      await expect(sidebarLinks).toBeInViewport();
-    }
-
     // Click to close
     await toggleButton.click();
 
-    // Wait for transform to change back (animation complete)
-    await page.waitForFunction(
-      ({ sidebar, openTransform }) => {
-        const currentTransform = window.getComputedStyle(sidebar).transform;
-        return currentTransform !== openTransform;
-      },
-      { sidebar: await sidebar.elementHandle(), openTransform },
-      { timeout: 2000 },
-    );
+    // Wait for sidebar content to be out of viewport (animation complete)
+    if ((await sidebarLinks.count()) > 0) {
+      await expect(sidebarLinks).not.toBeInViewport({ timeout: 2000 });
+    }
 
     // Transform should be back to closed state (different from open)
     const closedTransform = await sidebar.evaluate(
       (el) => window.getComputedStyle(el).transform,
     );
     expect(closedTransform).not.toBe(openTransform);
-
-    // Sidebar content should not be in viewport
-    await expect(sidebarLinks.first()).not.toBeInViewport();
   });
 
   test("should toggle sidebar on tablet", async ({ page, browserName }) => {

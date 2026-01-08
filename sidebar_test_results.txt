@@ -1,0 +1,47 @@
+$ playwright test "tests/e2e/navigation/sidebar-toggle.spec.ts"
+[dotenv@17.2.3] injecting env (14) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[E2E Setup] Starting global setup...
+[E2E Setup] Ensuring 4 test users exist...
+[E2E Setup] Processing user: test@example.com
+[E2E Setup] User test@example.com already exists with correct password.
+[E2E Setup] Processing user: alice@test.com
+[E2E Setup] User alice@test.com already exists with correct password.
+[E2E Setup] Processing user: bob@test.com
+[E2E Setup] User bob@test.com already exists with correct password.
+[E2E Setup] Processing user: charlie@test.com
+[E2E Setup] User charlie@test.com already exists with correct password.
+[E2E Setup] Global setup complete.
+
+Running 16 tests using 1 worker
+
+
+🧪 Starting test run with 16 tests
+
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+  ✘   1 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile (1.0m)
+❌ Test failed: should toggle sidebar open and close on mobile
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+  ✘   2 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile (retry #1) (1.0m)
+❌ Test failed: should toggle sidebar open and close on mobile
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+  ✘   3 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:94:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet (621ms)
+❌ Test failed: should toggle sidebar on tablet
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+  ✓   4 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:94:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet (retry #1) (2.3s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should toggle sidebar on tablet
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:94
+   Passed on retry: 1
+
+  ✘   5 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:154:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop (468ms)
+❌ Test failed: should toggle sidebar on desktop
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+  ✓   6 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:154:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop (retry #1) (2.5s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should toggle sidebar on desktop
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:154
+   Passed on retry: 1
+
+  ✘   7 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:208:3 › Sidebar Toggle Functionality › should close mobile sidebar when clicking outside (416ms)
+❌ Test failed: should close mobile sidebar when clicking outside
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 📡 add observability to secrets: https://dotenvx.com/ops

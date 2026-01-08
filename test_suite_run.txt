@@ -117,3 +117,12 @@ Running 121 tests using 1 worker
 ❌ Test failed: should close mobile sidebar when clicking outside
 [dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
   ✓   31 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:161:3 › Sidebar Toggle Functionality › should persist toggle state across page navigations (1.8s)
+  ✘   32 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:188:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate (1.0m)
+❌ Test failed: should work reliably with 100% success rate
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✘   33 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:188:3 › Sidebar Toggle Functionality › should work reliably with 100% success rate (retry #1) (1.0m)
+❌ Test failed: should work reliably with 100% success rate
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✘   34 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:217:3 › Sidebar Toggle Functionality › should handle rapid toggle clicks (1.0m)
+❌ Test failed: should handle rapid toggle clicks
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
