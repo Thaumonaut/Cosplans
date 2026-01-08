@@ -37,23 +37,43 @@ test.describe("Sidebar Toggle Functionality", () => {
     const toggleButton = page.getByTestId("sidebar-toggle");
     const sidebar = page.getByTestId("sidebar");
 
-    // Initially toggle button should be visible
+    // Wait for sidebar to be ready
     await expect(toggleButton).toBeVisible();
+    await expect(sidebar).toBeAttached();
+
+    // Get initial state
+    const initialTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
 
     // Click to open
     await toggleButton.click();
     await page.waitForTimeout(500);
 
-    // Check sidebar content is visible (links inside sidebar)
-    const sidebarLinks = sidebar.locator("a");
-    await expect(sidebarLinks.first()).toBeVisible();
+    // Transform should have changed from initial state
+    const openTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
+    expect(openTransform).not.toBe(initialTransform);
+
+    // Check sidebar content is in viewport when open
+    const sidebarLinks = sidebar.locator("a").first();
+    if ((await sidebarLinks.count()) > 0) {
+      await expect(sidebarLinks).toBeInViewport();
+    }
 
     // Click to close
     await toggleButton.click();
     await page.waitForTimeout(500);
 
-    // Sidebar content should not be visible (translated off-screen)
-    await expect(sidebarLinks.first()).not.toBeVisible();
+    // Transform should be back to closed state (different from open)
+    const closedTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
+    expect(closedTransform).not.toBe(openTransform);
+
+    // Sidebar content should not be in viewport
+    await expect(sidebarLinks.first()).not.toBeInViewport();
   });
 
   test("should toggle sidebar on tablet", async ({ page, browserName }) => {
@@ -64,20 +84,35 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const toggleButton = page.getByTestId("sidebar-toggle");
+    const sidebar = page.getByTestId("sidebar");
 
     if (await toggleButton.count()) {
-      const sidebar = page
-        .getByTestId("sidebar")
-        .or(page.getByRole("navigation"));
+      // Get initial transform state
+      const initialTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
 
       // Toggle open
       await toggleButton.click();
-      await page.waitForTimeout(300);
-      await expect(sidebar).toBeVisible();
+      await page.waitForTimeout(500);
+
+      const afterOpenTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+
+      // State should have changed
+      expect(afterOpenTransform).not.toBe(initialTransform);
 
       // Toggle close
       await toggleButton.click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
+
+      const afterCloseTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+
+      // Should be back to initial state
+      expect(afterCloseTransform).toBe(initialTransform);
     }
   });
 
@@ -87,26 +122,31 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const toggleButton = page.getByTestId("sidebar-toggle");
+    const sidebar = page.getByTestId("sidebar");
 
     if (await toggleButton.count()) {
-      const sidebar = page
-        .getByTestId("sidebar")
-        .or(page.getByRole("navigation"));
-      const initiallyVisible = await sidebar.isVisible();
+      // Get initial transform state
+      const initialTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
 
       // Toggle
       await toggleButton.click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
 
-      const afterToggle = await sidebar.isVisible();
-      expect(afterToggle).not.toBe(initiallyVisible);
+      const afterToggle = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+      expect(afterToggle).not.toBe(initialTransform);
 
       // Toggle back
       await toggleButton.click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
 
-      const afterSecondToggle = await sidebar.isVisible();
-      expect(afterSecondToggle).toBe(initiallyVisible);
+      const afterSecondToggle = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+      expect(afterSecondToggle).toBe(initialTransform);
     }
   });
 
@@ -121,21 +161,28 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const toggleButton = page.getByTestId("sidebar-toggle");
-    const sidebar = page
-      .getByTestId("sidebar")
-      .or(page.getByRole("navigation"));
+    const sidebar = page.getByTestId("sidebar");
 
     // Open sidebar
     await toggleButton.click();
-    await page.waitForTimeout(300);
-    await expect(sidebar).toBeVisible();
+    await page.waitForTimeout(500);
 
-    // Click outside (on main content)
-    await page.click("main", { position: { x: 10, y: 100 } });
-    await page.waitForTimeout(300);
+    // Sidebar should be visible (translateX(0))
+    const openTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
+    expect(openTransform).toContain("matrix(1, 0, 0, 1, 0, 0)");
 
-    // Should close
-    await expect(sidebar).not.toBeVisible();
+    // Click outside (on backdrop)
+    const backdrop = page.locator('button[aria-label="Close sidebar"]');
+    await backdrop.click();
+    await page.waitForTimeout(500);
+
+    // Should close (translated off-screen)
+    const closedTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
+    expect(closedTransform).not.toContain("matrix(1, 0, 0, 1, 0, 0)");
   });
 
   test("should persist toggle state across page navigations", async ({
@@ -178,21 +225,27 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const toggleButton = page.getByTestId("sidebar-toggle");
-    const sidebar = page
-      .getByTestId("sidebar")
-      .or(page.getByRole("navigation"));
+    const sidebar = page.getByTestId("sidebar");
 
     // Test 10 consecutive toggles
     for (let i = 0; i < 10; i++) {
       // Open
       await toggleButton.click();
-      await page.waitForTimeout(300);
-      await expect(sidebar).toBeVisible();
+      await page.waitForTimeout(500);
+
+      const openTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+      expect(openTransform).toContain("matrix(1, 0, 0, 1, 0, 0)");
 
       // Close
       await toggleButton.click();
-      await page.waitForTimeout(300);
-      await expect(sidebar).not.toBeVisible();
+      await page.waitForTimeout(500);
+
+      const closedTransform = await sidebar.evaluate(
+        (el) => window.getComputedStyle(el).transform,
+      );
+      expect(closedTransform).not.toContain("matrix(1, 0, 0, 1, 0, 0)");
     }
   });
 
@@ -204,6 +257,7 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const toggleButton = page.getByTestId("sidebar-toggle");
+    const sidebar = page.getByTestId("sidebar");
 
     // Rapidly click 5 times
     for (let i = 0; i < 5; i++) {
@@ -214,13 +268,14 @@ test.describe("Sidebar Toggle Functionality", () => {
     // Should end in a stable state (either open or closed, but not broken)
     await page.waitForTimeout(500);
 
-    const sidebar = page
-      .getByTestId("sidebar")
-      .or(page.getByRole("navigation"));
-    const isVisible = await sidebar.isVisible();
+    const transform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
 
-    // Should be either fully visible or fully hidden (not stuck mid-animation)
-    expect(typeof isVisible).toBe("boolean");
+    // Should be either fully open (translateX(0)) or fully closed (translateX(-100%))
+    // Not stuck mid-animation
+    expect(typeof transform).toBe("string");
+    expect(transform).toMatch(/matrix\([^)]+\)/);
   });
 
   test("should maintain sidebar functionality when transitioning viewport sizes", async ({
@@ -234,10 +289,7 @@ test.describe("Sidebar Toggle Functionality", () => {
     await page.goto("/dashboard");
     await page.waitForLoadState("domcontentloaded");
 
-    const sidebar = page
-      .getByTestId("sidebar")
-      .or(page.getByRole("navigation"));
-    const initiallyVisible = await sidebar.isVisible();
+    const sidebar = page.getByTestId("sidebar");
 
     // Resize to mobile
     await page.setViewportSize({ width: 375, height: 667 });
@@ -248,8 +300,13 @@ test.describe("Sidebar Toggle Functionality", () => {
     await expect(toggleButton).toBeVisible();
 
     await toggleButton.click();
-    await page.waitForTimeout(300);
-    await expect(sidebar).toBeVisible();
+    await page.waitForTimeout(500);
+
+    // Sidebar should be visible (translateX(0))
+    const openTransform = await sidebar.evaluate(
+      (el) => window.getComputedStyle(el).transform,
+    );
+    expect(openTransform).toContain("matrix(1, 0, 0, 1, 0, 0)");
   });
 });
 

@@ -1736,3 +1736,5 @@ Route /settings loaded but no main element found
 
 [36m  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.[39m
   ✘   78 [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views (retry #1) (27.5s)
+[2m[WebServer] [22m
+[2m[WebServer] [22m[1;31m[404] GET /settings[0m
