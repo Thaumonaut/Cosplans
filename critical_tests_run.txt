@@ -176,3 +176,69 @@ Route /settings loaded but no main element found
   ✓   48 [chromium] › tests/e2e/navigation.spec.ts:4:3 › Navigation › should navigate through all main routes (22.7s)
 [loginIfNeeded] Using credentials from: TEST_EMAIL
 [loginIfNeeded] Email: te***@example.com
+  ✓   49 [chromium] › tests/e2e/navigation.spec.ts:63:3 › Navigation › should handle sidebar navigation (2.1s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   50 [chromium] › tests/e2e/navigation.spec.ts:84:3 › Navigation › should handle breadcrumb navigation (1.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   51 [chromium] › tests/e2e/resources/resource-management.spec.ts:18:3 › Resource Management › should display resources library page (1.4s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   52 [chromium] › tests/e2e/resources/resource-management.spec.ts:31:3 › Resource Management › should filter resources by category (1.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   53 [chromium] › tests/e2e/resources/resource-management.spec.ts:45:3 › Resource Management › should search resources (1.7s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   54 [chromium] › tests/e2e/resources/resource-management.spec.ts:54:3 › Resource Management › should open new resource creation (1.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   55 [chromium] › tests/e2e/resources/resource-management.spec.ts:75:3 › Resource Creation and Editing › should create a prop resource with all fields (3.4s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   56 [chromium] › tests/e2e/resources/resource-management.spec.ts:118:3 › Resource Creation and Editing › should display category-specific fields for fabric (1.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   57 [chromium] › tests/e2e/resources/resource-management.spec.ts:141:3 › Resource Detail View › should display resource details (2.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✘   58 [chromium] › tests/e2e/resources/resource-management.spec.ts:165:3 › Resource Detail View › should show Used in Projects section (4.4s)
+❌ Test failed: should show Used in Projects section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✘   59 [chromium] › tests/e2e/resources/resource-management.spec.ts:165:3 › Resource Detail View › should show Used in Projects section (retry #1) (4.9s)
+❌ Test failed: should show Used in Projects section
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+  ✘   60 [chromium] › tests/e2e/responsive/layout-position.spec.ts:20:3 › Action Bar Positioning › should keep action bar sticky at top on mobile while scrolling (636ms)
+❌ Test failed: should keep action bar sticky at top on mobile while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+  ✘   61 [chromium] › tests/e2e/responsive/layout-position.spec.ts:20:3 › Action Bar Positioning › should keep action bar sticky at top on mobile while scrolling (retry #1) (12.3s)
+❌ Test failed: should keep action bar sticky at top on mobile while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✘   62 [chromium] › tests/e2e/responsive/layout-position.spec.ts:47:3 › Action Bar Positioning › should keep action bar sticky at top on tablet while scrolling (12.6s)
+❌ Test failed: should keep action bar sticky at top on tablet while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+  ✘   63 [chromium] › tests/e2e/responsive/layout-position.spec.ts:47:3 › Action Bar Positioning › should keep action bar sticky at top on tablet while scrolling (retry #1) (12.8s)
+❌ Test failed: should keep action bar sticky at top on tablet while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+  ✘   64 [chromium] › tests/e2e/responsive/layout-position.spec.ts:69:3 › Action Bar Positioning › should keep action bar sticky at top on desktop while scrolling (666ms)
+❌ Test failed: should keep action bar sticky at top on desktop while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+  ✘   65 [chromium] › tests/e2e/responsive/layout-position.spec.ts:69:3 › Action Bar Positioning › should keep action bar sticky at top on desktop while scrolling (retry #1) (13.0s)
+❌ Test failed: should keep action bar sticky at top on desktop while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+  ✘   66 [chromium] › tests/e2e/responsive/layout-position.spec.ts:91:3 › Action Bar Positioning › should include action bar height in viewport calculations (1.0m)
+❌ Test failed: should include action bar height in viewport calculations
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+  ✘   67 [chromium] › tests/e2e/responsive/layout-position.spec.ts:91:3 › Action Bar Positioning › should include action bar height in viewport calculations (retry #1) (1.1m)
+❌ Test failed: should include action bar height in viewport calculations
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+  ✓   68 [chromium] › tests/e2e/responsive/layout-position.spec.ts:109:3 › Action Bar Positioning › should not hide content behind action bar when scrolling up (3.2s)
+  ✘   69 [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views (621ms)
+❌ Test failed: should maintain action bar position when switching views
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+  ✘   70 [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views (retry #1) (1.0m)
+❌ Test failed: should maintain action bar position when switching views
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
