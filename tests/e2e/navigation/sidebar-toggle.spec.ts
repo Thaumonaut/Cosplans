@@ -48,7 +48,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
     // Click to open
     await toggleButton.click();
-    await page.waitForTimeout(500);
+
+    // Wait for transform to change (animation complete)
+    await page.waitForFunction(
+      ({ sidebar, initialTransform }) => {
+        const currentTransform = window.getComputedStyle(sidebar).transform;
+        return currentTransform !== initialTransform;
+      },
+      { sidebar: await sidebar.elementHandle(), initialTransform },
+      { timeout: 2000 },
+    );
 
     // Transform should have changed from initial state
     const openTransform = await sidebar.evaluate(
@@ -64,7 +73,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
     // Click to close
     await toggleButton.click();
-    await page.waitForTimeout(500);
+
+    // Wait for transform to change back (animation complete)
+    await page.waitForFunction(
+      ({ sidebar, openTransform }) => {
+        const currentTransform = window.getComputedStyle(sidebar).transform;
+        return currentTransform !== openTransform;
+      },
+      { sidebar: await sidebar.elementHandle(), openTransform },
+      { timeout: 2000 },
+    );
 
     // Transform should be back to closed state (different from open)
     const closedTransform = await sidebar.evaluate(
@@ -94,7 +112,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
       // Toggle open
       await toggleButton.click();
-      await page.waitForTimeout(500);
+
+      // Wait for animation to complete
+      await page.waitForFunction(
+        ({ sidebar, initialTransform }) => {
+          const currentTransform = window.getComputedStyle(sidebar).transform;
+          return currentTransform !== initialTransform;
+        },
+        { sidebar: await sidebar.elementHandle(), initialTransform },
+        { timeout: 2000 },
+      );
 
       const afterOpenTransform = await sidebar.evaluate(
         (el) => window.getComputedStyle(el).transform,
@@ -105,7 +132,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
       // Toggle close
       await toggleButton.click();
-      await page.waitForTimeout(500);
+
+      // Wait for animation to complete
+      await page.waitForFunction(
+        ({ sidebar, afterOpenTransform }) => {
+          const currentTransform = window.getComputedStyle(sidebar).transform;
+          return currentTransform !== afterOpenTransform;
+        },
+        { sidebar: await sidebar.elementHandle(), afterOpenTransform },
+        { timeout: 2000 },
+      );
 
       const afterCloseTransform = await sidebar.evaluate(
         (el) => window.getComputedStyle(el).transform,
@@ -132,7 +168,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
       // Toggle
       await toggleButton.click();
-      await page.waitForTimeout(500);
+
+      // Wait for animation to complete
+      await page.waitForFunction(
+        ({ sidebar, initialTransform }) => {
+          const currentTransform = window.getComputedStyle(sidebar).transform;
+          return currentTransform !== initialTransform;
+        },
+        { sidebar: await sidebar.elementHandle(), initialTransform },
+        { timeout: 2000 },
+      );
 
       const afterToggle = await sidebar.evaluate(
         (el) => window.getComputedStyle(el).transform,
@@ -141,7 +186,16 @@ test.describe("Sidebar Toggle Functionality", () => {
 
       // Toggle back
       await toggleButton.click();
-      await page.waitForTimeout(500);
+
+      // Wait for animation to complete
+      await page.waitForFunction(
+        ({ sidebar, afterToggle }) => {
+          const currentTransform = window.getComputedStyle(sidebar).transform;
+          return currentTransform !== afterToggle;
+        },
+        { sidebar: await sidebar.elementHandle(), afterToggle },
+        { timeout: 2000 },
+      );
 
       const afterSecondToggle = await sidebar.evaluate(
         (el) => window.getComputedStyle(el).transform,
