@@ -83,6 +83,15 @@ export async function loginIfNeeded(page: Page): Promise<boolean> {
     page.click('button[type="submit"]')
   ]);
 
+  // Check for error message if still on login page
+  if (page.url().includes('/login')) {
+    const errorMsg = await page.locator('.text-red-800').textContent().catch(() => null);
+    if (errorMsg) {
+      console.error(`[loginIfNeeded] Login failed with error: ${errorMsg}`);
+      throw new Error(`Login failed: ${errorMsg}`);
+    }
+  }
+
   // Verify we're not on login page anymore
   await expect(page).not.toHaveURL(/\/login/);
 

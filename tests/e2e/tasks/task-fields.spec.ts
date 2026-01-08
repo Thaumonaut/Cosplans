@@ -20,7 +20,7 @@ test.describe('Task Custom Fields Persistence', () => {
 		await loginPage.goto();
 		await loginPage.login(
 			process.env.TEST_USER_EMAIL || 'test@example.com',
-			process.env.TEST_USER_PASSWORD || 'testpassword'
+			process.env.TEST_USER_PASSWORD || 'testpassword123'
 		);
 
 		// Navigate to tasks

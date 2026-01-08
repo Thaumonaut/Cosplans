@@ -1,0 +1,112 @@
+$ playwright test
+[dotenv@17.2.3] injecting env (14) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[E2E Setup] Starting global setup...
+[E2E Setup] Ensuring 4 test users exist...
+[E2E Setup] Processing user: test@example.com
+[E2E Setup] User test@example.com already exists with correct password.
+[E2E Setup] Processing user: alice@test.com
+[E2E Setup] User alice@test.com already exists with correct password.
+[E2E Setup] Processing user: bob@test.com
+[E2E Setup] User bob@test.com already exists with correct password.
+[E2E Setup] Processing user: charlie@test.com
+[E2E Setup] User charlie@test.com already exists with correct password.
+[E2E Setup] Global setup complete.
+🎲 Using random factory
+
+Running 121 tests using 1 worker
+
+
+🧪 Starting test run with 121 tests
+
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+✅ Authentication successful - currently on: http://localhost:5173/dashboard
+  ✓    1 [chromium] › tests/e2e/auth-validation.spec.ts:7:1 › should successfully authenticate using credentials from .env.test (2.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    2 [chromium] › tests/e2e/dashboard.spec.ts:4:3 › Dashboard › should load the dashboard page (1.4s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    3 [chromium] › tests/e2e/dashboard.spec.ts:35:3 › Dashboard › should navigate to different sections (1.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    4 [chromium] › tests/e2e/dashboard.spec.ts:69:3 › Dashboard › should be responsive on mobile (1.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    5 [chromium] › tests/e2e/forms.spec.ts:4:3 › Forms › should handle character creation form (1.3s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    6 [chromium] › tests/e2e/forms.spec.ts:51:3 › Forms › should validate form inputs (1.3s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    7 [chromium] › tests/e2e/forms.spec.ts:87:3 › Forms › should handle search functionality (1.5s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    8 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:31:3 › Settings Notifications Section › should display "Notifications" section in settings (2.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓    9 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:40:3 › Settings Notifications Section › should NOT display "Preferences" as main section name (2.0s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   10 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:56:3 › Settings Notifications Section › should NOT display dark mode toggle in notifications section (1.9s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   11 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:66:3 › Settings Notifications Section › should display notification toggle options (2.2s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   12 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:74:3 › Settings Notifications Section › should allow toggling notification settings (2.7s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   13 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:93:3 › Settings Notifications Section › should persist notification settings after save (3.1s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   14 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:121:3 › Settings Notifications Section › should have clear labels for notification types (2.0s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   15 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:138:3 › Settings Notifications Section › should display notifications section on mobile (2.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   16 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:171:3 › Settings Notifications Section › should display notifications section on tablet (2.6s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   17 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:197:3 › Settings Notifications Section › should NOT have dark mode in any settings subsection (3.0s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   18 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:216:3 › Settings Notifications Section › should have accessibility labels for notification toggles (2.1s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   19 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:231:3 › Settings Notifications Section › should display different notification categories (2.0s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   20 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:241:3 › Settings Notifications Section › should show success message when saving notification preferences (2.4s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   21 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:254:3 › Settings Navigation › should have "Notifications" as a settings submenu item (1.8s)
+[loginIfNeeded] Using credentials from: TEST_EMAIL
+[loginIfNeeded] Email: te***@example.com
+  ✓   22 [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:270:3 › Settings Navigation › should navigate to notifications from settings (2.2s)
+  ✘   23 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile (369ms)
+❌ Test failed: should toggle sidebar open and close on mobile
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+  ✘   24 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:22:3 › Sidebar Toggle Functionality › should toggle sidebar open and close on mobile (retry #1) (1.0m)
+❌ Test failed: should toggle sidebar open and close on mobile
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✘   25 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:54:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet (698ms)
+❌ Test failed: should toggle sidebar on tablet
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+  ✓   26 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:54:3 › Sidebar Toggle Functionality › should toggle sidebar on tablet (retry #1) (2.4s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should toggle sidebar on tablet
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:54
+   Passed on retry: 1
+
+  ✘   27 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:79:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop (449ms)
+❌ Test failed: should toggle sidebar on desktop
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+  ✓   28 [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:79:3 › Sidebar Toggle Functionality › should toggle sidebar on desktop (retry #1) (2.2s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should toggle sidebar on desktop
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:79
+   Passed on retry: 1
+

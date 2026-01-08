@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  
+
   // Settings layout component
   let { children }: { children: import('svelte').Snippet } = $props();
   const currentPath = $derived($page.url.pathname);
@@ -12,7 +12,7 @@
     <h1 class="text-3xl font-bold mb-2">Settings</h1>
     <p class="text-muted-foreground">Manage your account and application settings.</p>
   </div>
-  
+
   <div class="grid gap-6 lg:grid-cols-4">
     <nav class="space-y-2">
       <button
@@ -22,10 +22,10 @@
         Profile
       </button>
       <button
-        onclick={() => goto('/settings/preferences')}
-        class="w-full text-left block px-3 py-2 rounded-md hover:bg-muted transition-colors {currentPath === '/settings/preferences' ? 'bg-muted font-medium' : ''}"
+        onclick={() => goto('/settings/notifications')}
+        class="w-full text-left block px-3 py-2 rounded-md hover:bg-muted transition-colors {currentPath === '/settings/notifications' ? 'bg-muted font-medium' : ''}"
       >
-        Preferences
+        Notifications
       </button>
       <button
         onclick={() => goto('/settings/team')}
@@ -34,10 +34,10 @@
         Team
       </button>
       <button
-        onclick={() => goto('/settings/task-stages')}
-        class="w-full text-left block px-3 py-2 rounded-md hover:bg-muted transition-colors {currentPath === '/settings/task-stages' ? 'bg-muted font-medium' : ''}"
+        onclick={() => goto('/settings/tasks')}
+        class="w-full text-left block px-3 py-2 rounded-md hover:bg-muted transition-colors {currentPath === '/settings/tasks' ? 'bg-muted font-medium' : ''}"
       >
-        Task Stages
+        Tasks
       </button>
       <button
         onclick={() => goto('/settings/theme-builder')}
@@ -46,7 +46,7 @@
         Theme Builder
       </button>
     </nav>
-    
+
     <div class="lg:col-span-3">
       {@render children()}
     </div>

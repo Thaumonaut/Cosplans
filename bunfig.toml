@@ -1,0 +1,12 @@
+# Bun Configuration
+# https://bun.sh/docs/runtime/bunfig
+
+[test]
+# Only run unit and integration tests, not E2E tests (which use Playwright)
+preload = ["./tests/unit/setup.ts"]
+
+# Coverage configuration
+coverage = false
+
+# Timeout for tests (5 seconds for unit tests)
+timeout = 5000

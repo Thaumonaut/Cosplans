@@ -141,6 +141,7 @@
 
     <!-- Sidebar container - fixed position, slides from left edge -->
     <div
+      data-testid="sidebar"
       class={cn(
         "fixed inset-y-0 h-screen transition-transform duration-200 ease-linear flex",
         isMobile ? "z-30" : "z-10",

@@ -34,9 +34,9 @@
 **Independent Test**: Create tasks in list, verify delete with confirmation and dependency counts; ensure tasks appear in kanban immediately; custom fields persist across views.
 
 ### Tests for User Story 1
-- [ ] T013 [P] [US1] Add E2E for task deletion and dependency confirmation in `tests/e2e/tasks/task-deletion.spec.ts`
-- [ ] T014 [P] [US1] Add E2E for kanban sync after creation in `tests/e2e/tasks/task-sync.spec.ts`
-- [ ] T015 [P] [US1] Add E2E for task custom fields persistence in `tests/e2e/tasks/task-fields.spec.ts`
+- [x] T013 [P] [US1] Add E2E for task deletion and dependency confirmation in `tests/e2e/tasks/task-deletion.spec.ts`
+- [x] T014 [P] [US1] Add E2E for kanban sync after creation in `tests/e2e/tasks/task-sync.spec.ts`
+- [x] T015 [P] [US1] Add E2E for task custom fields persistence in `tests/e2e/tasks/task-fields.spec.ts`
 
 ### Implementation for User Story 1
 - [X] T016 [P] [US1] Implement TaskDeleteModal with dependency counts in `src/lib/components/tasks/TaskDeleteModal.svelte`
@@ -53,8 +53,8 @@
 **Independent Test**: Verify no horizontal overflow, sticky action bar, fixed sidebar, correct tablet headers, correct button position at 320px+.
 
 ### Tests for User Story 2
-- [ ] T022 [P] [US2] Add Playwright viewport coverage (mobile/tablet/desktop/large) in `tests/e2e/responsive/mobile-layout.spec.ts` and `tablet-layout.spec.ts`
-- [ ] T023 [P] [US2] Add E2E for action bar and sidebar positioning in `tests/e2e/responsive/layout-position.spec.ts`
+- [x] T022 [P] [US2] Add Playwright viewport coverage (mobile/tablet/desktop/large) in `tests/e2e/responsive/mobile-layout.spec.ts` and `tablet-layout.spec.ts`
+- [x] T023 [P] [US2] Add E2E for action bar and sidebar positioning in `tests/e2e/responsive/layout-position.spec.ts`
 
 ### Implementation for User Story 2
 - [X] T024 [P] [US2] Add ResponsiveContainer and breakpoints in `src/lib/components/layout/ResponsiveContainer.svelte`
@@ -71,8 +71,8 @@
 **Independent Test**: Toggle works, grouping visible, settings shows notifications (no dark mode).
 
 ### Tests for User Story 3
-- [ ] T030 [P] [US3] Add E2E for sidebar toggle and grouping in `tests/e2e/navigation/sidebar-toggle.spec.ts`
-- [ ] T031 [P] [US3] Add E2E for settings notifications section (no dark mode) in `tests/e2e/navigation/settings-notifications.spec.ts`
+- [x] T030 [P] [US3] Add E2E for sidebar toggle and grouping in `tests/e2e/navigation/sidebar-toggle.spec.ts`
+- [x] T031 [P] [US3] Add E2E for settings notifications section (no dark mode) in `tests/e2e/navigation/settings-notifications.spec.ts`
 
 ### Implementation for User Story 3
 - [X] T032 [P] [US3] Implement grouped navigation sections in `src/lib/components/app-sidebar.svelte`
@@ -147,7 +147,7 @@
 ## Phase 10: Polish & Cross-Cutting Concerns
 **Purpose**: Final hardening, docs, and coverage checks.
 
-- [ ] T058 [P] Update documentation and checklists in `docs/bugfix-list.md` and `specs/004-bugfix-testing/quickstart.md`
+- [x] T058 [P] Update documentation and checklists in `docs/bugfix-list.md` and `specs/004-bugfix-testing/quickstart.md`
 - [ ] T059 Run coverage and quality gates (`bun test --coverage`, lint) and address gaps across tasks in `tests/`
 - [ ] T060 [P] Refine performance (debounce API aggregation, reduce bundle size) in `src/lib/utils/apiAggregation.ts` and character components
 - [ ] T061 [P] Security/RLS verification for new policies in `supabase/migrations/` and Supabase dashboard
