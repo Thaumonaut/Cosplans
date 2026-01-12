@@ -3,6 +3,7 @@
   import { isSocialMediaMetadata, isLinkMetadata } from '$lib/types/domain/moodboard';
   import { Card, CardContent, CardFooter, Button } from '$lib/components/ui';
   import { Instagram, Music, Youtube, Facebook, Link as LinkIcon, StickyNote, Image as ImageIcon, Trash2, ExternalLink } from 'lucide-svelte';
+  import ImageLightbox from '$lib/components/base/ImageLightbox.svelte';
 
   interface Props {
     node: MoodboardNode;
@@ -10,6 +11,8 @@
   }
 
   let { node, onDelete }: Props = $props();
+
+  let lightboxOpen = $state(false);
 
   /**
    * Get platform icon component based on platform name
@@ -50,12 +53,29 @@
   }
 </script>
 
-<Card class="overflow-hidden hover:shadow-lg transition-shadow">
+<Card class="overflow-hidden hover:shadow-lg transition-shadow min-w-0">
   {#if node.nodeType === 'social_media'}
     <!-- Social Media Card -->
-    <div class="aspect-video bg-muted relative">
+    <div
+      class="aspect-video bg-muted relative {node.thumbnailUrl ? 'cursor-pointer group' : ''}"
+      onclick={() => node.thumbnailUrl && (lightboxOpen = true)}
+      role={node.thumbnailUrl ? "button" : undefined}
+      tabindex={node.thumbnailUrl ? 0 : undefined}
+      onkeydown={(e) => e.key === 'Enter' && node.thumbnailUrl && (lightboxOpen = true)}
+    >
       {#if node.thumbnailUrl}
-        <img src={node.thumbnailUrl} alt={node.shortComment || 'Social media post'} class="w-full h-full object-cover" />
+        <img src={node.thumbnailUrl} alt={node.shortComment || 'Social media post'} class="w-full h-full object-cover transition-transform group-hover:scale-105" />
+        <!-- Zoom hint overlay -->
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="bg-white/90 dark:bg-gray-800/90 rounded-full p-3">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            </div>
+          </div>
+        </div>
       {:else}
         <div class="w-full h-full flex items-center justify-center">
           <svelte:component this={getPlatformIcon(isSocialMediaMetadata(node.metadata) ? node.metadata.platform : undefined)} class="h-12 w-12 text-muted-foreground" />
@@ -63,7 +83,7 @@
       {/if}
       <!-- Platform badge -->
       {#if isSocialMediaMetadata(node.metadata) && node.metadata.platform}
-        <div class="absolute top-2 right-2">
+        <div class="absolute top-2 right-2 pointer-events-none">
           <div class="flex items-center gap-1 px-2 py-1 rounded-full {getPlatformColor(node.metadata.platform)} text-white text-xs font-medium">
             <svelte:component this={getPlatformIcon(node.metadata.platform)} class="h-3 w-3" />
             <span class="capitalize">{node.metadata.platform}</span>
@@ -94,9 +114,26 @@
     </CardContent>
   {:else if node.nodeType === 'image'}
     <!-- Image Card -->
-    <div class="aspect-video bg-muted">
+    <div
+      class="aspect-video bg-muted {node.contentUrl ? 'cursor-pointer relative group' : ''}"
+      onclick={() => node.contentUrl && (lightboxOpen = true)}
+      role={node.contentUrl ? "button" : undefined}
+      tabindex={node.contentUrl ? 0 : undefined}
+      onkeydown={(e) => e.key === 'Enter' && node.contentUrl && (lightboxOpen = true)}
+    >
       {#if node.contentUrl}
-        <img src={node.contentUrl} alt={node.shortComment || 'Reference image'} class="w-full h-full object-cover" />
+        <img src={node.contentUrl} alt={node.shortComment || 'Reference image'} class="w-full h-full object-cover transition-transform group-hover:scale-105" />
+        <!-- Zoom hint overlay -->
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="bg-white/90 dark:bg-gray-800/90 rounded-full p-3">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            </div>
+          </div>
+        </div>
       {:else}
         <div class="w-full h-full flex items-center justify-center">
           <ImageIcon class="h-12 w-12 text-muted-foreground" />
@@ -114,7 +151,7 @@
       <div class="flex items-start gap-3">
         <StickyNote class="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
         <div class="flex-1 min-w-0">
-          <p class="text-sm whitespace-pre-wrap break-words">
+          <p class="text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
             {truncate(node.longNote, 200)}
           </p>
         </div>
@@ -139,7 +176,7 @@
               href={node.contentUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-primary hover:underline flex items-center gap-1 truncate"
+              class="text-xs text-primary hover:underline flex items-center gap-1 truncate min-w-0"
             >
               {truncate(node.contentUrl, 40)}
               <ExternalLink class="h-3 w-3 flex-shrink-0" />
@@ -172,3 +209,13 @@
     </Button>
   </CardFooter>
 </Card>
+
+<!-- Lightbox for images -->
+{#if (node.nodeType === 'image' && node.contentUrl) || (node.nodeType === 'social_media' && node.thumbnailUrl)}
+  <ImageLightbox
+    bind:open={lightboxOpen}
+    images={node.nodeType === 'image' && node.contentUrl ? [node.contentUrl] : node.nodeType === 'social_media' && node.thumbnailUrl ? [node.thumbnailUrl] : []}
+    initialIndex={0}
+    showActions={false}
+  />
+{/if}
