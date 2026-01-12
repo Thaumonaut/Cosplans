@@ -2,6 +2,12 @@
   import { Button } from '$lib/components/ui';
   import { ArrowRight, Users, Calendar, Zap, AlertTriangle, Wrench, CheckCircle } from 'lucide-svelte';
   import Logo from '$lib/components/Logo.svelte';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
+
+  // Check if user is logged in
+  const isLoggedIn = $derived(!!data.session?.user);
 </script>
 
 <svelte:head>
@@ -31,8 +37,15 @@
       <span class="ml-2 rounded-full bg-purple-100 dark:bg-purple-900 px-2 py-1 text-xs font-semibold text-purple-700 dark:text-purple-300">BETA</span>
     </a>
     <div class="flex items-center gap-4">
-      <Button variant="ghost" href="/dashboard">Sign In</Button>
-      <Button href="/dashboard">Try It Out</Button>
+      {#if isLoggedIn}
+        <Button href="/dashboard">
+          Go to Dashboard
+          <ArrowRight class="ml-2 h-4 w-4" />
+        </Button>
+      {:else}
+        <Button variant="ghost" href="/dashboard">Sign In</Button>
+        <Button href="/dashboard">Try It Out</Button>
+      {/if}
     </div>
   </nav>
 
@@ -59,13 +72,23 @@
         Currently in open beta with active development and regular updates.
       </p>
       <div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
-        <Button size="lg" href="/dashboard" class="text-lg">
-          Try the Beta
-          <ArrowRight class="ml-2 size-5" />
-        </Button>
-        <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg">
-          View on GitHub
-        </Button>
+        {#if isLoggedIn}
+          <Button size="lg" href="/dashboard" class="text-lg">
+            Go to Dashboard
+            <ArrowRight class="ml-2 size-5" />
+          </Button>
+          <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg">
+            View on GitHub
+          </Button>
+        {:else}
+          <Button size="lg" href="/dashboard" class="text-lg">
+            Try the Beta
+            <ArrowRight class="ml-2 size-5" />
+          </Button>
+          <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg">
+            View on GitHub
+          </Button>
+        {/if}
       </div>
     </div>
   </div>
@@ -213,19 +236,35 @@
   <!-- CTA Section -->
   <div class="container mx-auto px-6 py-20">
     <div class="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-8 text-center text-white lg:p-16">
-      <h2 class="mb-4 text-3xl font-bold lg:text-4xl">Join the Open Beta</h2>
-      <p class="mb-8 text-xl opacity-90">
-        Start tracking your cosplay projects today and help shape the future of the platform
-      </p>
-      <div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
-        <Button size="lg" variant="secondary" href="/dashboard" class="text-lg">
-          Try the Beta
-          <ArrowRight class="ml-2 size-5" />
-        </Button>
-        <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg border-white text-white hover:bg-white/20">
-          Contribute on GitHub
-        </Button>
-      </div>
+      {#if isLoggedIn}
+        <h2 class="mb-4 text-3xl font-bold lg:text-4xl">Ready to Create?</h2>
+        <p class="mb-8 text-xl opacity-90">
+          Jump back into your dashboard and start planning your next cosplay
+        </p>
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <Button size="lg" variant="secondary" href="/dashboard" class="text-lg">
+            Go to Dashboard
+            <ArrowRight class="ml-2 size-5" />
+          </Button>
+          <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg border-white text-white hover:bg-white/20">
+            Contribute on GitHub
+          </Button>
+        </div>
+      {:else}
+        <h2 class="mb-4 text-3xl font-bold lg:text-4xl">Join the Open Beta</h2>
+        <p class="mb-8 text-xl opacity-90">
+          Start tracking your cosplay projects today and help shape the future of the platform
+        </p>
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <Button size="lg" variant="secondary" href="/dashboard" class="text-lg">
+            Try the Beta
+            <ArrowRight class="ml-2 size-5" />
+          </Button>
+          <Button size="lg" variant="outline" href="https://github.com/Thaumonaut/Cosplans" class="text-lg border-white text-white hover:bg-white/20">
+            Contribute on GitHub
+          </Button>
+        </div>
+      {/if}
     </div>
   </div>
 
