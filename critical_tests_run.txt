@@ -242,3 +242,1157 @@ Route /settings loaded but no main element found
   ✘   70 [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views (retry #1) (1.0m)
 ❌ Test failed: should maintain action bar position when switching views
 [dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+  ✘   71 [chromium] › tests/e2e/responsive/layout-position.spec.ts:158:3 › Action Bar Positioning › should handle action bar with dynamic content (1.0m)
+❌ Test failed: should handle action bar with dynamic content
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+  ✘   72 [chromium] › tests/e2e/responsive/layout-position.spec.ts:158:3 › Action Bar Positioning › should handle action bar with dynamic content (retry #1) (1.1m)
+❌ Test failed: should handle action bar with dynamic content
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+  ✘   73 [chromium] › tests/e2e/responsive/layout-position.spec.ts:195:3 › Sidebar Positioning › should keep sidebar fixed on mobile (not scroll with content) (702ms)
+❌ Test failed: should keep sidebar fixed on mobile (not scroll with content)
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+  ✓   74 [chromium] › tests/e2e/responsive/layout-position.spec.ts:195:3 › Sidebar Positioning › should keep sidebar fixed on mobile (not scroll with content) (retry #1) (4.1s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should keep sidebar fixed on mobile (not scroll with content)
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:195
+   Passed on retry: 1
+
+  ✘   75 [chromium] › tests/e2e/responsive/layout-position.spec.ts:233:3 › Sidebar Positioning › should keep sidebar fixed on tablet while scrolling (527ms)
+❌ Test failed: should keep sidebar fixed on tablet while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+  ✓   76 [chromium] › tests/e2e/responsive/layout-position.spec.ts:233:3 › Sidebar Positioning › should keep sidebar fixed on tablet while scrolling (retry #1) (3.3s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should keep sidebar fixed on tablet while scrolling
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:233
+   Passed on retry: 1
+
+  ✘   77 [chromium] › tests/e2e/responsive/layout-position.spec.ts:259:3 › Sidebar Positioning › should keep sidebar fixed on desktop while scrolling (595ms)
+❌ Test failed: should keep sidebar fixed on desktop while scrolling
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+  ✓   78 [chromium] › tests/e2e/responsive/layout-position.spec.ts:259:3 › Sidebar Positioning › should keep sidebar fixed on desktop while scrolling (retry #1) (3.1s)
+⚠️  FLAKY TEST DETECTED:
+   Test: should keep sidebar fixed on desktop while scrolling
+   File: /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:259
+   Passed on retry: 1
+
+  ✘   79 [chromium] › tests/e2e/responsive/layout-position.spec.ts:282:3 › Sidebar Positioning › should toggle sidebar on mobile without affecting content layout (2.6s)
+❌ Test failed: should toggle sidebar on mobile without affecting content layout
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+  ✘   80 [chromium] › tests/e2e/responsive/layout-position.spec.ts:282:3 › Sidebar Positioning › should toggle sidebar on mobile without affecting content layout (retry #1) (4.1s)
+❌ Test failed: should toggle sidebar on mobile without affecting content layout
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+  ✘   81 [chromium] › tests/e2e/responsive/layout-position.spec.ts:323:3 › Sidebar Positioning › should close mobile sidebar when clicking outside (935ms)
+❌ Test failed: should close mobile sidebar when clicking outside
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+  ✘   82 [chromium] › tests/e2e/responsive/layout-position.spec.ts:323:3 › Sidebar Positioning › should close mobile sidebar when clicking outside (retry #1) (14.3s)
+❌ Test failed: should close mobile sidebar when clicking outside
+[dotenv@17.2.3] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[31mTimed out waiting 600s for the test suite to run[39m
+[31mTimed out waiting 600s for the teardown for test suite to run[39m
+
+
+  1) [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:270:3 › Settings Navigation › should navigate to notifications from settings 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+    Expected substring: [32m"notifications"[39m
+    Received string:    [31m"http://localhost:5173/settings/profile"[39m
+
+      283 |
+      284 |     // URL should include notifications
+    > 285 |     expect(page.url()).toContain("notifications");
+          |                        ^
+      286 |   });
+      287 | });
+      288 |
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/settings-notifications.spec.ts:285:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+    Expected substring: [32m"notifications"[39m
+    Received string:    [31m"http://localhost:5173/settings/profile"[39m
+
+      283 |
+      284 |     // URL should include notifications
+    > 285 |     expect(page.url()).toContain("notifications");
+          |                        ^
+      286 |   });
+      287 | });
+      288 |
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/settings-notifications.spec.ts:285:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-settings-notifi-51bc8-notifications-from-settings-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:501:3 › Navigation Grouping › should maintain logical navigation order in grouped sections 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      552 |
+      553 |     // Should have meaningful navigation structure
+    > 554 |     expect(navLinks.length).toBeGreaterThan(0);
+          |                             ^
+      555 |
+      556 |     // Each link should be accessible
+      557 |     for (const link of navLinks) {
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:554:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/navigation-sidebar-toggle--437e1-n-order-in-grouped-sections-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/e2e/resources/resource-management.spec.ts:165:3 › Resource Detail View › should show Used in Projects section 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=/Used in Projects/i').or(locator('text=/Not used in any projects/i'))
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 2000ms[22m
+    [2m  - waiting for locator('text=/Used in Projects/i').or(locator('text=/Not used in any projects/i'))[22m
+
+
+      157 |       const usedSection = page.locator('text=/Used in Projects/i')
+      158 |       // May not be visible if resource has no projects - that's okay
+    > 159 |       await expect(usedSection.or(page.locator('text=/Not used in any projects/i'))).toBeVisible({ timeout: 2000 })
+          |                                                                                      ^
+      160 |     }
+      161 |   })
+      162 | })
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/resources/resource-management.spec.ts:159:86
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=/Used in Projects/i').or(locator('text=/Not used in any projects/i'))
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 2000ms[22m
+    [2m  - waiting for locator('text=/Used in Projects/i').or(locator('text=/Not used in any projects/i'))[22m
+
+
+      157 |       const usedSection = page.locator('text=/Used in Projects/i')
+      158 |       // May not be visible if resource has no projects - that's okay
+    > 159 |       await expect(usedSection.or(page.locator('text=/Not used in any projects/i'))).toBeVisible({ timeout: 2000 })
+          |                                                                                      ^
+      160 |     }
+      161 |   })
+      162 | })
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/resources/resource-management.spec.ts:159:86
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/resources-resource-managem-a9b00-ow-Used-in-Projects-section-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/e2e/responsive/layout-position.spec.ts:20:3 › Action Bar Positioning › should keep action bar sticky at top on mobile while scrolling 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:18:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('action-bar').or(getByRole('banner'))
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      34 | 		// Get initial action bar position
+      35 | 		const actionBar = page.getByTestId('action-bar').or(page.getByRole('banner'));
+    > 36 | 		await expect(actionBar).toBeVisible();
+         | 		                        ^
+      37 |
+      38 | 		const initialPosition = await actionBar.boundingBox();
+      39 |
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:36:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-fd7ed-p-on-mobile-while-scrolling-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests/e2e/responsive/layout-position.spec.ts:47:3 › Action Bar Positioning › should keep action bar sticky at top on tablet while scrolling 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('action-bar').or(getByRole('banner'))
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      62 |
+      63 | 		// Action bar should still be visible and at top
+    > 64 | 		await expect(actionBar).toBeVisible();
+         | 		                        ^
+      65 | 		const position = await actionBar.boundingBox();
+      66 |
+      67 | 		if (position) {
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:64:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('action-bar').or(getByRole('banner'))
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      62 |
+      63 | 		// Action bar should still be visible and at top
+    > 64 | 		await expect(actionBar).toBeVisible();
+         | 		                        ^
+      65 | 		const position = await actionBar.boundingBox();
+      66 |
+      67 | 		if (position) {
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:64:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-b4a17-p-on-tablet-while-scrolling-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › tests/e2e/responsive/layout-position.spec.ts:69:3 › Action Bar Positioning › should keep action bar sticky at top on desktop while scrolling 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:18:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('action-bar').or(getByRole('banner'))
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      82 |
+      83 | 		// Check still at top
+    > 84 | 		await expect(actionBar).toBeVisible();
+         | 		                        ^
+      85 | 		const position = await actionBar.boundingBox();
+      86 |
+      87 | 		if (position) {
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:84:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-1f736--on-desktop-while-scrolling-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › tests/e2e/responsive/layout-position.spec.ts:91:3 › Action Bar Positioning › should include action bar height in viewport calculations 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.boundingBox: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+       96 | 		// Get action bar height
+       97 | 		const actionBar = page.getByTestId('action-bar').or(page.getByRole('banner'));
+    >  98 | 		const actionBarBox = await actionBar.boundingBox();
+          | 		                                     ^
+       99 |
+      100 | 		// Main content should start below action bar
+      101 | 		const mainContent = page.getByRole('main');
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:98:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.boundingBox: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+       96 | 		// Get action bar height
+       97 | 		const actionBar = page.getByTestId('action-bar').or(page.getByRole('banner'));
+    >  98 | 		const actionBarBox = await actionBar.boundingBox();
+          | 		                                     ^
+       99 |
+      100 | 		// Main content should start below action bar
+      101 | 		const mainContent = page.getByRole('main');
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:98:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-f45aa-ht-in-viewport-calculations-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:18:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.boundingBox: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+    [2m    - waiting for" http://localhost:5173/tasks" navigation to finish...[22m
+    [2m    - navigated to "http://localhost:5173/tasks"[22m
+
+
+      138 | 		// Get action bar position in list view
+      139 | 		const actionBar = page.getByTestId('action-bar').or(page.getByRole('banner'));
+    > 140 | 		const listViewPosition = await actionBar.boundingBox();
+          | 		                                         ^
+      141 |
+      142 | 		// Switch to kanban view
+      143 | 		const kanbanButton = page.getByRole('button', { name: /kanban/i });
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:140:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-a448e-sition-when-switching-views-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › tests/e2e/responsive/layout-position.spec.ts:158:3 › Action Bar Positioning › should handle action bar with dynamic content 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.boundingBox: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      162 |
+      163 | 		// Get initial height
+    > 164 | 		const initialBox = await actionBar.boundingBox();
+          | 		                                   ^
+      165 |
+      166 | 		// Trigger action that might add content to action bar (e.g., filter chips)
+      167 | 		const filterButton = page.getByRole('button', { name: /filter/i });
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:164:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.boundingBox: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByTestId('action-bar').or(getByRole('banner'))[22m
+
+
+      162 |
+      163 | 		// Get initial height
+    > 164 | 		const initialBox = await actionBar.boundingBox();
+          | 		                                   ^
+      165 |
+      166 | 		// Trigger action that might add content to action bar (e.g., filter chips)
+      167 | 		const filterButton = page.getByRole('button', { name: /filter/i });
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:164:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-de31a-on-bar-with-dynamic-content-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium] › tests/e2e/responsive/layout-position.spec.ts:282:3 › Sidebar Positioning › should toggle sidebar on mobile without affecting content layout 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+    Expected: [32m256[39m
+    Received: [31m0[39m
+
+      311 |
+      312 | 			if (initialContentBox && closedContentBox) {
+    > 313 | 				expect(closedContentBox.x).toEqual(initialContentBox.x);
+          | 				                           ^
+      314 | 			}
+      315 | 		}
+      316 | 	});
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:313:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+    Expected: [32m256[39m
+    Received: [31m0[39m
+
+      311 |
+      312 | 			if (initialContentBox && closedContentBox) {
+    > 313 | 				expect(closedContentBox.x).toEqual(initialContentBox.x);
+          | 				                           ^
+      314 | 			}
+      315 | 		}
+      316 | 	});
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:313:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-1cb2a-ut-affecting-content-layout-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [chromium] › tests/e2e/responsive/layout-position.spec.ts:323:3 › Sidebar Positioning › should close mobile sidebar when clicking outside 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:190:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByTestId('sidebar').or(getByRole('navigation'))
+    Expected: not visible
+    Received: visible
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "not toBeVisible" with timeout 10000ms[22m
+    [2m  - waiting for getByTestId('sidebar').or(getByRole('navigation'))[22m
+    [2m    14 × locator resolved to <div data-testid="sidebar" class="fixed inset-y-0 h-screen transition-transform duration-200 ease-linear flex z-30 left-0 border-r border-[var(--theme-sidebar-border)]">…</div>[22m
+    [2m       - unexpected value "visible"[22m
+
+
+      338 |
+      339 | 			// Sidebar should close
+    > 340 | 			await expect(sidebar).not.toBeVisible();
+          | 			                          ^
+      341 | 		}
+      342 | 	});
+      343 |
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:340:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/responsive-layout-position-ed979-debar-when-clicking-outside-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:348:3 › Navigation Grouping › should display "Production" section in sidebar 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--6eaa3-oduction-section-in-sidebar-chromium/error-context.md
+
+  13) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:363:3 › Navigation Grouping › should group photoshoots in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--65822-hoots-in-Production-section-chromium/error-context.md
+
+  14) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:382:3 › Navigation Grouping › should group tools in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--73362-tools-in-Production-section-chromium/error-context.md
+
+  15) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:400:3 › Navigation Grouping › should group resources in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--50f00-urces-in-Production-section-chromium/error-context.md
+
+  16) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:414:3 › Navigation Grouping › should group calendar in Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--217f6-endar-in-Production-section-chromium/error-context.md
+
+  17) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:430:3 › Navigation Grouping › should have collapse/expand toggle for Production section 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--0dbdf-ggle-for-Production-section-chromium/error-context.md
+
+  18) [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:456:3 › Navigation Grouping › should persist group collapse state across sessions 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:357:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/navigation-sidebar-toggle--5b1ba-lapse-state-across-sessions-chromium/error-context.md
+
+  19) [chromium] › tests/e2e/responsive/layout-position.spec.ts:195:3 › Sidebar Positioning › should keep sidebar fixed on mobile (not scroll with content) 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:190:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-c22d9-le-not-scroll-with-content--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-c22d9-le-not-scroll-with-content--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-c22d9-le-not-scroll-with-content--chromium/error-context.md
+
+  20) [chromium] › tests/e2e/responsive/layout-position.spec.ts:233:3 › Sidebar Positioning › should keep sidebar fixed on tablet while scrolling 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:190:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a064d-d-on-tablet-while-scrolling-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-a064d-d-on-tablet-while-scrolling-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-a064d-d-on-tablet-while-scrolling-chromium/error-context.md
+
+  21) [chromium] › tests/e2e/responsive/layout-position.spec.ts:259:3 › Sidebar Positioning › should keep sidebar fixed on desktop while scrolling 
+
+    Error: Cannot click disabled button
+
+       at support/helpers.ts:89
+
+      87 |     const isDisabled = await locator.isDisabled();
+      88 |     if (isDisabled) {
+    > 89 |       throw new Error('Cannot click disabled button');
+         |             ^
+      90 |     }
+      91 |   }
+      92 |
+        at clickButton (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:89:13)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:106:7
+        at waitForNavigation (/home/jek/Documents/projects/Cosplans/tests/e2e/support/helpers.ts:160:3)
+        at LoginPage.login (/home/jek/Documents/projects/Cosplans/tests/e2e/support/page-objects/LoginPage.ts:105:5)
+        at /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:190:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-83087--on-desktop-while-scrolling-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responsive-layout-position-83087--on-desktop-while-scrolling-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responsive-layout-position-83087--on-desktop-while-scrolling-chromium/error-context.md
+
+  11 failed
+    [chromium] › tests/e2e/navigation/settings-notifications.spec.ts:270:3 › Settings Navigation › should navigate to notifications from settings 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:501:3 › Navigation Grouping › should maintain logical navigation order in grouped sections 
+    [chromium] › tests/e2e/resources/resource-management.spec.ts:165:3 › Resource Detail View › should show Used in Projects section 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:20:3 › Action Bar Positioning › should keep action bar sticky at top on mobile while scrolling 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:47:3 › Action Bar Positioning › should keep action bar sticky at top on tablet while scrolling 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:69:3 › Action Bar Positioning › should keep action bar sticky at top on desktop while scrolling 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:91:3 › Action Bar Positioning › should include action bar height in viewport calculations 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:133:3 › Action Bar Positioning › should maintain action bar position when switching views 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:158:3 › Action Bar Positioning › should handle action bar with dynamic content 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:282:3 › Sidebar Positioning › should toggle sidebar on mobile without affecting content layout 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:323:3 › Sidebar Positioning › should close mobile sidebar when clicking outside 
+  10 flaky
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:348:3 › Navigation Grouping › should display "Production" section in sidebar 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:363:3 › Navigation Grouping › should group photoshoots in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:382:3 › Navigation Grouping › should group tools in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:400:3 › Navigation Grouping › should group resources in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:414:3 › Navigation Grouping › should group calendar in Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:430:3 › Navigation Grouping › should have collapse/expand toggle for Production section 
+    [chromium] › tests/e2e/navigation/sidebar-toggle.spec.ts:456:3 › Navigation Grouping › should persist group collapse state across sessions 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:195:3 › Sidebar Positioning › should keep sidebar fixed on mobile (not scroll with content) 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:233:3 › Sidebar Positioning › should keep sidebar fixed on tablet while scrolling 
+    [chromium] › tests/e2e/responsive/layout-position.spec.ts:259:3 › Sidebar Positioning › should keep sidebar fixed on desktop while scrolling 
+  8 skipped
+  60 did not run
+  32 passed (10.0m)
+  2 errors were not a part of any test, see above for details
+
+📊 Test Results: timedout
+
+⚠️  FLAKY TESTS SUMMARY: 10 flaky test(s) detected
+
+  • should display "Production" section in sidebar
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:348
+    Passed on retry 1
+
+  • should group photoshoots in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:363
+    Passed on retry 1
+
+  • should group tools in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:382
+    Passed on retry 1
+
+  • should group resources in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:400
+    Passed on retry 1
+
+  • should group calendar in Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:414
+    Passed on retry 1
+
+  • should have collapse/expand toggle for Production section
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:430
+    Passed on retry 1
+
+  • should persist group collapse state across sessions
+    /home/jek/Documents/projects/Cosplans/tests/e2e/navigation/sidebar-toggle.spec.ts:456
+    Passed on retry 1
+
+  • should keep sidebar fixed on mobile (not scroll with content)
+    /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:195
+    Passed on retry 1
+
+  • should keep sidebar fixed on tablet while scrolling
+    /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:233
+    Passed on retry 1
+
+  • should keep sidebar fixed on desktop while scrolling
+    /home/jek/Documents/projects/Cosplans/tests/e2e/responsive/layout-position.spec.ts:259
+    Passed on retry 1
+
+
+📝 Flaky test report saved to: test-results/flaky-tests.json
+   Consider moving these tests to quarantine: tests/quarantine/
+
+
+[36m  Serving HTML report at http://localhost:39931. Press Ctrl+C to quit.[39m
+  ✘   83 [chromium] › tests/e2e/responsive/layout-position.spec.ts:359:3 › Sidebar Positioning › should have sidebar toggle accessible from all pages (8.8s)

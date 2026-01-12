@@ -94,8 +94,8 @@
 - [X] T038 [P] [US4] Persist idea→planning notes in `src/routes/(auth)/projects/[id]/+page.svelte` and services
 - [X] T039 [P] [US4] Implement task-to-resource/project linking UI and API in `src/lib/components/tasks/TaskDetailPanel.svelte` and `src/lib/api/services/taskService.ts`
 - [X] T040 [P] [US4] Add subtask aggregation controls (together/separate) in `src/lib/components/tasks/TaskListView.svelte`
-- [ ] T041 [P] [US4] Implement offline queue processing and conflict prompts in `src/lib/api/services/offlineService.ts`
-- [ ] T042 [US4] Surface offline indicator in `src/lib/components/shared/OfflineIndicator.svelte`
+- [X] T041 [P] [US4] Implement offline queue processing and conflict prompts in `src/lib/api/services/offlineService.ts`
+- [X] T042 [US4] Surface offline indicator in `src/lib/components/shared/OfflineIndicator.svelte`
 
 ---
 
@@ -148,7 +148,7 @@
 **Purpose**: Final hardening, docs, and coverage checks.
 
 - [x] T058 [P] Update documentation and checklists in `docs/bugfix-list.md` and `specs/004-bugfix-testing/quickstart.md`
-- [ ] T059 Run coverage and quality gates (`bun test --coverage`, lint) and address gaps across tasks in `tests/`
+- [X] T059 Run coverage and quality gates (`bun test --coverage`, lint) and address gaps across tasks in `tests/`
 - [ ] T060 [P] Refine performance (debounce API aggregation, reduce bundle size) in `src/lib/utils/apiAggregation.ts` and character components
 - [ ] T061 [P] Security/RLS verification for new policies in `supabase/migrations/` and Supabase dashboard
 

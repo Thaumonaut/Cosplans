@@ -1,5 +1,6 @@
 import { supabase } from '$lib/supabase'
 import type { Idea, IdeaCreate, IdeaUpdate } from '$lib/types/domain/idea'
+import { generateIdeaTitle } from '$lib/types/domain/idea'
 import { reliableQuery } from '$lib/api/reliable-loader'
 
 export const ideaService = {
@@ -69,11 +70,15 @@ export const ideaService = {
       }
     }
 
+    // Generate title if not provided
+    const title = idea.title?.trim() || generateIdeaTitle(idea.character, idea.series);
+
     // Build insert data, handling undefined/null values
     const insertData: Record<string, unknown> = {
       team_id: teamId,
-      character: idea.character,
-      series: idea.series || '', // series is NOT NULL, provide empty string as fallback
+      title: title, // Required: either custom or auto-generated
+      character: idea.character || null,
+      series: idea.series || null,
       difficulty: idea.difficulty,
       images: idea.images || [],
       tags: idea.tags || [],
@@ -111,7 +116,22 @@ export const ideaService = {
   },
 
   async update(id: string, updates: IdeaUpdate): Promise<Idea | null> {
+    // Handle title: if not provided or empty, regenerate from character/series
+    if (updates.title === null || updates.title === '') {
+      // Get current idea to use existing character/series if not being updated
+      const current = await this.get(id)
+      if (current) {
+        const char = updates.character !== undefined ? updates.character : current.character
+        const ser = updates.series !== undefined ? updates.series : current.series
+        updates.title = generateIdeaTitle(char, ser)
+      } else {
+        // Fallback if idea not found
+        updates.title = generateIdeaTitle(updates.character, updates.series)
+      }
+    }
+
     const dbUpdates: Record<string, unknown> = {}
+    if (updates.title !== undefined) dbUpdates.title = updates.title
     if (updates.character !== undefined) dbUpdates.character = updates.character
     if (updates.series !== undefined) dbUpdates.series = updates.series
     if (updates.description !== undefined) dbUpdates.description = updates.description
@@ -204,6 +224,7 @@ function mapIdeaFromDb(row: any): Idea {
   return {
     id: row.id,
     teamId: row.team_id,
+    title: row.title || generateIdeaTitle(row.character, row.series), // Required: use DB value or generate fallback
     character: row.character,
     series: row.series,
     description: row.description,

@@ -431,29 +431,26 @@
             </div>
           {:else}
             <div class="flex size-32 items-center justify-center rounded-lg bg-muted shadow-sm">
-              <div class="text-center">
-                <ImageIcon class="mx-auto size-8 text-muted-foreground" />
-                {#if !isReadOnly}
-                  <div class="mt-2">
-                    <InlineImageUpload
-                      images={imagesValue}
-                      editable={true}
-                      folder="projects"
-                      onSave={async (v: string[]) => {
-                        if (currentMode() === 'create') {
-                          newProject.referenceImages = v
-                          imagesValue = v
-                        } else if (project) {
-                          project.referenceImages = v
-                          imagesValue = v
-                          await handleSaveField('referenceImages', v)
-                        }
-                      }}
-                      multiple={true}
-                    />
-                  </div>
-                {/if}
-              </div>
+              {#if !isReadOnly}
+                <InlineImageUpload
+                  images={imagesValue}
+                  editable={true}
+                  folder="projects"
+                  onSave={async (v: string[]) => {
+                    if (currentMode() === 'create') {
+                      newProject.referenceImages = v
+                      imagesValue = v
+                    } else if (project) {
+                      project.referenceImages = v
+                      imagesValue = v
+                      await handleSaveField('referenceImages', v)
+                    }
+                  }}
+                  multiple={true}
+                />
+              {:else}
+                <ImageIcon class="size-8 text-muted-foreground" />
+              {/if}
             </div>
           {/if}
         </div>
