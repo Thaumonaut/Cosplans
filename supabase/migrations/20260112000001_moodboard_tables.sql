@@ -6,7 +6,7 @@
 -- 1. Create moodboard_nodes table
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS moodboard_nodes (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   idea_id UUID NOT NULL REFERENCES ideas(id) ON DELETE CASCADE,
   node_type VARCHAR(50) NOT NULL CHECK (node_type IN (
     'social_media', 'image', 'link', 'note', 'swatch', 'budget_item', 'contact', 'sketch', 'pile'
@@ -50,7 +50,7 @@ CREATE INDEX idx_moodboard_nodes_created_at ON moodboard_nodes(created_at DESC);
 -- 3. Create moodboard_edges table (connections between nodes)
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS moodboard_edges (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   idea_id UUID NOT NULL REFERENCES ideas(id) ON DELETE CASCADE,
   source_node_id UUID NOT NULL REFERENCES moodboard_nodes(id) ON DELETE CASCADE,
   target_node_id UUID NOT NULL REFERENCES moodboard_nodes(id) ON DELETE CASCADE,

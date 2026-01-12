@@ -20,10 +20,7 @@
   import { determineNodeType } from '$lib/types/domain/moodboard';
   import type { MoodboardNodeType } from '$lib/types/domain/moodboard';
   import { toast } from '$lib/stores/toast';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui';
   import { Loader2, Plus, Check, ExternalLink, Instagram, Music, Youtube, Facebook, Link as LinkIcon } from 'lucide-svelte';
 
   // Parse URL params
@@ -318,8 +315,7 @@
 
         <!-- Add to Existing -->
         <Card
-          class="cursor-pointer hover:border-primary transition-colors"
-          class:opacity-50={!hasIdeas}
+          class="cursor-pointer hover:border-primary transition-colors {!hasIdeas ? 'opacity-50' : ''}"
           on:click={() => hasIdeas && (mode = 'add-existing')}
         >
           <CardHeader>
@@ -391,10 +387,7 @@
           <div class="grid gap-3 max-h-[400px] overflow-y-auto">
             {#each userIdeas as idea}
               <button
-                class="flex items-start gap-4 p-4 rounded-lg border-2 transition-colors text-left"
-                class:border-primary={selectedIdeaId === idea.id}
-                class:bg-primary/5={selectedIdeaId === idea.id}
-                class:border-input={selectedIdeaId !== idea.id}
+                class="flex items-start gap-4 p-4 rounded-lg border-2 transition-colors text-left {selectedIdeaId === idea.id ? 'border-primary bg-primary/5' : 'border-input'}"
                 on:click={() => selectedIdeaId = idea.id}
                 disabled={saving}
               >

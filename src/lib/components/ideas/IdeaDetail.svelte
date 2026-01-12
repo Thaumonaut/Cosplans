@@ -35,6 +35,8 @@
     import { processImage } from "$lib/utils/image";
     import { uploadImageToStorage } from "$lib/utils/storage";
     import type { Idea, IdeaCreate } from "$lib/types/domain/idea";
+    import { moodboard } from "$lib/stores/moodboard";
+    import ReferencesTab from "./ReferencesTab.svelte";
 
     interface Props {
         ideaId?: string;
@@ -62,7 +64,7 @@
     let saving = $state(false);
     let deleting = $state(false);
     let showDeleteDialog = $state(false);
-    let activeTab = $state<"overview" | "images" | "notes">("overview");
+    let activeTab = $state<"overview" | "images" | "notes" | "references">("overview");
 
     let estimatedCostValue = $state(0);
     $effect(() => {
@@ -706,6 +708,13 @@
                 // If images didn't change but primaryImageIndex did, update it
                 primaryImageIndex = idea.primaryImageIndex;
             }
+
+            // Load moodboard nodes for this idea
+            if (idea.id) {
+                moodboard.load(idea.id).catch(err => {
+                    console.error('Failed to load moodboard:', err);
+                });
+            }
         }
     });
 </script>
@@ -875,6 +884,15 @@
                         : 'border-transparent text-muted-foreground hover:text-foreground'}"
                 >
                     Notes
+                </button>
+                <button
+                    onclick={() => (activeTab = "references")}
+                    class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
+                    'references'
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:text-foreground'}"
+                >
+                    References {#if $moodboard.nodes.length > 0}({$moodboard.nodes.length}){/if}
                 </button>
             </div>
         </div>
@@ -1519,6 +1537,15 @@
                             />
                         </div>
                     </div>
+                {:else if activeTab === "references"}
+                    <!-- References Tab: Moodboard Nodes -->
+                    {#if idea?.id}
+                        <ReferencesTab ideaId={idea.id} />
+                    {:else}
+                        <div class="mx-auto max-w-3xl text-center py-12">
+                            <p class="text-muted-foreground">Create the idea first to add references.</p>
+                        </div>
+                    {/if}
                 {/if}
             </div>
         </div>
