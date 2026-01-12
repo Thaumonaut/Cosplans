@@ -52,6 +52,23 @@
       min-width: 44px;
     }
   }
+
+  /* Prevent iOS zoom on input focus */
+  @media (max-width: 767px) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Better word breaking for URLs and long text */
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
 }
 
 :root {
