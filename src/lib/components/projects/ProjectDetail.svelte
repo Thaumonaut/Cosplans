@@ -5,6 +5,7 @@
   import { currentTeam, teams } from '$lib/stores/teams'
   import { user } from '$lib/stores/auth-store'
   import { projectService } from '$lib/api/services/projectService'
+  import { moodboard } from '$lib/stores/moodboard'
   import { toast } from '$lib/stores/toast'
   import { Button, Dialog, DialogFooter } from '$lib/components/ui'
   import { AlertCircle, X, Calendar, DollarSign, Tag as TagIcon, Upload, ImageIcon, Clock, Trash2, ArrowLeft } from 'lucide-svelte'
@@ -19,6 +20,7 @@
   import ResourcesTab from './tabs/ResourcesTab.svelte'
   import TasksTab from './tabs/TasksTab.svelte'
   import GalleryTab from './tabs/GalleryTab.svelte'
+  import ReferenceCard from '$lib/components/ideas/ReferenceCard.svelte'
   import CommentBox from '$lib/components/base/CommentBox.svelte'
   import ResourceDetail from '$lib/components/resources/ResourceDetail.svelte'
   import CreationFlyout from '$lib/components/ui/CreationFlyout.svelte'
@@ -54,7 +56,7 @@
   let convertingToIdea = $state(false)
   let showDeleteDialog = $state(false)
   let showConvertToIdeaDialog = $state(false)
-  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery' | 'notes'>('overview')
+  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery' | 'notes' | 'references'>('overview')
 
   let estimatedBudgetValue = $state(0)
   let progressValue = $state(0)
@@ -90,6 +92,13 @@
     if (project?.id && currentMode() !== 'create') {
       loadProgress()
       loadLinkedResources()
+    }
+  })
+
+  // Load moodboard nodes from source idea if project was converted from an idea
+  $effect(() => {
+    if (project?.fromIdeaId && currentMode() !== 'create') {
+      moodboard.loadNodes(project.fromIdeaId)
     }
   })
 
@@ -631,6 +640,14 @@
         >
           Gallery {#if imagesValue.length > 0}({imagesValue.length}){/if}
         </button>
+        {#if project?.fromIdeaId}
+          <button
+            onclick={() => activeTab = 'references'}
+            class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'references' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
+          >
+            References {#if $moodboard.nodes.length > 0}({$moodboard.nodes.length}){/if}
+          </button>
+        {/if}
         <button
           onclick={() => activeTab = 'notes'}
           class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'notes' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
@@ -943,6 +960,33 @@
                 await recalculateMetrics()
               }}
             />
+          </div>
+
+        {:else if activeTab === 'references' && project?.fromIdeaId}
+          <!-- References Tab: Display moodboard nodes from source idea (read-only) -->
+          <div class="mx-auto max-w-5xl space-y-6 px-4 sm:px-6">
+            <div class="rounded-lg bg-background/50 p-4 border border-primary/20">
+              <p class="text-sm text-muted-foreground">
+                These references were saved during the idea phase. They are read-only in project view.
+              </p>
+            </div>
+
+            {#if $moodboard.loading}
+              <div class="flex justify-center py-12">
+                <div class="text-sm text-muted-foreground">Loading references...</div>
+              </div>
+            {:else if $moodboard.nodes.length === 0}
+              <div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-background p-12 text-center">
+                <ImageIcon class="mx-auto mb-4 size-12 text-muted-foreground" />
+                <p class="text-sm text-muted-foreground">No references were saved for this idea</p>
+              </div>
+            {:else}
+              <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {#each $moodboard.nodes as node (node.id)}
+                  <ReferenceCard {node} onDelete={() => {}} isReadOnly={true} />
+                {/each}
+              </div>
+            {/if}
           </div>
 
         {:else if activeTab === 'notes'}

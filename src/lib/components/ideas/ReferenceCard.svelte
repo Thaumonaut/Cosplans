@@ -8,9 +8,10 @@
   interface Props {
     node: MoodboardNode;
     onDelete: (id: string) => void;
+    isReadOnly?: boolean;
   }
 
-  let { node, onDelete }: Props = $props();
+  let { node, onDelete, isReadOnly = false }: Props = $props();
 
   let lightboxOpen = $state(false);
 
@@ -199,18 +200,20 @@
     <div class="text-xs text-muted-foreground">
       {new Date(node.createdAt).toLocaleDateString()}
     </div>
-    <Button
-      variant="ghost"
-      size="sm"
-      onclick={() => {
-        if (confirm('Are you sure you want to delete this reference?')) {
-          onDelete(node.id);
-        }
-      }}
-      class="h-8 w-8 p-0"
-    >
-      <Trash2 class="h-4 w-4 text-destructive" />
-    </Button>
+    {#if !isReadOnly}
+      <Button
+        variant="ghost"
+        size="sm"
+        onclick={() => {
+          if (confirm('Are you sure you want to delete this reference?')) {
+            onDelete(node.id);
+          }
+        }}
+        class="h-8 w-8 p-0"
+      >
+        <Trash2 class="h-4 w-4 text-destructive" />
+      </Button>
+    {/if}
   </CardFooter>
 </Card>
 
