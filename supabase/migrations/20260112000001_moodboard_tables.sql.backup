@@ -39,12 +39,12 @@ COMMENT ON COLUMN moodboard_nodes.parent_id IS 'For items inside piles/groups. N
 -- ============================================================================
 -- 2. Create indexes for moodboard_nodes
 -- ============================================================================
-CREATE INDEX idx_moodboard_nodes_idea_id ON moodboard_nodes(idea_id);
-CREATE INDEX idx_moodboard_nodes_node_type ON moodboard_nodes(node_type);
-CREATE INDEX idx_moodboard_nodes_tags ON moodboard_nodes USING GIN(tags);
-CREATE INDEX idx_moodboard_nodes_metadata ON moodboard_nodes USING GIN(metadata);
-CREATE INDEX idx_moodboard_nodes_parent_id ON moodboard_nodes(parent_id) WHERE parent_id IS NOT NULL;
-CREATE INDEX idx_moodboard_nodes_created_at ON moodboard_nodes(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_idea_id ON moodboard_nodes(idea_id);
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_node_type ON moodboard_nodes(node_type);
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_tags ON moodboard_nodes USING GIN(tags);
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_metadata ON moodboard_nodes USING GIN(metadata);
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_parent_id ON moodboard_nodes(parent_id) WHERE parent_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_moodboard_nodes_created_at ON moodboard_nodes(created_at DESC);
 
 -- ============================================================================
 -- 3. Create moodboard_edges table (connections between nodes)
@@ -70,10 +70,10 @@ COMMENT ON COLUMN moodboard_edges.edge_type IS 'Semantic relationship: connectio
 -- ============================================================================
 -- 4. Create indexes for moodboard_edges
 -- ============================================================================
-CREATE INDEX idx_moodboard_edges_idea_id ON moodboard_edges(idea_id);
-CREATE INDEX idx_moodboard_edges_source ON moodboard_edges(source_node_id);
-CREATE INDEX idx_moodboard_edges_target ON moodboard_edges(target_node_id);
-CREATE INDEX idx_moodboard_edges_type ON moodboard_edges(edge_type);
+CREATE INDEX IF NOT EXISTS idx_moodboard_edges_idea_id ON moodboard_edges(idea_id);
+CREATE INDEX IF NOT EXISTS idx_moodboard_edges_source ON moodboard_edges(source_node_id);
+CREATE INDEX IF NOT EXISTS idx_moodboard_edges_target ON moodboard_edges(target_node_id);
+CREATE INDEX IF NOT EXISTS idx_moodboard_edges_type ON moodboard_edges(edge_type);
 
 -- ============================================================================
 -- 5. Create trigger for auto-updating updated_at
@@ -86,6 +86,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_moodboard_nodes_updated_at ON moodboard_nodes;
 CREATE TRIGGER update_moodboard_nodes_updated_at
   BEFORE UPDATE ON moodboard_nodes
   FOR EACH ROW
@@ -99,6 +100,7 @@ CREATE TRIGGER update_moodboard_nodes_updated_at
 ALTER TABLE moodboard_nodes ENABLE ROW LEVEL SECURITY;
 
 -- Users can view nodes for their team's ideas
+DROP POLICY IF EXISTS moodboard_nodes_select_policy ON moodboard_nodes;
 CREATE POLICY moodboard_nodes_select_policy ON moodboard_nodes
   FOR SELECT
   USING (
@@ -111,6 +113,7 @@ CREATE POLICY moodboard_nodes_select_policy ON moodboard_nodes
   );
 
 -- Users can insert nodes for their team's ideas
+DROP POLICY IF EXISTS moodboard_nodes_insert_policy ON moodboard_nodes;
 CREATE POLICY moodboard_nodes_insert_policy ON moodboard_nodes
   FOR INSERT
   WITH CHECK (
@@ -123,6 +126,7 @@ CREATE POLICY moodboard_nodes_insert_policy ON moodboard_nodes
   );
 
 -- Users can update nodes for their team's ideas
+DROP POLICY IF EXISTS moodboard_nodes_update_policy ON moodboard_nodes;
 CREATE POLICY moodboard_nodes_update_policy ON moodboard_nodes
   FOR UPDATE
   USING (
@@ -135,6 +139,7 @@ CREATE POLICY moodboard_nodes_update_policy ON moodboard_nodes
   );
 
 -- Users can delete nodes for their team's ideas
+DROP POLICY IF EXISTS moodboard_nodes_delete_policy ON moodboard_nodes;
 CREATE POLICY moodboard_nodes_delete_policy ON moodboard_nodes
   FOR DELETE
   USING (
@@ -150,6 +155,7 @@ CREATE POLICY moodboard_nodes_delete_policy ON moodboard_nodes
 ALTER TABLE moodboard_edges ENABLE ROW LEVEL SECURITY;
 
 -- Users can view edges for their team's ideas
+DROP POLICY IF EXISTS moodboard_edges_select_policy ON moodboard_edges;
 CREATE POLICY moodboard_edges_select_policy ON moodboard_edges
   FOR SELECT
   USING (
@@ -162,6 +168,7 @@ CREATE POLICY moodboard_edges_select_policy ON moodboard_edges
   );
 
 -- Users can insert edges for their team's ideas
+DROP POLICY IF EXISTS moodboard_edges_insert_policy ON moodboard_edges;
 CREATE POLICY moodboard_edges_insert_policy ON moodboard_edges
   FOR INSERT
   WITH CHECK (
@@ -174,6 +181,7 @@ CREATE POLICY moodboard_edges_insert_policy ON moodboard_edges
   );
 
 -- Users can delete edges for their team's ideas
+DROP POLICY IF EXISTS moodboard_edges_delete_policy ON moodboard_edges;
 CREATE POLICY moodboard_edges_delete_policy ON moodboard_edges
   FOR DELETE
   USING (
@@ -202,6 +210,7 @@ VALUES (
 ON CONFLICT (id) DO NOTHING;
 
 -- Storage RLS policies for moodboard-media bucket
+DROP POLICY IF EXISTS "Team members can upload moodboard media" ON storage.objects;
 CREATE POLICY "Team members can upload moodboard media" ON storage.objects
   FOR INSERT
   WITH CHECK (
@@ -211,6 +220,7 @@ CREATE POLICY "Team members can upload moodboard media" ON storage.objects
     )
   );
 
+DROP POLICY IF EXISTS "Team members can view their team's moodboard media" ON storage.objects;
 CREATE POLICY "Team members can view their team's moodboard media" ON storage.objects
   FOR SELECT
   USING (
@@ -220,6 +230,7 @@ CREATE POLICY "Team members can view their team's moodboard media" ON storage.ob
     )
   );
 
+DROP POLICY IF EXISTS "Team members can delete their team's moodboard media" ON storage.objects;
 CREATE POLICY "Team members can delete their team's moodboard media" ON storage.objects
   FOR DELETE
   USING (

@@ -55,6 +55,8 @@ export const teamService = {
           .select("team_id")
           .eq("user_id", userId);
 
+        console.log('[teamService.list DEBUG] userId:', userId, 'memberships:', memberships || []);
+
         if (membershipError) {
           // If status column error, try without status filter
           if (

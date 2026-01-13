@@ -186,9 +186,10 @@
     // Authentication is handled by +page.server.ts
     // User is guaranteed to be authenticated at this point
 
-    // Load user's ideas
-    const team = $currentTeam;
-    console.log('[Share Handler] Current team:', team);
+    // Wait for teams to load (handles loading if not already loaded)
+    console.log('[Share Handler] Waiting for teams to load...');
+    const team = await currentTeam.waitForLoad();
+    console.log('[Share Handler] Current team after wait:', team);
 
     if (team) {
       try {
@@ -198,7 +199,7 @@
         console.error('[Share Handler] Failed to load ideas:', err);
       }
     } else {
-      console.warn('[Share Handler] No current team found');
+      console.warn('[Share Handler] No current team found after waiting');
     }
 
     // Extract metadata from URL if provided
