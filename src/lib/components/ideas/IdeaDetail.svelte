@@ -64,7 +64,7 @@
     let saving = $state(false);
     let deleting = $state(false);
     let showDeleteDialog = $state(false);
-    let activeTab = $state<"overview" | "images" | "notes" | "references">("overview");
+    let activeTab = $state<"overview" | "images" | "references">("overview");
 
     let estimatedCostValue = $state(0);
     $effect(() => {
@@ -877,15 +877,6 @@
                     Images {#if imagesValue.length > 0}({imagesValue.length}){/if}
                 </button>
                 <button
-                    onclick={() => (activeTab = "notes")}
-                    class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
-                    'notes'
-                        ? 'border-primary text-foreground'
-                        : 'border-transparent text-muted-foreground hover:text-foreground'}"
-                >
-                    Notes
-                </button>
-                <button
                     onclick={() => (activeTab = "references")}
                     class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
                     'references'
@@ -1500,42 +1491,6 @@
                                 </p>
                             </div>
                         {/if}
-                    </div>
-                {:else if activeTab === "notes"}
-                    <!-- Notes Tab: Free-form Inspiration Collection -->
-                    <div class="mx-auto max-w-3xl space-y-6">
-                        <div class="rounded-lg bg-background p-8 shadow-sm">
-                            <div
-                                class="mb-4 flex items-center gap-2 text-sm text-muted-foreground"
-                            >
-                                <Sparkles class="size-4" />
-                                <span
-                                    >Capture your thoughts, ideas, and
-                                    inspiration</span
-                                >
-                            </div>
-                            <InlineTextEditor
-                                bind:value={notesValue}
-                                editable={!isReadOnly}
-                                onSave={async (v: string) => {
-                                    if (currentMode() === "create") {
-                                        newIdea.notes = v || undefined;
-                                        notesValue = v;
-                                    } else if (idea) {
-                                        idea.notes = v || undefined;
-                                        notesValue = v;
-                                        await handleSaveField(
-                                            "notes",
-                                            v || undefined,
-                                        );
-                                    }
-                                }}
-                                placeholder="Add notes about materials, techniques, references, or any ideas that come to mind..."
-                                variant="body"
-                                multiline={true}
-                                className="text-base leading-relaxed min-h-[400px]"
-                            />
-                        </div>
                     </div>
                 {:else if activeTab === "references"}
                     <!-- References Tab: Moodboard Nodes -->
