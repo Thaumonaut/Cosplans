@@ -10,8 +10,8 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { user } from '$lib/stores/auth-store';
   import { currentTeam } from '$lib/stores/teams';
+  import type { PageData } from './$types';
   import { ideas } from '$lib/stores/ideas';
   import { moodboard } from '$lib/stores/moodboard';
   import { ideaService } from '$lib/api/services/ideaService';
@@ -23,10 +23,21 @@
   import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui';
   import { Loader2, Plus, Check, ExternalLink, Instagram, Music, Youtube, Facebook, Link as LinkIcon } from 'lucide-svelte';
 
+  // Get page data (includes authenticated session)
+  let { data }: { data: PageData } = $props();
+
   // Parse URL params
   const sharedTitle = $page.url.searchParams.get('title') || '';
   const sharedText = $page.url.searchParams.get('text') || '';
   const sharedUrl = $page.url.searchParams.get('url') || '';
+
+  // Debug logging
+  console.log('[Share Handler] Page loaded with params:', {
+    title: sharedTitle,
+    text: sharedText,
+    url: sharedUrl,
+    fullUrl: $page.url.toString()
+  });
 
   // State
   let loading = true;
@@ -172,13 +183,8 @@
    * Initialize on mount
    */
   onMount(async () => {
-    // Check if user is authenticated
-    if (!$user) {
-      // Redirect to login (this shouldn't happen since POST handler checks auth)
-      const returnUrl = `/share-handler?${$page.url.searchParams.toString()}`;
-      goto(`/login?return=${encodeURIComponent(returnUrl)}`);
-      return;
-    }
+    // Authentication is handled by +page.server.ts
+    // User is guaranteed to be authenticated at this point
 
     // Load user's ideas
     const team = $currentTeam;
@@ -225,15 +231,28 @@
       <p class="mt-4 text-muted-foreground">Loading...</p>
     </div>
   {:else}
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold">Save Reference</h1>
-      <p class="text-muted-foreground mt-2">
-        Add this content to your cosplay moodboard
-      </p>
-    </div>
+    <!-- No content shared message -->
+    {#if !sharedTitle && !sharedText && !sharedUrl}
+      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div class="mb-4 rounded-full bg-muted p-6">
+          <LinkIcon class="h-12 w-12 text-muted-foreground" />
+        </div>
+        <h2 class="text-2xl font-bold mb-2">No Content to Share</h2>
+        <p class="text-muted-foreground mb-6 max-w-md">
+          This page is used to save shared content to your moodboard. Share a post from Instagram, TikTok, or any app to get started!
+        </p>
+        <Button href="/dashboard">Go to Dashboard</Button>
+      </div>
+    {:else}
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold">Save Reference</h1>
+        <p class="text-muted-foreground mt-2">
+          Add this content to your cosplay moodboard
+        </p>
+      </div>
 
-    <!-- Preview Card -->
+      <!-- Preview Card -->
     <Card class="mb-8">
       <CardHeader>
         <CardTitle class="flex items-center gap-2">
@@ -422,6 +441,7 @@
           </Button>
         </CardFooter>
       </Card>
+    {/if}
     {/if}
   {/if}
 </div>

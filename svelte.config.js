@@ -26,7 +26,7 @@ const config = {
 		},
 
 		// CSRF configuration
-		// Disable origin checking to allow PWA share target to work
+		// Allow all origins to enable PWA share target from external apps
 		// The share-target endpoint validates authentication before processing
 		csrf: {
 			checkOrigin: false
