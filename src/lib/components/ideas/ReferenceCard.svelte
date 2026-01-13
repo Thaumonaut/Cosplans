@@ -202,7 +202,11 @@
     <Button
       variant="ghost"
       size="sm"
-      onclick={() => onDelete(node.id)}
+      onclick={() => {
+        if (confirm('Are you sure you want to delete this reference?')) {
+          onDelete(node.id);
+        }
+      }}
       class="h-8 w-8 p-0"
     >
       <Trash2 class="h-4 w-4 text-destructive" />
