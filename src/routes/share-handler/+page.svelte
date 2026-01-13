@@ -40,22 +40,22 @@
   });
 
   // State
-  let loading = true;
-  let extractingMetadata = false;
-  let metadata: ExtractedMetadata | null = null;
-  let nodeType: MoodboardNodeType = 'note';
+  let loading = $state(true);
+  let extractingMetadata = $state(false);
+  let metadata = $state<ExtractedMetadata | null>(null);
+  let nodeType = $state<MoodboardNodeType>('note');
 
-  let mode: 'select' | 'create-new' | 'add-existing' = 'select';
-  let characterName = '';
-  let selectedIdeaId: string | null = null;
-  let saving = false;
-  let error: string | null = null;
+  let mode = $state<'select' | 'create-new' | 'add-existing'>('select');
+  let characterName = $state('');
+  let selectedIdeaId = $state<string | null>(null);
+  let saving = $state(false);
+  let error = $state<string | null>(null);
 
   // Computed values
-  $: userIdeas = $ideas.items || [];
-  $: hasIdeas = userIdeas.length > 0;
-  $: canCreateNew = characterName.trim().length > 0;
-  $: canAddToExisting = selectedIdeaId !== null;
+  const userIdeas = $derived($ideas.items || []);
+  const hasIdeas = $derived(userIdeas.length > 0);
+  const canCreateNew = $derived(characterName.trim().length > 0);
+  const canAddToExisting = $derived(selectedIdeaId !== null);
 
   /**
    * Extract metadata from URL
