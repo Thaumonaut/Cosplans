@@ -188,12 +188,17 @@
 
     // Load user's ideas
     const team = $currentTeam;
+    console.log('[Share Handler] Current team:', team);
+
     if (team) {
       try {
         await ideas.load(team.id);
+        console.log('[Share Handler] Loaded ideas:', $ideas.items?.length || 0, 'ideas');
       } catch (err) {
         console.error('[Share Handler] Failed to load ideas:', err);
       }
+    } else {
+      console.warn('[Share Handler] No current team found');
     }
 
     // Extract metadata from URL if provided
@@ -250,6 +255,15 @@
         <p class="text-muted-foreground mt-2">
           Add this content to your cosplay moodboard
         </p>
+        <!-- Debug info -->
+        {#if import.meta.env.DEV}
+          <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded text-xs">
+            <strong>Debug:</strong> Team: {$currentTeam?.name || 'none'} |
+            Ideas loaded: {userIdeas.length} |
+            Has ideas: {hasIdeas ? 'yes' : 'no'} |
+            Mode: {mode}
+          </div>
+        {/if}
       </div>
 
       <!-- Preview Card -->
@@ -320,7 +334,7 @@
     {#if mode === 'select'}
       <div class="grid gap-4 md:grid-cols-2">
         <!-- Create New Idea -->
-        <Card class="cursor-pointer hover:border-primary transition-colors" on:click={() => mode = 'create-new'}>
+        <Card class="cursor-pointer hover:border-primary transition-colors" onclick={() => mode = 'create-new'}>
           <CardHeader>
             <CardTitle class="flex items-center gap-2">
               <Plus class="h-5 w-5" />
@@ -334,8 +348,8 @@
 
         <!-- Add to Existing -->
         <Card
-          class="cursor-pointer hover:border-primary transition-colors {!hasIdeas ? 'opacity-50' : ''}"
-          on:click={() => hasIdeas && (mode = 'add-existing')}
+          class="cursor-pointer hover:border-primary transition-colors {!hasIdeas ? 'opacity-50 cursor-not-allowed' : ''}"
+          onclick={() => hasIdeas && (mode = 'add-existing')}
         >
           <CardHeader>
             <CardTitle class="flex items-center gap-2">
@@ -378,10 +392,10 @@
           {/if}
         </CardContent>
         <CardFooter class="flex gap-2">
-          <Button variant="outline" on:click={() => mode = 'select'} disabled={saving}>
+          <Button variant="outline" onclick={() => mode = 'select'} disabled={saving}>
             Back
           </Button>
-          <Button on:click={handleCreateNew} disabled={!canCreateNew || saving}>
+          <Button onclick={handleCreateNew} disabled={!canCreateNew || saving}>
             {#if saving}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />
             {:else}
@@ -407,7 +421,7 @@
             {#each userIdeas as idea}
               <button
                 class="flex items-start gap-4 p-4 rounded-lg border-2 transition-colors text-left {selectedIdeaId === idea.id ? 'border-primary bg-primary/5' : 'border-input'}"
-                on:click={() => selectedIdeaId = idea.id}
+                onclick={() => selectedIdeaId = idea.id}
                 disabled={saving}
               >
                 <div class="flex-1 min-w-0">
@@ -428,10 +442,10 @@
           {/if}
         </CardContent>
         <CardFooter class="flex gap-2">
-          <Button variant="outline" on:click={() => mode = 'select'} disabled={saving}>
+          <Button variant="outline" onclick={() => mode = 'select'} disabled={saving}>
             Back
           </Button>
-          <Button on:click={handleAddToExisting} disabled={!canAddToExisting || saving}>
+          <Button onclick={handleAddToExisting} disabled={!canAddToExisting || saving}>
             {#if saving}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />
             {:else}
