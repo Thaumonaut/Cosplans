@@ -10,7 +10,7 @@ const config = {
 	kit: {
 		// Use Cloudflare adapter to target Cloudflare Workers/Pages
 		adapter: cloudflare(),
-		
+
 		// Path aliases for cleaner imports
 		alias: {
 			'@': './src',
@@ -24,9 +24,14 @@ const config = {
 			'$types': './src/lib/types',
 			'$types/*': './src/lib/types/*'
 		},
-		
 
-		
+		// CSRF configuration
+		// Disable origin checking to allow PWA share target to work
+		// The share-target endpoint validates authentication before processing
+		csrf: {
+			checkOrigin: false
+		},
+
 		// Service worker configuration
 		serviceWorker: {
 			register: true // Enabled for PWA and offline support

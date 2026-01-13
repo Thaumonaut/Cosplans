@@ -27,7 +27,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.log('[Share Target] Parsed data:', { title, text, url });
 
     // Check if user is authenticated
-    const session = await locals.getSession();
+    // Note: session is set by authGuard hook in hooks.server.ts
+    const session = locals.session;
 
     // Build query params for share handler
     const params = new URLSearchParams();
