@@ -10,17 +10,9 @@ import { redirect, isRedirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  console.log('[Share Target] Received share request');
-  console.log('[Share Target] Request headers:', Object.fromEntries(request.headers.entries()));
-
   try {
     // Parse the multipart form data
     const formData = await request.formData();
-
-    // Log all form fields for debugging
-    console.log('[Share Target] All form fields:', Array.from(formData.entries()).map(([key, value]) =>
-      ({ key, value: value instanceof File ? `File: ${value.name}` : value })
-    ));
 
     // Extract shared content
     const title = formData.get('title')?.toString() || '';
@@ -38,8 +30,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     }
 
-    console.log('[Share Target] Parsed data:', { title, text, url });
-
     // Check if user is authenticated
     // Note: session is set by authGuard hook in hooks.server.ts
     const session = locals.session;
@@ -50,17 +40,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (text) params.set('text', text);
     if (url) params.set('url', url);
 
-    console.log('[Share Target] Built redirect params:', params.toString());
-
     // If not authenticated, redirect to login with return URL
     if (!session || !session.user) {
-      console.log('[Share Target] User not authenticated, redirecting to login');
       const returnUrl = `/share-handler?${params.toString()}`;
       throw redirect(303, `/login?redirectTo=${encodeURIComponent(returnUrl)}`);
     }
 
     // User is authenticated, redirect to share handler UI
-    console.log('[Share Target] User authenticated, redirecting to share handler');
     throw redirect(303, `/share-handler?${params.toString()}`);
   } catch (error) {
     // If it's a redirect, rethrow it

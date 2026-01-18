@@ -47,13 +47,18 @@
       // Convert extracted metadata to node metadata
       const nodeMetadata = metadataService.toNodeMetadata(metadata, urlInput);
 
+      const socialCaption =
+        typeof nodeMetadata === 'object' && nodeMetadata && 'caption' in nodeMetadata
+          ? (nodeMetadata as { caption?: string }).caption
+          : undefined;
+
       // Create the node
       await createReferenceNode({
         nodeType,
         contentUrl: urlInput,
         thumbnailUrl: metadata.thumbnailUrl,
         metadata: nodeMetadata,
-        shortComment: metadata.title,
+        shortComment: socialCaption || metadata.title,
         tags: [],
       });
 

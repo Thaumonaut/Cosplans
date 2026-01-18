@@ -18,6 +18,7 @@ interface ExtractedMetadata {
   platform?: string;
   postId?: string;
   author?: string;
+  tags?: string[];
   success: boolean;
   error?: string;
 }
@@ -92,6 +93,15 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     metadata.thumbnailUrl = ogImage?.[1] || twitterImage?.[1];
     metadata.siteName = ogSiteName?.[1] || parsedUrl.hostname;
 
+    // Attempt to parse tags/hashtags from description/title
+    const tagCandidates = `${metadata.description || ''} ${metadata.title || ''}`;
+    const tagMatches = Array.from(tagCandidates.matchAll(/#([\p{L}\p{N}_]+)/gu)).map(
+      (match) => match[1]
+    );
+    if (tagMatches.length > 0) {
+      metadata.tags = Array.from(new Set(tagMatches));
+    }
+
     // Detect platform from URL
     const hostname = parsedUrl.hostname.toLowerCase();
     if (hostname.includes('instagram.com')) {
@@ -132,6 +142,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     const articleAuthor = html.match(/<meta\s+name="author"\s+content="([^"]+)"/i);
     if (ogAuthor?.[1] || articleAuthor?.[1]) {
       metadata.author = ogAuthor?.[1] || articleAuthor?.[1];
+    }
+
+    if (!metadata.author && metadata.platform === 'instagram') {
+      const authorFromTitle = metadata.title?.match(/@([A-Za-z0-9._]+)/);
+      if (authorFromTitle?.[1]) {
+        metadata.author = authorFromTitle[1];
+      }
     }
 
     console.log('[Metadata API] Extracted metadata:', metadata);

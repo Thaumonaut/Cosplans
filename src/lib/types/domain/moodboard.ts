@@ -39,6 +39,7 @@ export interface SocialMediaMetadata {
   author?: string;
   author_avatar?: string;
   caption?: string;
+  tags?: string[];
   publish_date?: string;
   embed_html?: string;
   extracted_at: string;

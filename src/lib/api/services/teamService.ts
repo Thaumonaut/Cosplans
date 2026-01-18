@@ -53,13 +53,10 @@ export const teamService = {
       // Skip RPC for now due to timeout/hanging issues - use direct query instead
       // Direct query approach:
       try {
-        console.debug('[teamService.list] start', { userId })
         const { data: memberships, error: membershipError } = await supabase
           .from("team_members")
           .select("team_id")
           .eq("user_id", userId);
-
-        console.log('[teamService.list DEBUG] userId:', userId, 'memberships:', memberships || []);
 
         if (membershipError) {
           // If status column error, try without status filter
@@ -101,9 +98,20 @@ export const teamService = {
         }
 
         const teamIds = (memberships || []).map((m: any) => m.team_id);
-        console.debug('[teamService.list] teamIds', { teamIds })
-
         if (teamIds.length === 0) {
+          // Fallback: ensure personal team exists if user has no memberships
+          // This covers OAuth/login paths that never invoked setup_new_user
+          try {
+            const { error: setupError } = await (supabase.rpc as any)("setup_new_user", {
+              p_user_id: userId,
+            });
+            if (setupError) {
+              console.error('[teamService.list] setup_new_user failed', setupError)
+            }
+          } catch (setupErr) {
+            console.error('[teamService.list] setup_new_user exception', setupErr)
+          }
+
           return [];
         }
 
@@ -122,10 +130,6 @@ export const teamService = {
           createdAt: t.created_at,
           updatedAt: t.updated_at,
         }))
-        console.debug('[teamService.list] loaded teams', {
-          count: mapped.length,
-          ids: mapped.map((t) => t.id),
-        })
         return mapped;
       } catch (fallbackError: any) {
         // If all else fails, provide helpful error
@@ -437,12 +441,6 @@ export const teamService = {
       );
 
       if (!rpcError && rpcMembers) {
-        console.debug("[teamService.getMembers] loaded members via RPC", {
-          teamId,
-          count: rpcMembers.length,
-          statuses: rpcMembers.map((m: any) => m.status || "active"),
-        });
-
         return rpcMembers.map((item: any) => ({
           id: item.id,
           teamId: item.team_id,
@@ -485,12 +483,6 @@ export const teamService = {
 
     if (membersError) throw membersError;
     if (!members || members.length === 0) return [];
-
-    console.debug('[teamService.getMembers] loaded members', {
-      teamId,
-      count: members.length,
-      statuses: members.map((m: any) => m.status || 'active'),
-    })
 
     // Get unique user IDs
     const userIds = [...new Set(members.map((m: any) => m.user_id))];
@@ -750,10 +742,26 @@ export const teamService = {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log('[teamService.joinByCode] Attempting join', {
-      code: code?.toUpperCase().trim(),
-      userId: user?.id,
-    });
+    if (user?.id) {
+      try {
+        const { data: existingTeams, error: existingTeamsError } = await supabase
+          .from('team_members')
+          .select('team_id')
+          .eq('user_id', user.id)
+          .limit(1);
+
+        if (!existingTeamsError && (!existingTeams || existingTeams.length === 0)) {
+          const { error: setupError } = await (supabase.rpc as any)("setup_new_user", {
+            p_user_id: user.id,
+          });
+          if (setupError) {
+            console.error('[teamService.joinByCode] setup_new_user failed', setupError);
+          }
+        }
+      } catch (setupErr) {
+        console.error('[teamService.joinByCode] setup_new_user exception', setupErr);
+      }
+    }
 
     const { data, error } = await (supabase.rpc as any)("join_team_by_code", {
       p_code: code.toUpperCase().trim(),
@@ -765,21 +773,6 @@ export const teamService = {
       teamName: string;
       role: string;
     };
-
-    if (user && result?.teamId) {
-      const { data: membership, error: membershipError } = await supabase
-        .from('team_members')
-        .select('team_id, role, status')
-        .eq('team_id', result.teamId)
-        .eq('user_id', user.id)
-        .maybeSingle();
-      console.log('[teamService.joinByCode] Post-join membership check', {
-        teamId: result.teamId,
-        userId: user.id,
-        membership,
-        membershipError,
-      });
-    }
 
     return result;
   },

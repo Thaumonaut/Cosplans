@@ -1,4 +1,5 @@
 import { writable, derived } from 'svelte/store'
+import { browser } from '$app/environment'
 import { teamService, type Team, type TeamRole } from '$lib/api/services/teamService'
 import { supabase } from '$lib/supabase'
 
@@ -9,6 +10,8 @@ type TeamsState = {
   loading: boolean
   error: string | null
 }
+
+const CURRENT_TEAM_STORAGE_KEY = 'cosplans_current_team_id'
 
 const initialState: TeamsState = {
   items: [],
@@ -32,18 +35,18 @@ function createTeamsStore() {
     async load(userId?: string) {
       update((s) => ({ ...s, loading: true, error: null }))
       try {
-        console.debug('[teams.load] start', { userId })
         if (!userId) {
           const { data: { user } } = await supabase.auth.getUser()
-          console.debug('[teams.load] no userId supplied', { authUserId: user?.id })
         }
         const items = await teamService.list(userId)
-        const current = items[0] ?? null
-        console.debug('[teams.load] loaded', {
-          count: items.length,
-          ids: items.map((team) => team.id),
-          currentId: current?.id || null,
-        })
+        let current: Team | null = items[0] ?? null
+        if (browser) {
+          const storedId = localStorage.getItem(CURRENT_TEAM_STORAGE_KEY)
+          const storedTeam = storedId ? items.find((team) => team.id === storedId) : null
+          if (storedTeam) {
+            current = storedTeam
+          }
+        }
         
         // Load user role for current team
         let currentUserRole: TeamRole | null = null
@@ -64,6 +67,14 @@ function createTeamsStore() {
           current: team || s.current,
         }
       })
+
+       if (browser) {
+         try {
+           localStorage.setItem(CURRENT_TEAM_STORAGE_KEY, teamId)
+         } catch (error) {
+           console.warn('Failed to persist current team id', error)
+         }
+       }
       
       // Load user role for the team
       const role = await teamService.getUserRole(teamId)
@@ -144,4 +155,3 @@ export const currentUserRole = {
     return teams.get().currentUserRole
   },
 }
-

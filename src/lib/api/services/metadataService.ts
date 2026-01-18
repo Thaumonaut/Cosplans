@@ -17,6 +17,7 @@ export interface ExtractedMetadata {
   platform?: string;
   postId?: string;
   author?: string;
+  tags?: string[];
   success: boolean;
   error?: string;
 }
@@ -61,11 +62,15 @@ export const metadataService = {
 
     // If it's a social media platform, create social media metadata
     if (platform && ['instagram', 'tiktok', 'pinterest', 'youtube', 'facebook'].includes(platform)) {
+      const normalizedTags = (extracted.tags || [])
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
       return {
         platform: platform as SocialMediaPlatform,
         post_id: extracted.postId,
         author: extracted.author,
         caption: extracted.description,
+        tags: normalizedTags.length > 0 ? normalizedTags : undefined,
         extracted_at: new Date().toISOString(),
       };
     }

@@ -48,12 +48,14 @@
   let retryCount = $state(0);
   let hasError = $state(shouldShowError);
 
-  console.log(
-    `[SocialMediaEmbed ${componentId}] INIT - urlValid: ${urlValid}, recentlyFailed: ${recentlyFailed}, shouldShowError: ${shouldShowError}`
-  );
-  console.log(
-    `[SocialMediaEmbed ${componentId}] INIT state - initialized: ${initialized}, loading: ${loading}, hasError: ${hasError}, error: ${error}`
-  );
+  let fallbackEmbedUrl = $state<string | null>(null);
+
+  $effect(()=> {
+    if (metadata.platform === 'instagram' && contentUrl && !fallbackEmbedUrl) {
+      fallbackEmbedUrl = getInstagramEmbedUrl(contentUrl);
+    }
+  }) 
+
   const MAX_RETRIES = 3;
   let failedAttempts = $state<Set<string>>(new Set());
 
@@ -84,17 +86,98 @@
   }
 
   /**
+   * Read cached failure metadata for a URL (logging only).
+   */
+  function getFailureMetadata(url: string): {
+    entry: unknown | null;
+    reason?: string;
+    status?: number;
+    statusText?: string;
+    bodyLength?: number | null;
+    errorMessage?: string;
+  } {
+    if (typeof window === 'undefined') return { entry: null };
+
+    const cache = sessionStorage.getItem(FAILED_CACHE_KEY);
+    if (!cache) return { entry: null };
+
+    try {
+      const failedUrls = JSON.parse(cache) as unknown;
+      if (Array.isArray(failedUrls)) {
+        for (const entry of failedUrls) {
+          if (typeof entry === 'string' && entry === url) {
+            return { entry };
+          }
+
+          if (entry && typeof entry === 'object' && 'url' in entry) {
+            const typedEntry = entry as {
+              url?: string;
+              reason?: string;
+              status?: number;
+              statusText?: string;
+              bodyLength?: number | null;
+              errorMessage?: string;
+            };
+            if (typedEntry.url === url) {
+              return {
+                entry,
+                reason: typedEntry.reason,
+                status: typedEntry.status,
+                statusText: typedEntry.statusText,
+                bodyLength: typedEntry.bodyLength,
+                errorMessage: typedEntry.errorMessage,
+              };
+            }
+          }
+        }
+      }
+    } catch {
+      return { entry: null };
+    }
+
+    return { entry: null };
+  }
+
+  /**
    * Record a failed attempt
    */
-  function recordFailedAttempt(url: string) {
+  function recordFailedAttempt(
+    url: string,
+    meta?: {
+      reason?: string;
+      status?: number;
+      statusText?: string;
+      bodyLength?: number | null;
+      errorMessage?: string;
+    }
+  ) {
     if (typeof window === 'undefined') return;
     
     const cache = sessionStorage.getItem(FAILED_CACHE_KEY);
-    let failedUrls: string[] = cache ? JSON.parse(cache) : [];
+    let failedUrls: Array<string | {
+      url: string;
+      reason?: string;
+      status?: number;
+      statusText?: string;
+      bodyLength?: number | null;
+      errorMessage?: string;
+    }> = cache ? JSON.parse(cache) : [];
     
     // Add URL if not already present
-    if (!failedUrls.includes(url)) {
-      failedUrls.push(url);
+    const alreadyPresent = failedUrls.some((entry) => {
+      if (typeof entry === 'string') return entry === url;
+      return entry?.url === url;
+    });
+
+    if (!alreadyPresent) {
+      if (meta && Object.keys(meta).length > 0) {
+        failedUrls.push({
+          url,
+          ...meta,
+        });
+      } else {
+        failedUrls.push(url);
+      }
       // Keep only last 50 failed attempts
       if (failedUrls.length > 50) {
         failedUrls = failedUrls.slice(-50);
@@ -144,6 +227,19 @@
     }
 
     return null;
+  }
+
+  function getInstagramEmbedUrl(url: string): string {
+    try {
+      const parsed = new URL(url);
+      const baseUrl = `${parsed.origin}${parsed.pathname.replace(/\/$/, '')}/embed`;
+      const params = new URLSearchParams({
+        utm_source: 'cosplans',
+      });
+      return `${baseUrl}?${params.toString()}`;
+    } catch {
+      return `${url.replace(/\/$/, '')}/embed`;
+    }
   }
 
   /**
@@ -255,16 +351,27 @@
       if (!response.ok) {
         // Try to parse error message from response
         let errorMessage = 'Failed to load embed';
+        let responseBodyLength: number | null = null;
         try {
-          const errorData = await response.json();
-          if (errorData.error) {
+          const responseText = await response.text();
+          responseBodyLength = responseText.length;
+          const errorData = JSON.parse(responseText);
+          if (errorData?.error) {
             errorMessage = errorData.error;
           }
-          if (errorData.note) {
+          if (errorData?.note) {
             errorMessage += `: ${errorData.note}`;
           }
         } catch {
           // Use default message
+        }
+
+        if (import.meta.env.DEV) {
+          console.warn('[SocialMediaEmbed] oEmbed request failed', {
+            status: response.status,
+            statusText: response.statusText,
+            bodyLength: responseBodyLength,
+          });
         }
 
         const classified = classifyError(response, null);
@@ -275,7 +382,11 @@
         if (classified.retryable && attempt < MAX_RETRIES) {
           // Calculate exponential backoff: 1s, 2s, 4s
           const backoffDelay = Math.pow(2, attempt - 1) * 1000;
-          console.warn(`[SocialMediaEmbed] Retryable error (${response.status}), retrying in ${backoffDelay}ms (attempt ${attempt}/${MAX_RETRIES})`);
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[SocialMediaEmbed] Retryable error (${response.status}), retrying in ${backoffDelay}ms (attempt ${attempt}/${MAX_RETRIES})`
+      );
+    }
           
           setTimeout(() => {
             fetchOEmbedData(attempt + 1);
@@ -285,7 +396,13 @@
           // No more retries or non-retryable error
           if (!classified.retryable) {
             // Record non-retryable errors (400, 404, etc.)
-            recordFailedAttempt(contentUrl);
+            recordFailedAttempt(contentUrl, {
+              reason: classified.type,
+              status: response.status,
+              statusText: response.statusText,
+              bodyLength: responseBodyLength,
+              errorMessage: errorMessage,
+            });
           }
           hasError = true;
           loading = false;
@@ -323,7 +440,11 @@
       if (classified.retryable && attempt < MAX_RETRIES) {
         // Calculate exponential backoff: 1s, 2s, 4s
         const backoffDelay = Math.pow(2, attempt - 1) * 1000;
-        console.warn(`[SocialMediaEmbed] Network error, retrying in ${backoffDelay}ms (attempt ${attempt}/${MAX_RETRIES})`);
+      if (import.meta.env.DEV) {
+        console.warn(
+          `[SocialMediaEmbed] Network error, retrying in ${backoffDelay}ms (attempt ${attempt}/${MAX_RETRIES})`
+        );
+      }
         
         setTimeout(() => {
           fetchOEmbedData(attempt + 1);
@@ -333,7 +454,10 @@
         // No more retries or non-retryable error
         if (classified.retryable) {
           // Record retryable errors that exhausted all attempts
-          recordFailedAttempt(contentUrl);
+          recordFailedAttempt(contentUrl, {
+            reason: classified.type,
+            errorMessage: err instanceof Error ? err.message : String(err),
+          });
         }
         console.warn('[SocialMediaEmbed] Error fetching embed:', err);
         hasError = true;
@@ -343,33 +467,27 @@
   }
 
   onMount(() => {
-    console.log(`[SocialMediaEmbed ${componentId}] MOUNTED - URL: ${contentUrl}, Platform: ${metadata.platform}`);
-    console.log(`[SocialMediaEmbed ${componentId}] Initial state - initialized: ${initialized}, loading: ${loading}, hasError: ${hasError}`);
-
     // If we already have an error from initialization, skip everything
     if (hasError) {
-      console.log(`[SocialMediaEmbed ${componentId}] Has error from initialization, skipping onMount`);
-      console.log(
-        `[SocialMediaEmbed ${componentId}] SKIP reason - urlValid: ${urlValid}, recentlyFailed: ${recentlyFailed}, error: ${error}`
-      );
-      if (recentlyFailed && process.env.NODE_ENV === 'development') {
-        console.warn('[SocialMediaEmbed] Skipping recently failed URL:', contentUrl);
+      if (recentlyFailed && import.meta.env.DEV) {
+        const failureMeta = getFailureMetadata(contentUrl);
+        console.warn('[SocialMediaEmbed] Skipping recently failed URL:', {
+          url: contentUrl,
+          failureMeta,
+        });
       }
       return;
     }
 
     // For YouTube, generate iframe directly
     if (metadata.platform === 'youtube') {
-      console.log(`[SocialMediaEmbed ${componentId}] Processing YouTube URL`);
       const videoId = getYouTubeVideoId(contentUrl);
       if (videoId) {
         embedHtml = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         initialized = true;
-        console.log(`[SocialMediaEmbed ${componentId}] YouTube embed created successfully`);
         return;
       } else {
         // Invalid YouTube URL
-        console.log(`[SocialMediaEmbed ${componentId}] Invalid YouTube video ID`);
         error = 'Invalid YouTube URL';
         errorType = 'content';
         hasError = true;
@@ -380,7 +498,6 @@
 
     // For Instagram and TikTok, use oEmbed API
     if (metadata.platform === 'instagram' || metadata.platform === 'tiktok') {
-      console.log(`[SocialMediaEmbed ${componentId}] Starting oEmbed fetch for ${metadata.platform}`);
       loading = true; // Only set loading when we actually start fetching
       initialized = true;
       fetchOEmbedData();
@@ -388,13 +505,10 @@
     }
 
     // For other platforms, show fallback immediately (loading stays false)
-    console.log(`[SocialMediaEmbed ${componentId}] Unknown platform, showing fallback`);
     initialized = true;
   });
 
   onDestroy(() => {
-    console.log(`[SocialMediaEmbed ${componentId}] DESTROYED - URL: ${contentUrl}`);
-    console.log(`[SocialMediaEmbed ${componentId}] Final state - initialized: ${initialized}, loading: ${loading}, hasError: ${hasError}, error: ${error}`);
   });
 </script>
 
@@ -481,6 +595,18 @@
           <ExternalLink class="h-12 w-12 text-muted-foreground opacity-50" />
         </div>
       {/if}
+
+      {#if metadata.platform === 'instagram' && fallbackEmbedUrl}
+        <div class="fallback-embed-frame border-t bg-muted/30">
+          <iframe
+            src={fallbackEmbedUrl}
+            title="Instagram preview"
+            allowfullscreen
+            loading="lazy"
+            class="w-full h-96"
+          ></iframe>
+        </div>
+      {/if}
       
       <!-- Content preview -->
       <div class="p-4">
@@ -488,6 +614,21 @@
           <p class="text-sm text-muted-foreground line-clamp-3 mb-3">
             {metadata.caption}
           </p>
+        {/if}
+
+        {#if metadata.author || metadata.tags?.length}
+          <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
+            {#if metadata.author}
+              <span>@{metadata.author}</span>
+            {/if}
+            {#if metadata.tags?.length}
+              <span class="flex flex-wrap gap-1">
+                {#each metadata.tags as tag}
+                  <span class="rounded bg-muted px-2 py-0.5">#{tag}</span>
+                {/each}
+              </span>
+            {/if}
+          </div>
         {/if}
         
         <div class="flex items-center justify-between">

@@ -113,13 +113,28 @@
       </div>
     {/if}
     <CardContent class="pt-4">
-      {#if node.shortComment || (isSocialMediaMetadata(node.metadata) && node.metadata.caption)}
+      {#if isSocialMediaMetadata(node.metadata) && node.metadata.caption}
         <p class="text-sm font-medium line-clamp-2">
-          {node.shortComment || (isSocialMediaMetadata(node.metadata) ? node.metadata.caption : '')}
+          {node.metadata.caption}
+        </p>
+      {:else if node.shortComment}
+        <p class="text-sm font-medium line-clamp-2">
+          {node.shortComment}
         </p>
       {/if}
-      {#if isSocialMediaMetadata(node.metadata) && node.metadata.author}
-        <p class="text-xs text-muted-foreground mt-1">by {node.metadata.author}</p>
+      {#if isSocialMediaMetadata(node.metadata) && (node.metadata.author || node.metadata.tags?.length)}
+        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          {#if node.metadata.author}
+            <span>@{node.metadata.author}</span>
+          {/if}
+          {#if node.metadata.tags?.length}
+            <span class="flex flex-wrap gap-1">
+              {#each node.metadata.tags as tag}
+                <span class="rounded bg-muted px-2 py-0.5">#{tag}</span>
+              {/each}
+            </span>
+          {/if}
+        </div>
       {/if}
       {#if node.contentUrl}
         <a

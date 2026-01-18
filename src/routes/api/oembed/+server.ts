@@ -7,6 +7,8 @@
  */
 
 import { json } from '@sveltejs/kit';
+import { dev } from '$app/environment';
+import { env } from '$env/dynamic/private';
 import type { RequestHandler } from './$types';
 
 interface OEmbedResponse {
@@ -21,42 +23,81 @@ interface OEmbedResponse {
 /**
  * Get oEmbed endpoint for platform
  */
-function getOEmbedEndpoint(platform: string, url: string): string | null {
-  const encodedUrl = encodeURIComponent(url);
+function getOEmbedEndpoint(
+  platform: string,
+  url: string,
+  accessToken?: string
+): string | null {
+  const endpoint = (() => {
+    switch (platform) {
+      case 'instagram':
+        return 'https://graph.facebook.com/v18.0/instagram_oembed';
+      case 'tiktok':
+        return 'https://www.tiktok.com/oembed';
+      case 'youtube':
+        return 'https://www.youtube.com/oembed';
+      case 'facebook':
+        return 'https://graph.facebook.com/v18.0/oembed_post';
+      default:
+        return null;
+    }
+  })();
 
-  switch (platform) {
-    case 'instagram':
-      // Instagram oEmbed (requires Facebook App)
-      // Note: Instagram deprecated their oEmbed API for most use cases
-      // This may require a Facebook App ID: access_token parameter
-      return `https://graph.facebook.com/v18.0/instagram_oembed?url=${encodedUrl}&access_token=EAAStIwEIpJ8BQUDnxhZBqhE3uAppZB0WMSF4ynWP22lNO7G5LZCZBnKIkzZAxzSgtJdnSlz8qg05xRMtIZBrtTqBD4DMKzuz4fWU72ao9DYilOf0jraJDTESZAWZBP8Q2NxZBfVAG8lT7m8SvimGg3VZBOJQ1KnnHKRFSyhW8W568xo03Dn1WLNNZCG4ON3JYU9x5ewrUnF37tEt67xxxuA3D8Mcv3YZAOolHZCHkWhvXmyQDyk8Hi3VinjXG`;
+  if (!endpoint) return null;
 
-    case 'tiktok':
-      return `https://www.tiktok.com/oembed?url=${encodedUrl}`;
-
-    case 'youtube':
-      // YouTube oEmbed
-      return `https://www.youtube.com/oembed?url=${encodedUrl}&format=json`;
-
-    case 'facebook':
-      // Facebook oEmbed requires access token
-      return null;
-
-    default:
-      return null;
+  if ((platform === 'instagram' || platform === 'facebook') && !accessToken) {
+    return null;
   }
+
+  const endpointUrl = new URL(endpoint);
+  endpointUrl.searchParams.set('url', url);
+
+  if (platform === 'youtube') {
+    endpointUrl.searchParams.set('format', 'json');
+  }
+
+  if (platform === 'instagram' || platform === 'facebook') {
+    endpointUrl.searchParams.set('access_token', accessToken ?? '');
+  }
+
+  return endpointUrl.toString();
+}
+
+function sanitizeUpstreamBody(body: string): string {
+  if (!body) return '';
+
+  const redactedAccessToken = body
+    .replace(/access_token=([^&\s"']+)/gi, 'access_token=[redacted]')
+    .replace(/"access_token"\s*:\s*"[^"]+"/gi, '"access_token":"[redacted]"');
+
+  return redactedAccessToken
+    .replace(/https?:\/\/[^\s"']+/gi, '[redacted-url]')
+    .slice(0, 1000);
 }
 
 export const GET: RequestHandler = async ({ url: requestUrl }) => {
   const url = requestUrl.searchParams.get('url');
   const platform = requestUrl.searchParams.get('platform');
+  const accessToken = env.FACEBOOK_OEMBED_ACCESS_TOKEN;
+  const shouldLogDiagnostics = dev;
 
   if (!url || !platform) {
     return json({ error: 'Missing url or platform parameter' }, { status: 400 });
   }
 
+  if ((platform === 'instagram' || platform === 'facebook') && !accessToken) {
+    return json(
+      {
+        error: 'Facebook oEmbed access token not configured',
+        note: 'Set FACEBOOK_OEMBED_ACCESS_TOKEN in the server environment',
+        platform,
+      },
+      { status: 400 }
+    );
+  }
+
   try {
-    const oembedEndpoint = getOEmbedEndpoint(platform, url);
+    const oembedEndpoint = getOEmbedEndpoint(platform, url, accessToken);
 
     if (!oembedEndpoint) {
       return json({ error: `oEmbed not supported for platform: ${platform}` }, { status: 400 });
@@ -76,12 +117,23 @@ export const GET: RequestHandler = async ({ url: requestUrl }) => {
     });
 
     if (!response.ok) {
-      console.error(`[oEmbed] Failed to fetch from ${platform}:`, response.status, response.statusText);
-      
+      const rawErrorBody = await response.text();
+
+      if (shouldLogDiagnostics) {
+        console.warn('[oEmbed] Upstream oEmbed failure', {
+          platform,
+          status: response.status,
+          statusText: response.statusText,
+          bodyLength: rawErrorBody.length,
+        });
+      }
+
+      const sanitizedBody = sanitizeUpstreamBody(rawErrorBody);
+
       // Provide more helpful error messages for specific platforms
       let errorMessage = 'Failed to fetch embed data';
       let note = '';
-      
+
       if (platform === 'instagram') {
         if (response.status === 400 || response.status === 403) {
           errorMessage = 'Instagram embed requires Facebook App configuration';
@@ -94,13 +146,25 @@ export const GET: RequestHandler = async ({ url: requestUrl }) => {
       } else if (platform === 'youtube' && response.status === 404) {
         errorMessage = 'YouTube video not found or is private';
       }
-      
-      return json({
-        error: errorMessage,
-        note: note,
-        platform: platform,
-        status: response.status
-      }, { status: response.status });
+
+      return json(
+        {
+          error: errorMessage,
+          note: note,
+          platform: platform,
+          status: response.status,
+          ...(shouldLogDiagnostics
+            ? {
+                upstreamError: {
+                  status: response.status,
+                  statusText: response.statusText,
+                  body: sanitizedBody,
+                },
+              }
+            : {}),
+        },
+        { status: response.status }
+      );
     }
 
     const data: OEmbedResponse = await response.json();
@@ -108,7 +172,9 @@ export const GET: RequestHandler = async ({ url: requestUrl }) => {
     // Return oEmbed data
     return json(data);
   } catch (error) {
-    console.error('[oEmbed] Error:', error);
+    if (shouldLogDiagnostics) {
+      console.error('[oEmbed] Error:', error);
+    }
 
     if (error instanceof Error && error.name === 'AbortError') {
       return json({ error: 'Request timeout' }, { status: 504 });

@@ -41,7 +41,6 @@
 
     try {
       const result = await teamService.joinByCode(joinCode.trim());
-      console.debug('[join page] joinByCode result', result);
       success = result;
       toast.success('Joined Team', `You've joined "${result.teamName}" as a ${result.role}`);
 
@@ -52,13 +51,8 @@
       // Reload teams and redirect after a short delay
       const { data: { user } } = await teamService.getCurrentUser();
       await teams.load(user?.id);
-      console.debug('[join page] teams after load', {
-        teamCount: $teams.items.length,
-        teamIds: $teams.items.map((t) => t.id),
-      });
       if (result.teamId) {
         await teams.setCurrent(result.teamId);
-        console.debug('[join page] setCurrent', { teamId: result.teamId });
       }
       setTimeout(() => {
         goto('/settings/team');

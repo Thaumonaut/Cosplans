@@ -31,13 +31,6 @@
   const sharedText = $page.url.searchParams.get('text') || '';
   const sharedUrl = $page.url.searchParams.get('url') || '';
 
-  // Debug logging
-  console.log('[Share Handler] Page loaded with params:', {
-    title: sharedTitle,
-    text: sharedText,
-    url: sharedUrl,
-    fullUrl: $page.url.toString()
-  });
 
   // State
   let loading = $state(true);
@@ -155,7 +148,6 @@
   async function createMoodboardNode(ideaId: string) {
     // Only create a node if we have some content to save
     if (!sharedTitle && !sharedText && !sharedUrl) {
-      console.log('[Share Handler] No content to save, skipping moodboard node creation');
       return;
     }
 
@@ -170,6 +162,11 @@
       ? metadataService.toNodeMetadata(metadata, sharedUrl)
       : {};
 
+    const socialCaption =
+      typeof nodeMetadata === 'object' && nodeMetadata && 'caption' in nodeMetadata
+        ? (nodeMetadata as { caption?: string }).caption
+        : undefined;
+
     // Create the node
     await moodboard.createNode({
       ideaId,
@@ -177,7 +174,7 @@
       contentUrl: sharedUrl || undefined,
       thumbnailUrl: metadata?.thumbnailUrl || undefined,
       metadata: nodeMetadata,
-      shortComment: sharedTitle || undefined,
+      shortComment: socialCaption || sharedTitle || undefined,
       longNote: sharedText || undefined,
       tags: [],
     });
@@ -193,14 +190,11 @@
     // User is guaranteed to be authenticated at this point
 
     // Wait for teams to load (handles loading if not already loaded)
-    console.log('[Share Handler] Waiting for teams to load...');
     const team = await currentTeam.waitForLoad();
-    console.log('[Share Handler] Current team after wait:', team);
 
     if (team) {
       try {
         await ideas.load(team.id);
-        console.log('[Share Handler] Loaded ideas:', $ideas.items?.length || 0, 'ideas');
       } catch (err) {
         console.error('[Share Handler] Failed to load ideas:', err);
       }

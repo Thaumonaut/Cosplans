@@ -146,7 +146,6 @@
   async function loadData() {
     // Prevent multiple simultaneous loads
     if (isLoadingInProgress) {
-      console.log('[TeamSettings] Load already in progress, skipping');
       return;
     }
 
@@ -163,10 +162,8 @@
       }
 
       // Load all teams
-      console.log('[TeamSettings] Loading teams for user:', currentUser.id);
       try {
         allTeams = await teamService.list(currentUser.id);
-        console.log('[TeamSettings] Loaded teams:', allTeams.length);
         await loadTeamMemberCounts(allTeams);
       } catch (listError: any) {
         console.error('[TeamSettings] teamService.list() failed:', listError);
@@ -176,7 +173,6 @@
       // Set current team (use selected team or first team)
       const selectedTeam = get(currentTeam);
       currentTeamData = selectedTeam || allTeams[0] || null;
-      console.log('[TeamSettings] Current team:', currentTeamData?.name || 'none');
 
       // Load members for current team
       if (currentTeamData) {
@@ -203,13 +199,11 @@
   async function loadTeamMembers(teamId: string) {
     try {
       loadingMembers = true;
-      console.log('[TeamSettings] Loading members for team:', teamId);
       teamMembers = await teamService.getMembers(teamId);
       teamMemberCounts = {
         ...teamMemberCounts,
         [teamId]: teamMembers.length,
       };
-      console.log('[TeamSettings] Loaded members:', teamMembers.length);
     } catch (error: any) {
       console.error('[TeamSettings] Failed to load team members:', error);
       console.error('[TeamSettings] Member load error details:', {
