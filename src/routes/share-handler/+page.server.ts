@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   if (!session || !user) {
     const returnUrl = `/share-handler?${url.searchParams.toString()}`;
     console.log('[Share Handler][Server] Redirecting to login with return URL:', returnUrl);
-    throw redirect(303, `/login?return=${encodeURIComponent(returnUrl)}`);
+    throw redirect(303, `/login?redirectTo=${encodeURIComponent(returnUrl)}`);
   }
 
   // Pass session data to the page

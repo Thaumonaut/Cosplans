@@ -11,9 +11,10 @@
 
   interface Props {
     ideaId: string;
+    projectId?: string;
   }
 
-  let { ideaId }: Props = $props();
+  let { ideaId, projectId }: Props = $props();
 
   let showAddReferenceModal = $state(false);
   let selectedType = $state<'url' | 'note' | 'image'>('url');
@@ -47,8 +48,7 @@
       const nodeMetadata = metadataService.toNodeMetadata(metadata, urlInput);
 
       // Create the node
-      await moodboard.createNode({
-        ideaId,
+      await createReferenceNode({
         nodeType,
         contentUrl: urlInput,
         thumbnailUrl: metadata.thumbnailUrl,
@@ -75,8 +75,7 @@
     if (!noteText.trim()) return;
 
     try {
-      await moodboard.createNode({
-        ideaId,
+      await createReferenceNode({
         nodeType: 'note',
         longNote: noteText.trim(),
         tags: [],
@@ -116,8 +115,7 @@
           const result = await uploadImageToStorage(file, 'moodboard', team.id);
 
           // Create image node
-          await moodboard.createNode({
-            ideaId,
+          await createReferenceNode({
             nodeType: 'image',
             contentUrl: result.url,
             thumbnailUrl: result.url, // Use same URL for thumbnail
@@ -180,6 +178,40 @@
       console.error('[ReferencesTab] Error deleting node:', err);
       toast.error('Failed to Delete', err?.message || 'An error occurred');
     }
+  }
+
+  async function createReferenceNode(payload: {
+    nodeType: ReturnType<typeof determineNodeType> | 'note' | 'image';
+    contentUrl?: string;
+    thumbnailUrl?: string;
+    metadata?: Record<string, unknown>;
+    tags?: string[];
+    shortComment?: string;
+    longNote?: string;
+  }) {
+    if (projectId) {
+      return moodboard.createProjectReference({
+        projectId,
+        nodeType: payload.nodeType,
+        contentUrl: payload.contentUrl,
+        thumbnailUrl: payload.thumbnailUrl,
+        metadata: payload.metadata,
+        tags: payload.tags,
+        shortComment: payload.shortComment,
+        longNote: payload.longNote,
+      });
+    }
+
+    return moodboard.createNode({
+      ideaId,
+      nodeType: payload.nodeType,
+      contentUrl: payload.contentUrl,
+      thumbnailUrl: payload.thumbnailUrl,
+      metadata: payload.metadata,
+      tags: payload.tags,
+      shortComment: payload.shortComment,
+      longNote: payload.longNote,
+    });
   }
 </script>
 

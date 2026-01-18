@@ -141,6 +141,7 @@ export type MoodboardNodeMetadata =
 export interface MoodboardNode {
   id: string;
   ideaId: string;
+  referenceId?: string | null;
   nodeType: MoodboardNodeType;
   contentUrl?: string | null;
   thumbnailUrl?: string | null;
@@ -161,6 +162,7 @@ export interface MoodboardNode {
 
 export interface MoodboardNodeCreate {
   ideaId: string;
+  referenceId?: string | null;
   nodeType: MoodboardNodeType;
   contentUrl?: string;
   thumbnailUrl?: string;
@@ -178,6 +180,7 @@ export interface MoodboardNodeCreate {
 }
 
 export interface MoodboardNodeUpdate {
+  referenceId?: string | null;
   contentUrl?: string | null;
   thumbnailUrl?: string | null;
   metadata?: MoodboardNodeMetadata;
@@ -191,6 +194,17 @@ export interface MoodboardNodeUpdate {
   zIndex?: number;
   parentId?: string | null;
   isExpanded?: boolean;
+}
+
+export interface MoodboardProjectReferenceCreate {
+  projectId: string;
+  nodeType: MoodboardNodeType;
+  contentUrl?: string;
+  thumbnailUrl?: string;
+  metadata?: MoodboardNodeMetadata;
+  tags?: string[];
+  shortComment?: string;
+  longNote?: string;
 }
 
 // ============================================================================
@@ -360,6 +374,7 @@ export function mapMoodboardNodeFromDb(row: any): MoodboardNode {
   return {
     id: row.id,
     ideaId: row.idea_id,
+    referenceId: row.reference_id ?? null,
     nodeType: row.node_type as MoodboardNodeType,
     contentUrl: row.content_url,
     thumbnailUrl: row.thumbnail_url,
@@ -400,6 +415,7 @@ export function mapMoodboardEdgeFromDb(row: any): MoodboardEdge {
 export function mapMoodboardNodeToDb(node: MoodboardNodeCreate): Record<string, unknown> {
   return {
     idea_id: node.ideaId,
+    reference_id: node.referenceId ?? null,
     node_type: node.nodeType,
     content_url: node.contentUrl || null,
     thumbnail_url: node.thumbnailUrl || null,

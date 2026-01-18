@@ -178,7 +178,7 @@ export async function migrateIdeaImages(ideaId: string): Promise<{
     // Fetch the idea with its images
     const { data: idea, error: ideaError } = await supabase
       .from('ideas')
-      .select('id, images')
+      .select('id, images, team_id')
       .eq('id', ideaId)
       .single();
 
@@ -215,10 +215,44 @@ export async function migrateIdeaImages(ideaId: string): Promise<{
       const posY = 50 + (gridRow * 420); // 400px height + 20px spacing
 
       // Create moodboard node
+      const { data: referenceRow, error: referenceError } = await supabase
+        .from('references')
+        .insert({
+          team_id: idea.team_id,
+          node_type: 'image',
+          content_url: imageUrl,
+          thumbnail_url: imageUrl,
+          metadata: {
+            migrated_from_idea_images: true,
+            original_index: i,
+            migration_date: new Date().toISOString(),
+          },
+          tags: [],
+        })
+        .select('id')
+        .single();
+
+      if (referenceError) {
+        console.error(`[imageMigration] Error creating reference for image ${i}:`, referenceError);
+        continue;
+      }
+
+      const referenceId = referenceRow?.id ?? null;
+      if (referenceId) {
+        const { error: linkError } = await supabase
+          .from('reference_links')
+          .insert({ reference_id: referenceId, idea_id: ideaId });
+
+        if (linkError) {
+          console.error(`[imageMigration] Error linking reference for image ${i}:`, linkError);
+        }
+      }
+
       const { error: createError } = await supabase
         .from('moodboard_nodes')
         .insert({
           idea_id: ideaId,
+          reference_id: referenceId,
           node_type: 'image',
           content_url: imageUrl,
           thumbnail_url: imageUrl,
@@ -277,6 +311,7 @@ export async function getImageNodesForIdea(ideaId: string): Promise<MoodboardNod
     return data?.map(row => ({
       id: row.id,
       ideaId: row.idea_id,
+      referenceId: row.reference_id ?? null,
       nodeType: row.node_type,
       contentUrl: row.content_url,
       thumbnailUrl: row.thumbnail_url,

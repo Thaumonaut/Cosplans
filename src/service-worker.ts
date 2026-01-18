@@ -13,20 +13,7 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-// Try to import SvelteKit service worker assets, but handle failure gracefully
-let build: string[] = [];
-let files: string[] = [];
-let version = 'dev';
-
-try {
-  const swModule = await import('$service-worker');
-  build = swModule.build || [];
-  files = swModule.files || [];
-  version = swModule.version || 'dev';
-} catch (error) {
-  console.warn('[Service Worker] Failed to import $service-worker module:', error);
-  // Continue with empty arrays for development
-}
+import { build, files, version } from '$service-worker';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 

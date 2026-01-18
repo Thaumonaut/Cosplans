@@ -4,6 +4,7 @@ export interface Project {
   id: string
   teamId: string
   fromIdeaId?: string | null
+  planningIdeaId?: string | null
   character: string
   series?: string | null
   status: ProjectStatus
@@ -24,6 +25,7 @@ export interface ProjectCreate {
   character: string
   series?: string | null
   fromIdeaId?: string
+  planningIdeaId?: string
   status?: ProjectStatus
   estimatedBudget?: number // in cents
   deadline?: string
@@ -37,6 +39,7 @@ export interface ProjectCreate {
 export interface ProjectUpdate {
   character?: string
   series?: string
+  planningIdeaId?: string | null
   status?: ProjectStatus
   estimatedBudget?: number // in cents
   spentBudget?: number // in cents

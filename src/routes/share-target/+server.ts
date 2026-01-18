@@ -6,7 +6,7 @@
  * and redirects to the share handler UI after checking authentication.
  */
 
-import { redirect } from '@sveltejs/kit';
+import { redirect, isRedirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -25,10 +25,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Extract shared content
     const title = formData.get('title')?.toString() || '';
     const text = formData.get('text')?.toString() || '';
-    const url = formData.get('url')?.toString() || '';
+    let url = formData.get('url')?.toString() || '';
 
     // Files (images/videos) - for Phase 2
     // const files = formData.getAll('media') as File[];
+
+    // Fallback: extract first URL from shared text if url param is empty
+    if (!url && text) {
+      const urlMatch = text.match(/https?:\/\/\S+/i);
+      if (urlMatch) {
+        url = urlMatch[0];
+      }
+    }
 
     console.log('[Share Target] Parsed data:', { title, text, url });
 
@@ -48,7 +56,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!session || !session.user) {
       console.log('[Share Target] User not authenticated, redirecting to login');
       const returnUrl = `/share-handler?${params.toString()}`;
-      throw redirect(303, `/login?return=${encodeURIComponent(returnUrl)}`);
+      throw redirect(303, `/login?redirectTo=${encodeURIComponent(returnUrl)}`);
     }
 
     // User is authenticated, redirect to share handler UI
@@ -56,7 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw redirect(303, `/share-handler?${params.toString()}`);
   } catch (error) {
     // If it's a redirect, rethrow it
-    if (error instanceof Response && error.status >= 300 && error.status < 400) {
+    if (isRedirect(error)) {
       throw error;
     }
 

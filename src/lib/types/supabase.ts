@@ -357,6 +357,135 @@ export interface Database {
           updated_at?: string;
         };
       };
+      // Moodboard nodes
+      moodboard_nodes: {
+        Row: {
+          id: string;
+          idea_id: string;
+          reference_id: string | null;
+          node_type: string;
+          content_url: string | null;
+          thumbnail_url: string | null;
+          metadata: Record<string, unknown>;
+          tags: string[];
+          short_comment: string | null;
+          long_note: string | null;
+          position_x: number;
+          position_y: number;
+          width: number | null;
+          height: number | null;
+          z_index: number | null;
+          parent_id: string | null;
+          is_expanded: boolean | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          idea_id: string;
+          reference_id?: string | null;
+          node_type: string;
+          content_url?: string | null;
+          thumbnail_url?: string | null;
+          metadata?: Record<string, unknown>;
+          tags?: string[];
+          short_comment?: string | null;
+          long_note?: string | null;
+          position_x?: number;
+          position_y?: number;
+          width?: number | null;
+          height?: number | null;
+          z_index?: number | null;
+          parent_id?: string | null;
+          is_expanded?: boolean | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          idea_id?: string;
+          reference_id?: string | null;
+          node_type?: string;
+          content_url?: string | null;
+          thumbnail_url?: string | null;
+          metadata?: Record<string, unknown>;
+          tags?: string[];
+          short_comment?: string | null;
+          long_note?: string | null;
+          position_x?: number;
+          position_y?: number;
+          width?: number | null;
+          height?: number | null;
+          z_index?: number | null;
+          parent_id?: string | null;
+          is_expanded?: boolean | null;
+          updated_at?: string;
+        };
+      };
+      // References
+      references: {
+        Row: {
+          id: string;
+          team_id: string;
+          node_type: string;
+          content_url: string | null;
+          thumbnail_url: string | null;
+          metadata: Record<string, unknown>;
+          tags: string[];
+          short_comment: string | null;
+          long_note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          team_id: string;
+          node_type: string;
+          content_url?: string | null;
+          thumbnail_url?: string | null;
+          metadata?: Record<string, unknown>;
+          tags?: string[];
+          short_comment?: string | null;
+          long_note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          team_id?: string;
+          node_type?: string;
+          content_url?: string | null;
+          thumbnail_url?: string | null;
+          metadata?: Record<string, unknown>;
+          tags?: string[];
+          short_comment?: string | null;
+          long_note?: string | null;
+          updated_at?: string;
+        };
+      };
+      // Reference links
+      reference_links: {
+        Row: {
+          id: string;
+          reference_id: string;
+          idea_id: string | null;
+          project_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          reference_id: string;
+          idea_id?: string | null;
+          project_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          reference_id?: string;
+          idea_id?: string | null;
+          project_id?: string | null;
+          updated_at?: string;
+        };
+      };
     };
     Views: {
       // Add views here as needed

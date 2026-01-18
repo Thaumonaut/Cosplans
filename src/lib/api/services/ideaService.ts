@@ -173,6 +173,7 @@ export const ideaService = {
       .insert({
         team_id: teamId,
         from_idea_id: ideaId,
+        planning_idea_id: ideaId,
         character: idea.character,
         series: idea.series || null,
         description: idea.description || null,
@@ -182,7 +183,6 @@ export const ideaService = {
         estimated_budget: idea.estimatedCost || null,
         spent_budget: 0,
         cover_image: idea.images[0] || null,
-        reference_images: idea.images || [],
         tags: idea.tags || [],
       })
       .select()
@@ -190,28 +190,46 @@ export const ideaService = {
 
     if (projectError) throw projectError
 
-    // Delete the idea after successful conversion
-    // First, clear the from_idea_id reference to avoid foreign key constraint issues
-    // Then delete the idea
     try {
-      // Clear the reference first
-      const { error: updateError } = await supabase
-        .from('projects')
-        .update({ from_idea_id: null })
-        .eq('id', projectData.id)
-      
-      if (updateError) {
-        console.warn('Failed to clear from_idea_id reference before deleting idea:', updateError?.message || updateError)
-        // Continue anyway - try to delete and let it fail if needed
-      }
+      const { data: links } = await supabase
+        .from('reference_links')
+        .select('reference_id')
+        .eq('idea_id', ideaId)
 
-      // Now delete the idea
-      await this.delete(ideaId)
-    } catch (deleteError: any) {
-      // If deletion fails, log but don't throw - project was created successfully
-      // The user can manually delete the idea later if needed
-      console.warn('Failed to delete idea after conversion:', deleteError?.message || deleteError)
-      // Don't throw - conversion was successful, just the cleanup failed
+      if (links && links.length > 0) {
+        const linkRows = links.map((link) => ({
+          reference_id: link.reference_id,
+          project_id: projectData.id,
+        }))
+
+        const { error: linkError } = await supabase
+          .from('reference_links')
+          .insert(linkRows)
+
+        if (linkError) {
+          console.warn('Failed to link references to project after conversion:', linkError?.message || linkError)
+        }
+      }
+    } catch (linkingError: any) {
+      console.warn('Failed to copy reference links after conversion:', linkingError?.message || linkingError)
+    }
+
+    // Keep the idea so references remain shared with the project.
+    // Mark the idea as converted and link it to the new project.
+    try {
+      const { error: ideaUpdateError } = await supabase
+        .from('ideas')
+        .update({
+          status: 'converted',
+          converted_project_id: projectData.id,
+        })
+        .eq('id', ideaId)
+
+      if (ideaUpdateError) {
+        console.warn('Failed to update idea status after conversion:', ideaUpdateError?.message || ideaUpdateError)
+      }
+    } catch (updateError: any) {
+      console.warn('Failed to mark idea as converted after conversion:', updateError?.message || updateError)
     }
 
     return {
@@ -240,4 +258,3 @@ function mapIdeaFromDb(row: any): Idea {
     updatedAt: row.updated_at,
   }
 }
-

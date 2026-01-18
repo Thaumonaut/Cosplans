@@ -20,7 +20,7 @@
   import ResourcesTab from './tabs/ResourcesTab.svelte'
   import TasksTab from './tabs/TasksTab.svelte'
   import GalleryTab from './tabs/GalleryTab.svelte'
-  import ReferenceCard from '$lib/components/ideas/ReferenceCard.svelte'
+  import ReferencesTab from '$lib/components/ideas/ReferencesTab.svelte'
   import CommentBox from '$lib/components/base/CommentBox.svelte'
   import ResourceDetail from '$lib/components/resources/ResourceDetail.svelte'
   import CreationFlyout from '$lib/components/ui/CreationFlyout.svelte'
@@ -95,10 +95,18 @@
     }
   })
 
-  // Load moodboard nodes from source idea if project was converted from an idea
+  // Load references (planning idea preferred, fallback to source idea, otherwise project-scoped)
   $effect(() => {
-    if (project?.fromIdeaId && currentMode() !== 'create') {
-      moodboard.loadNodes(project.fromIdeaId)
+    if (currentMode() === 'create') return
+    const referenceIdeaId = project?.planningIdeaId ?? project?.fromIdeaId
+    if (referenceIdeaId) {
+      moodboard.load(referenceIdeaId).catch((err) => {
+        console.error('Failed to load moodboard:', err)
+      })
+    } else if (project?.id) {
+      moodboard.loadProjectReferences(project.id).catch((err) => {
+        console.error('Failed to load project references:', err)
+      })
     }
   })
 
@@ -427,6 +435,10 @@
   </div>
 {:else if error && currentMode() !== 'create' && !project}
   <NotFound entityType="project" backUrl="/projects" searchUrl="/projects" />
+{:else if currentMode() !== 'create' && !project}
+  <div class="flex items-center justify-center py-20">
+    <div class="text-sm text-muted-foreground">Loading project...</div>
+  </div>
 {:else}
   <div class="flex h-full flex-col">
     <!-- Header with Image, Title and Metadata -->
@@ -640,7 +652,7 @@
         >
           Gallery {#if imagesValue.length > 0}({imagesValue.length}){/if}
         </button>
-        {#if project?.fromIdeaId}
+        {#if project}
           <button
             onclick={() => activeTab = 'references'}
             class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'references' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
@@ -962,32 +974,13 @@
             />
           </div>
 
-        {:else if activeTab === 'references' && project?.fromIdeaId}
-          <!-- References Tab: Display moodboard nodes from source idea (read-only) -->
-          <div class="mx-auto max-w-5xl space-y-6 px-4 sm:px-6">
-            <div class="rounded-lg bg-background/50 p-4 border border-primary/20">
-              <p class="text-sm text-muted-foreground">
-                These references were saved during the idea phase. They are read-only in project view.
-              </p>
-            </div>
-
-            {#if $moodboard.loading}
-              <div class="flex justify-center py-12">
-                <div class="text-sm text-muted-foreground">Loading references...</div>
-              </div>
-            {:else if $moodboard.nodes.length === 0}
-              <div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-background p-12 text-center">
-                <ImageIcon class="mx-auto mb-4 size-12 text-muted-foreground" />
-                <p class="text-sm text-muted-foreground">No references were saved for this idea</p>
-              </div>
-            {:else}
-              <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {#each $moodboard.nodes as node (node.id)}
-                  <ReferenceCard {node} onDelete={() => {}} isReadOnly={true} />
-                {/each}
-              </div>
-            {/if}
-          </div>
+        {:else if activeTab === 'references' && project}
+          <!-- References Tab: project-scoped when no idea exists -->
+          {#if project?.planningIdeaId || project?.fromIdeaId}
+            <ReferencesTab ideaId={project?.planningIdeaId ?? project?.fromIdeaId} />
+          {:else}
+            <ReferencesTab ideaId={project.id} projectId={project.id} />
+          {/if}
 
         {:else if activeTab === 'notes'}
           <!-- Notes Tab: Free-form Project Notes -->

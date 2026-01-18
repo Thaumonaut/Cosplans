@@ -13,6 +13,7 @@ import type {
   MoodboardNodeUpdate,
   MoodboardEdge,
   MoodboardEdgeCreate,
+  MoodboardProjectReferenceCreate,
 } from '$lib/types/domain/moodboard';
 
 interface MoodboardState {
@@ -21,6 +22,7 @@ interface MoodboardState {
   loading: boolean;
   error: string | null;
   currentIdeaId: string | null;
+  currentProjectId: string | null;
 }
 
 function createMoodboardStore() {
@@ -30,6 +32,7 @@ function createMoodboardStore() {
     loading: false,
     error: null,
     currentIdeaId: null,
+    currentProjectId: null,
   });
 
   return {
@@ -45,16 +48,30 @@ function createMoodboardStore() {
         loading: false,
         error: null,
         currentIdeaId: null,
+        currentProjectId: null,
       }),
 
     /**
      * Load all nodes and edges for an idea
      */
     load: async (ideaId: string) => {
-      update((state) => ({ ...state, loading: true, error: null, currentIdeaId: ideaId }));
+      update((state) => ({
+        ...state,
+        loading: true,
+        error: null,
+        currentIdeaId: ideaId,
+        currentProjectId: null,
+      }));
       try {
         const { nodes, edges } = await moodboardService.getMoodboardData(ideaId);
-        set({ nodes, edges, loading: false, error: null, currentIdeaId: ideaId });
+        set({
+          nodes,
+          edges,
+          loading: false,
+          error: null,
+          currentIdeaId: ideaId,
+          currentProjectId: null,
+        });
       } catch (err: any) {
         set({
           nodes: [],
@@ -62,6 +79,40 @@ function createMoodboardStore() {
           loading: false,
           error: err?.message || 'Failed to load moodboard',
           currentIdeaId: ideaId,
+          currentProjectId: null,
+        });
+      }
+    },
+
+    /**
+     * Load references for a project (project-scoped)
+     */
+    loadProjectReferences: async (projectId: string) => {
+      update((state) => ({
+        ...state,
+        loading: true,
+        error: null,
+        currentIdeaId: null,
+        currentProjectId: projectId,
+      }));
+      try {
+        const nodes = await moodboardService.listProjectReferences(projectId);
+        set({
+          nodes,
+          edges: [],
+          loading: false,
+          error: null,
+          currentIdeaId: null,
+          currentProjectId: projectId,
+        });
+      } catch (err: any) {
+        set({
+          nodes: [],
+          edges: [],
+          loading: false,
+          error: err?.message || 'Failed to load references',
+          currentIdeaId: null,
+          currentProjectId: projectId,
         });
       }
     },
@@ -107,6 +158,29 @@ function createMoodboardStore() {
       }
     },
 
+    createProjectReference: async (
+      node: MoodboardProjectReferenceCreate
+    ): Promise<MoodboardNode> => {
+      update((state) => ({ ...state, loading: true, error: null }));
+      try {
+        const created = await moodboardService.createProjectReference(node);
+        update((state) => ({
+          ...state,
+          nodes: [...state.nodes, created],
+          loading: false,
+          error: null,
+        }));
+        return created;
+      } catch (err: any) {
+        update((state) => ({
+          ...state,
+          loading: false,
+          error: err?.message || 'Failed to create reference',
+        }));
+        throw err;
+      }
+    },
+
     /**
      * Update a node
      */
@@ -139,7 +213,18 @@ function createMoodboardStore() {
     deleteNode: async (id: string) => {
       update((state) => ({ ...state, loading: true, error: null }));
       try {
-        await moodboardService.deleteNode(id);
+        let projectId: string | null = null;
+        update((state) => {
+          projectId = state.currentProjectId;
+          return state;
+        });
+
+        if (projectId) {
+          await moodboardService.deleteProjectReference(id, projectId);
+        } else {
+          await moodboardService.deleteNode(id);
+        }
+
         update((state) => ({
           ...state,
           nodes: state.nodes.filter((node) => node.id !== id),

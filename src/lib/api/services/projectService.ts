@@ -87,6 +87,9 @@ export const projectService = {
     if (project.fromIdeaId !== undefined && project.fromIdeaId !== null) {
       insertData.from_idea_id = project.fromIdeaId
     }
+    if (project.planningIdeaId !== undefined && project.planningIdeaId !== null) {
+      insertData.planning_idea_id = project.planningIdeaId
+    }
     if (project.estimatedBudget !== undefined && project.estimatedBudget !== null) {
       insertData.estimated_budget = project.estimatedBudget
     }
@@ -135,6 +138,7 @@ export const projectService = {
 
     if (updates.character !== undefined) updateData.character = updates.character
     if (updates.series !== undefined) updateData.series = updates.series || null
+    if (updates.planningIdeaId !== undefined) updateData.planning_idea_id = updates.planningIdeaId
     if (updates.status !== undefined) updateData.status = updates.status
     if (updates.progress !== undefined) updateData.progress = updates.progress
     if (updates.estimatedBudget !== undefined) updateData.estimated_budget = updates.estimatedBudget
@@ -581,6 +585,7 @@ function mapProjectFromDb(row: any): Project {
     id: row.id,
     teamId: row.team_id,
     fromIdeaId: row.from_idea_id ?? undefined,
+    planningIdeaId: row.planning_idea_id ?? undefined,
     character: row.character,
     series: row.series ?? undefined,
     status: row.status,
@@ -597,4 +602,3 @@ function mapProjectFromDb(row: any): Project {
     updatedAt: row.updated_at,
   }
 }
-
