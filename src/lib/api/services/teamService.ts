@@ -41,6 +41,9 @@ export interface TeamInvite {
 }
 
 export const teamService = {
+  async getCurrentUser() {
+    return await supabase.auth.getUser();
+  },
   /**
    * List all teams for a user (where they are a member)
    */
@@ -50,6 +53,7 @@ export const teamService = {
       // Skip RPC for now due to timeout/hanging issues - use direct query instead
       // Direct query approach:
       try {
+        console.debug('[teamService.list] start', { userId })
         const { data: memberships, error: membershipError } = await supabase
           .from("team_members")
           .select("team_id")
@@ -97,6 +101,7 @@ export const teamService = {
         }
 
         const teamIds = (memberships || []).map((m: any) => m.team_id);
+        console.debug('[teamService.list] teamIds', { teamIds })
 
         if (teamIds.length === 0) {
           return [];
@@ -109,14 +114,19 @@ export const teamService = {
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-        return (data || []).map((t: any) => ({
+        const mapped = (data || []).map((t: any) => ({
           id: t.id,
           name: t.name,
           type: (t.is_personal ? "personal" : "private") as TeamType,
           createdBy: t.owner_id || "",
           createdAt: t.created_at,
           updatedAt: t.updated_at,
-        }));
+        }))
+        console.debug('[teamService.list] loaded teams', {
+          count: mapped.length,
+          ids: mapped.map((t) => t.id),
+        })
+        return mapped;
       } catch (fallbackError: any) {
         // If all else fails, provide helpful error
         throw new Error(
@@ -419,6 +429,53 @@ export const teamService = {
    * Note: Fetches users separately due to schema cache issues with foreign key relationships
    */
   async getMembers(teamId: string): Promise<TeamMember[]> {
+    // Prefer RPC to fetch members with profile data (bypasses users RLS)
+    try {
+      const { data: rpcMembers, error: rpcError } = await (supabase.rpc as any)(
+        "get_team_members_with_profiles",
+        { p_team_id: teamId },
+      );
+
+      if (!rpcError && rpcMembers) {
+        console.debug("[teamService.getMembers] loaded members via RPC", {
+          teamId,
+          count: rpcMembers.length,
+          statuses: rpcMembers.map((m: any) => m.status || "active"),
+        });
+
+        return rpcMembers.map((item: any) => ({
+          id: item.id,
+          teamId: item.team_id,
+          userId: item.user_id,
+          role: item.role,
+          status: (item.status || "active") as TeamMemberStatus,
+          invitedBy: item.invited_by || undefined,
+          invitedAt: item.invited_at || undefined,
+          joinedAt: item.joined_at || undefined,
+          user: item.user_id
+            ? {
+                id: item.user_id,
+                name: item.user_name || undefined,
+                email: item.user_email,
+                avatarUrl: item.avatar_url || undefined,
+              }
+            : undefined,
+        }));
+      }
+
+      if (rpcError) {
+        console.warn(
+          "[teamService.getMembers] RPC failed, falling back to direct query",
+          rpcError,
+        );
+      }
+    } catch (rpcException) {
+      console.warn(
+        "[teamService.getMembers] RPC exception, falling back to direct query",
+        rpcException,
+      );
+    }
+
     // Fetch team members (without join due to schema cache issues)
     const { data: members, error: membersError } = await supabase
       .from("team_members")
@@ -428,6 +485,12 @@ export const teamService = {
 
     if (membersError) throw membersError;
     if (!members || members.length === 0) return [];
+
+    console.debug('[teamService.getMembers] loaded members', {
+      teamId,
+      count: members.length,
+      statuses: members.map((m: any) => m.status || 'active'),
+    })
 
     // Get unique user IDs
     const userIds = [...new Set(members.map((m: any) => m.user_id))];
@@ -490,7 +553,7 @@ export const teamService = {
         role: item.role,
         status: (item.status || "active") as TeamMemberStatus,
         invitedBy: item.invited_by || undefined,
-        invitedAt: undefined, // Schema doesn't have invited_at column
+        invitedAt: item.invited_at || undefined,
         joinedAt: item.joined_at || undefined,
         user: userData
           ? {
@@ -684,16 +747,79 @@ export const teamService = {
   async joinByCode(
     code: string,
   ): Promise<{ teamId: string; teamName: string; role: string }> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    console.log('[teamService.joinByCode] Attempting join', {
+      code: code?.toUpperCase().trim(),
+      userId: user?.id,
+    });
+
     const { data, error } = await (supabase.rpc as any)("join_team_by_code", {
       p_code: code.toUpperCase().trim(),
     });
 
     if (error) throw error;
-    return (data?.[0] || data) as {
+    const result = (data?.[0] || data) as {
       teamId: string;
       teamName: string;
       role: string;
     };
+
+    if (user && result?.teamId) {
+      const { data: membership, error: membershipError } = await supabase
+        .from('team_members')
+        .select('team_id, role, status')
+        .eq('team_id', result.teamId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      console.log('[teamService.joinByCode] Post-join membership check', {
+        teamId: result.teamId,
+        userId: user.id,
+        membership,
+        membershipError,
+      });
+    }
+
+    return result;
+  },
+
+  /**
+   * Ensure the current user is marked active in team_members after joining.
+   * This is a client-side fallback when the join function or schema cache
+   * fails to update status.
+   */
+  async ensureActiveMembership(teamId: string): Promise<void> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const updateData: Record<string, unknown> = {
+      status: 'active',
+      joined_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('team_members')
+      .update(updateData)
+      .eq('team_id', teamId)
+      .eq('user_id', user.id);
+
+    if (error && (error.message?.includes('status') || error.code === '42703')) {
+      const retryResult = await supabase
+        .from('team_members')
+        .update({ joined_at: new Date().toISOString() })
+        .eq('team_id', teamId)
+        .eq('user_id', user.id);
+
+      if (retryResult.error) {
+        console.warn('[teamService.ensureActiveMembership] retry failed', retryResult.error);
+      }
+    } else if (error) {
+      console.warn('[teamService.ensureActiveMembership] update failed', error);
+    }
   },
 
   /**

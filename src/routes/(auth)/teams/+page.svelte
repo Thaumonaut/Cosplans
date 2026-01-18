@@ -115,7 +115,13 @@
   async function loadTeams(userId: string) {
     try {
       loading = true;
+      console.debug('[TeamsPage] loadTeams start', { userId });
       await teams.load(userId);
+      console.debug('[TeamsPage] loadTeams done', {
+        teamCount: $teams.items.length,
+        teamIds: $teams.items.map((t) => t.id),
+        currentId: $currentTeam?.id || null,
+      });
     } catch (err: any) {
       error = err?.message || "Failed to load teams";
     } finally {
@@ -126,7 +132,13 @@
   async function loadTeamMembers(teamId: string) {
     try {
       membersLoading = true;
+      console.debug('[TeamsPage] loadTeamMembers start', { teamId });
       teamMembers = await teamService.getMembers(teamId);
+      console.debug('[TeamsPage] loadTeamMembers done', {
+        teamId,
+        memberCount: teamMembers.length,
+        statuses: teamMembers.map((m) => m.status),
+      });
     } catch (err: any) {
       console.error("Failed to load team members:", err);
     } finally {
@@ -605,9 +617,7 @@
     bind:open={showDeleteTeamDialog}
     teamName={selectedTeam.name}
     activeMemberCount={teamMembers.filter(
-      (m) =>
-        (m.status === "active" || m.status === "invited") &&
-        m.userId !== $user?.id,
+      (m) => m.userId !== $user?.id,
     ).length}
     onDelete={handleDeleteTeam}
     onTransfer={() => (showTransferDialog = true)}

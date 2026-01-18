@@ -62,6 +62,7 @@
   let allTeams = $state<Team[]>([]);
   let currentTeamData = $state<Team | null>(null);
   let teamMembers = $state<TeamMember[]>([]);
+  let teamMemberCounts = $state<Record<string, number>>({});
   let pendingInvites = $state<any[]>([]); // For future implementation
 
   // Join links
@@ -166,6 +167,7 @@
       try {
         allTeams = await teamService.list(currentUser.id);
         console.log('[TeamSettings] Loaded teams:', allTeams.length);
+        await loadTeamMemberCounts(allTeams);
       } catch (listError: any) {
         console.error('[TeamSettings] teamService.list() failed:', listError);
         throw listError; // Re-throw to be caught by outer catch
@@ -203,6 +205,10 @@
       loadingMembers = true;
       console.log('[TeamSettings] Loading members for team:', teamId);
       teamMembers = await teamService.getMembers(teamId);
+      teamMemberCounts = {
+        ...teamMemberCounts,
+        [teamId]: teamMembers.length,
+      };
       console.log('[TeamSettings] Loaded members:', teamMembers.length);
     } catch (error: any) {
       console.error('[TeamSettings] Failed to load team members:', error);
@@ -216,6 +222,32 @@
     } finally {
       loadingMembers = false;
     }
+  }
+
+  async function loadTeamMemberCounts(teams: Team[]) {
+    if (!teams.length) return;
+    const entries = await Promise.all(
+      teams.map(async (team) => {
+        try {
+          const members = await teamService.getMembers(team.id);
+          return [team.id, members.length] as const;
+        } catch (countError) {
+          console.warn('[TeamSettings] Failed to load member count', {
+            teamId: team.id,
+            error: countError,
+          });
+          return [team.id, 0] as const;
+        }
+      }),
+    );
+
+    teamMemberCounts = entries.reduce<Record<string, number>>(
+      (acc, [teamId, count]) => {
+        acc[teamId] = count;
+        return acc;
+      },
+      { ...teamMemberCounts },
+    );
   }
 
   async function handleCreateTeam() {
@@ -446,11 +478,13 @@
   }
 
   function getTeamMemberCount(teamId: string) {
-    // For now, return count from current team members if it matches
+    if (teamMemberCounts[teamId] !== undefined) {
+      return teamMemberCounts[teamId];
+    }
     if (currentTeamData?.id === teamId) {
       return teamMembers.length;
     }
-    return 0; // Would need to load separately for other teams
+    return 0;
   }
 
   // Track if we've already attempted to load data
@@ -641,7 +675,7 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{member.user?.email}</span>
+                          <span>{member.user?.email || 'Invited member'}</span>
                           {#if member.joinedAt}
                     <span>•</span>
                             <span>Joined {formatDate(member.joinedAt)}</span>

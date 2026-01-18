@@ -62,6 +62,9 @@ export interface Database {
           team_id: string;
           user_id: string;
           role: 'owner' | 'admin' | 'member' | 'viewer';
+          status?: string | null;
+          invited_by?: string | null;
+          invited_at?: string | null;
           joined_at: string;
           updated_at: string;
         };
@@ -70,11 +73,17 @@ export interface Database {
           team_id: string;
           user_id: string;
           role?: 'owner' | 'admin' | 'member' | 'viewer';
+          status?: string | null;
+          invited_by?: string | null;
+          invited_at?: string | null;
           joined_at?: string;
           updated_at?: string;
         };
         Update: {
           role?: 'owner' | 'admin' | 'member' | 'viewer';
+          status?: string | null;
+          invited_by?: string | null;
+          invited_at?: string | null;
           updated_at?: string;
         };
       };

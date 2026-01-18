@@ -35,11 +35,9 @@
         try {
             loading = true;
             error = "";
-            const allMembers = await teamService.getMembers(teamId);
-            // Filter out current owner and non-active
-            members = allMembers.filter(
-                (m) => m.userId !== currentOwnerId && m.status === "active",
-            );
+        const allMembers = await teamService.getMembers(teamId);
+        // Filter out current owner only
+        members = allMembers.filter((m) => m.userId !== currentOwnerId);
 
             // Reset selection if previously selected member is not in new list
             if (

@@ -32,8 +32,18 @@ function createTeamsStore() {
     async load(userId?: string) {
       update((s) => ({ ...s, loading: true, error: null }))
       try {
+        console.debug('[teams.load] start', { userId })
+        if (!userId) {
+          const { data: { user } } = await supabase.auth.getUser()
+          console.debug('[teams.load] no userId supplied', { authUserId: user?.id })
+        }
         const items = await teamService.list(userId)
         const current = items[0] ?? null
+        console.debug('[teams.load] loaded', {
+          count: items.length,
+          ids: items.map((team) => team.id),
+          currentId: current?.id || null,
+        })
         
         // Load user role for current team
         let currentUserRole: TeamRole | null = null
@@ -134,5 +144,4 @@ export const currentUserRole = {
     return teams.get().currentUserRole
   },
 }
-
 
