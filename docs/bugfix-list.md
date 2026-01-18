@@ -1,0 +1,23 @@
+# List of changes needed for cosplans project
+
+- Need a way to delete tasks in the task section
+- App is not constrained to device dimentions.
+    - The action bar is not calculated in context area height
+- Sidebar toggle feature does not fuction
+- 3rd Party calendar and ical integration not added yet
+- Photoshoots, tools, resources, and calendar should be group into their own section in the sidebar
+- action bar is not sticky to the top on all pages
+- better mobile support
+- change "preferences" in settings to "notifications" and remove dark mode toggle option
+- task board headers are not rendered preperly on tablets
+- sometimes tasks do not appear in kabanna view after creation
+- sidebar is not fixed on mobile and is affected by scrolling
+- "what should i do now" button position gets messed up on smaller screens and is not in the correct position
+- Overall task tracker should have a way to track subtasks and tasks together or seperately instead of just main task tracking.
+- tasks dont have option to be linked to resources or projects.
+- idea phase notes do not persist when tranitioning to planning.
+- missing api integrations to look up and pull information about characters when creating a new idea or plan. idea and plan title should be separate from character name and series which can be pulled from database api.
+- team invitation system not implimented
+- cannot delete teams
+- no proper fallback is account is created without a team. user should always be in a team and a new one should be auto created when creating a profile. if none exists then a personal team should be created.
+- move custom field creation into a new unified task settings page

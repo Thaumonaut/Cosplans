@@ -1,0 +1,271 @@
+openapi: 3.0.0
+info:
+  title: Character API Aggregation Service
+  version: 1.0.0
+  description: Multi-source character database integration with fallback and deduplication
+  contact:
+    name: Cosplay Tracker API Support
+
+servers:
+  - url: https://api.cosplaytracker.com
+    description: Production server
+  - url: http://localhost:5173
+    description: Development server
+
+paths:
+  /api/characters/search:
+    post:
+      summary: Search characters across multiple APIs
+      description: |
+        Searches for characters across multiple external APIs (MyAnimeList, AniList, IGDB, Comic Vine, TMDB),
+        aggregates results, deduplicates matches, and returns sorted by confidence score.
+        
+        The service queries APIs in parallel for performance, handles individual API failures gracefully,
+        and merges results from multiple sources when the same character is found.
+      operationId: searchCharacters
+      tags:
+        - Characters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  description: Character name or series to search
+                  example: "Naruto Uzumaki"
+                  minLength: 1
+                  maxLength: 200
+                sources:
+                  type: array
+                  items:
+                    type: string
+                    enum: [myanimelist, anilist, igdb, comicvine, tmdb, all]
+                  description: Which APIs to query (defaults to 'all' if not specified)
+                  default: [all]
+                  example: [all]
+                limit:
+                  type: integer
+                  description: Maximum results per API source
+                  default: 10
+                  minimum: 1
+                  maximum: 50
+                  example: 10
+      responses:
+        '200':
+          description: Aggregated character results
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                  - sources_queried
+                  - sources_failed
+                  - total_results
+                properties:
+                  results:
+                    type: array
+                    description: Deduplicated and merged character results, sorted by confidence score
+                    items:
+                      $ref: '#/components/schemas/AggregatedCharacter'
+                  sources_queried:
+                    type: array
+                    description: List of API sources that were successfully queried
+                    items:
+                      type: string
+                      enum: [myanimelist, anilist, igdb, comicvine, tmdb]
+                    example: [myanimelist, anilist, igdb]
+                  sources_failed:
+                    type: array
+                    description: List of API sources that failed or were unavailable
+                    items:
+                      type: string
+                      enum: [myanimelist, anilist, igdb, comicvine, tmdb]
+                    example: [comicvine]
+                  total_results:
+                    type: integer
+                    description: Total number of unique characters found (after deduplication)
+                    example: 15
+        '400':
+          description: Invalid request (missing query, invalid parameters)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/characters/{id}:
+    get:
+      summary: Get character by internal ID
+      description: |
+        Retrieves a character by its internal UUID. Characters are stored in the database
+        after being aggregated from external APIs.
+      operationId: getCharacter
+      tags:
+        - Characters
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Internal character UUID
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Character details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregatedCharacter'
+        '404':
+          description: Character not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    AggregatedCharacter:
+      type: object
+      required:
+        - id
+        - name
+        - series
+        - source_apis
+        - confidence_score
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Internal character UUID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: Normalized character name
+          example: "Naruto Uzumaki"
+        series:
+          type: string
+          description: Series or franchise name
+          example: "Naruto"
+        description:
+          type: string
+          nullable: true
+          description: Character description (merged from multiple sources)
+          example: "A young ninja who seeks recognition from his peers..."
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Best available character image URL
+          example: "https://cdn.example.com/characters/naruto.jpg"
+        source_apis:
+          type: array
+          description: List of API sources that provided data for this character
+          items:
+            type: string
+            enum: [myanimelist, anilist, igdb, comicvine, tmdb, manual]
+          example: [myanimelist, anilist]
+        external_ids:
+          type: object
+          description: External API IDs for this character
+          additionalProperties:
+            type: integer
+          properties:
+            myanimelist_id:
+              type: integer
+              description: MyAnimeList character ID
+              example: 11
+            anilist_id:
+              type: integer
+              description: AniList character ID
+              example: 30002
+            igdb_id:
+              type: integer
+              description: IGDB character ID
+              example: 12345
+            comicvine_id:
+              type: integer
+              description: Comic Vine character ID
+              example: 1234
+            tmdb_id:
+              type: integer
+              description: TMDB person ID
+              example: 123456
+          example:
+            myanimelist_id: 11
+            anilist_id: 30002
+        metadata:
+          type: object
+          description: Additional API-specific metadata
+          additionalProperties: true
+          example:
+            voice_actors: ["Junko Takeuchi"]
+            appearances: ["Naruto", "Naruto Shippuden"]
+        confidence_score:
+          type: number
+          format: float
+          description: Deduplication confidence score (0.0 to 1.0)
+          minimum: 0.0
+          maximum: 1.0
+          example: 0.95
+        created_at:
+          type: string
+          format: date-time
+          description: When character was first created in database
+          example: "2026-01-03T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: When character was last updated
+          example: "2026-01-03T10:00:00Z"
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "CHARACTER_NOT_FOUND"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Character with ID 550e8400-e29b-41d4-a716-446655440000 not found"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from Supabase Auth
+
+security:
+  - BearerAuth: []
+
+
+

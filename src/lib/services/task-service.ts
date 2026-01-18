@@ -145,7 +145,9 @@ export class TaskService extends BaseService {
 					labels:task_label_assignments(
 						label:task_labels(id, name, color)
 					)
-				`);
+				`)
+				// Filter out soft-deleted tasks by default
+				.is('deleted_at', null);
 
 			// Apply filters
 			if (filters?.status_ids?.length) {

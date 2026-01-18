@@ -87,6 +87,9 @@ export const projectService = {
     if (project.fromIdeaId !== undefined && project.fromIdeaId !== null) {
       insertData.from_idea_id = project.fromIdeaId
     }
+    if (project.planningIdeaId !== undefined && project.planningIdeaId !== null) {
+      insertData.planning_idea_id = project.planningIdeaId
+    }
     if (project.estimatedBudget !== undefined && project.estimatedBudget !== null) {
       insertData.estimated_budget = project.estimatedBudget
     }
@@ -95,6 +98,9 @@ export const projectService = {
     }
     if (project.description !== undefined && project.description !== null) {
       insertData.description = project.description
+    }
+    if (project.notes !== undefined && project.notes !== null) {
+      insertData.notes = project.notes
     }
     if (project.coverImage !== undefined && project.coverImage !== null) {
       insertData.cover_image = project.coverImage
@@ -132,12 +138,14 @@ export const projectService = {
 
     if (updates.character !== undefined) updateData.character = updates.character
     if (updates.series !== undefined) updateData.series = updates.series || null
+    if (updates.planningIdeaId !== undefined) updateData.planning_idea_id = updates.planningIdeaId
     if (updates.status !== undefined) updateData.status = updates.status
     if (updates.progress !== undefined) updateData.progress = updates.progress
     if (updates.estimatedBudget !== undefined) updateData.estimated_budget = updates.estimatedBudget
     if (updates.spentBudget !== undefined) updateData.spent_budget = updates.spentBudget
     if (updates.deadline !== undefined) updateData.deadline = updates.deadline
     if (updates.description !== undefined) updateData.description = updates.description || null
+    if (updates.notes !== undefined) updateData.notes = updates.notes || null
     if (updates.coverImage !== undefined) updateData.cover_image = updates.coverImage || null
     if (updates.referenceImages !== undefined) updateData.reference_images = updates.referenceImages
     if (updates.tags !== undefined) updateData.tags = updates.tags
@@ -557,7 +565,7 @@ export const projectService = {
       estimatedCost: project.estimatedBudget || undefined,
       images: project.referenceImages || (project.coverImage ? [project.coverImage] : []),
       tags: project.tags || [],
-      notes: undefined,
+      notes: project.notes || undefined, // Feature: 004-bugfix-testing - T038: Preserve notes when converting back
     })
 
     // Delete the project after successful conversion
@@ -577,6 +585,7 @@ function mapProjectFromDb(row: any): Project {
     id: row.id,
     teamId: row.team_id,
     fromIdeaId: row.from_idea_id ?? undefined,
+    planningIdeaId: row.planning_idea_id ?? undefined,
     character: row.character,
     series: row.series ?? undefined,
     status: row.status,
@@ -585,6 +594,7 @@ function mapProjectFromDb(row: any): Project {
     spentBudget: row.spent_budget ? Number(row.spent_budget) : 0,
     deadline: row.deadline ?? undefined,
     description: row.description ?? undefined,
+    notes: row.notes ?? undefined,
     coverImage: row.cover_image ?? undefined,
     referenceImages: row.reference_images || [],
     tags: row.tags || [],
@@ -592,4 +602,3 @@ function mapProjectFromDb(row: any): Project {
     updatedAt: row.updated_at,
   }
 }
-

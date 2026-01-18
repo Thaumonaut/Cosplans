@@ -4,6 +4,7 @@ export interface Project {
   id: string
   teamId: string
   fromIdeaId?: string | null
+  planningIdeaId?: string | null
   character: string
   series?: string | null
   status: ProjectStatus
@@ -12,6 +13,7 @@ export interface Project {
   spentBudget: number // stored in cents
   deadline?: string | null // ISO date string
   description?: string
+  notes?: string // Feature: 004-bugfix-testing - persists from idea phase
   coverImage?: string
   referenceImages: string[]
   tags: string[]
@@ -23,10 +25,12 @@ export interface ProjectCreate {
   character: string
   series?: string | null
   fromIdeaId?: string
+  planningIdeaId?: string
   status?: ProjectStatus
   estimatedBudget?: number // in cents
   deadline?: string
   description?: string
+  notes?: string
   coverImage?: string
   referenceImages?: string[]
   tags?: string[]
@@ -35,11 +39,13 @@ export interface ProjectCreate {
 export interface ProjectUpdate {
   character?: string
   series?: string
+  planningIdeaId?: string | null
   status?: ProjectStatus
   estimatedBudget?: number // in cents
   spentBudget?: number // in cents
   deadline?: string | null
   description?: string
+  notes?: string
   coverImage?: string
   referenceImages?: string[]
   tags?: string[]

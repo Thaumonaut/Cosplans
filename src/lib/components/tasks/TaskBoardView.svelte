@@ -167,6 +167,7 @@ function applyStageColorsInPlace(stages: Stage[]): Stage[] {
 		statusChange: { id: string; status_id: string };
 		priorityChange: { id: string; priority: string };
 		dueDateChange: { id: string; due_date: string | null };
+		delete: { id: string };
 		taskDrop: { taskId: string; newStatusId: string };
 		addTask: { stageId: string };
 		stageReorder: { stageIds: string[] };
@@ -1114,6 +1115,7 @@ function handleFinalize(e: CustomEvent<DndEvent<Task>>, stageId: string) {
 							on:statusChange={handleStatusChange}
 							on:priorityChange={handlePriorityChange}
 							on:dueDateChange={handleDueDateChange}
+							on:delete
 						/>
 						</div>
 					{/each}

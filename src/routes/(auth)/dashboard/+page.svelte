@@ -443,9 +443,9 @@
             <div class="text-center py-8 text-muted-foreground">No active projects. Create your first project to get started!</div>
           {:else}
             {#each displayProjects as project (project.id)}
-              <Card class="overflow-hidden">
+              <Card class="overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 cursor-pointer group">
                 <div 
-                  class="flex gap-4 cursor-pointer transition-all hover:shadow-lg"
+                  class="flex gap-4"
                   onclick={() => handleProjectClick(project.id)}
                   role="button"
                   tabindex="0"
@@ -456,10 +456,10 @@
                     }
                   }}
                 >
-                  <div class="relative h-32 w-32 flex-shrink-0 overflow-hidden">
-                    <img src={project.image} alt={project.character} class="h-full w-full object-cover" />
+                  <div class="relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg">
+                    <img src={project.image} alt={project.character} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
                   </div>
-                  <div class="flex-1 p-4 space-y-3">
+                  <div class="flex-1 space-y-3">
                     <div class="flex items-start justify-between">
                       <div>
                         <h3 class="text-lg font-semibold">{project.character}</h3>

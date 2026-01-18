@@ -7,8 +7,9 @@
 export { format, parseISO, isAfter, isBefore, addDays, subDays } from 'date-fns';
 
 // Re-export commonly used utilities to enable better tree-shaking
-export { clsx } from 'clsx';
-export { twMerge } from 'tailwind-merge';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+export { clsx, twMerge };
 
 // Flowbite Svelte - import only needed components
 export {

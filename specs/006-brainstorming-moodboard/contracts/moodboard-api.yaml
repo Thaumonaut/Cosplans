@@ -1,0 +1,1330 @@
+openapi: 3.0.3
+info:
+  title: Moodboard API
+  description: API endpoints for Feature 006 - Enhanced Brainstorming & Moodboarding
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Moodboard Nodes
+    description: Canvas node operations
+  - name: Moodboard Edges
+    description: Node connection operations
+  - name: Budget Items
+    description: Budget management
+  - name: Options
+    description: Idea option management
+  - name: Sharing
+    description: Moodboard sharing and comments
+  - name: Contacts
+    description: Contact/vendor management
+
+paths:
+  # === MOODBOARD NODES ===
+
+  /ideas/{ideaId}/moodboard/nodes:
+    get:
+      tags: [Moodboard Nodes]
+      summary: Get all moodboard nodes for an idea
+      operationId: getMoodboardNodes
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: nodeType
+          in: query
+          schema:
+            $ref: '#/components/schemas/NodeType'
+        - name: tags
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: List of moodboard nodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodboardNode'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags: [Moodboard Nodes]
+      summary: Create a new moodboard node
+      operationId: createMoodboardNode
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMoodboardNodeRequest'
+      responses:
+        '201':
+          description: Node created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardNode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /ideas/{ideaId}/moodboard/nodes/{nodeId}:
+    get:
+      tags: [Moodboard Nodes]
+      summary: Get a specific moodboard node
+      operationId: getMoodboardNode
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - $ref: '#/components/parameters/NodeId'
+      responses:
+        '200':
+          description: Moodboard node details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardNode'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [Moodboard Nodes]
+      summary: Update a moodboard node
+      operationId: updateMoodboardNode
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - $ref: '#/components/parameters/NodeId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMoodboardNodeRequest'
+      responses:
+        '200':
+          description: Node updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardNode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags: [Moodboard Nodes]
+      summary: Delete a moodboard node
+      operationId: deleteMoodboardNode
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - $ref: '#/components/parameters/NodeId'
+      responses:
+        '204':
+          description: Node deleted successfully
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /ideas/{ideaId}/moodboard/nodes/parse-url:
+    post:
+      tags: [Moodboard Nodes]
+      summary: Parse social media URL and extract metadata
+      operationId: parseSocialMediaUrl
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: "https://instagram.com/p/example123"
+      responses:
+        '200':
+          description: URL metadata extracted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParsedUrlMetadata'
+        '400':
+          description: Invalid URL or parsing failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # === MOODBOARD EDGES ===
+
+  /ideas/{ideaId}/moodboard/edges:
+    get:
+      tags: [Moodboard Edges]
+      summary: Get all edges for an idea's moodboard
+      operationId: getMoodboardEdges
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: edgeType
+          in: query
+          schema:
+            $ref: '#/components/schemas/EdgeType'
+      responses:
+        '200':
+          description: List of moodboard edges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodboardEdge'
+
+    post:
+      tags: [Moodboard Edges]
+      summary: Create a connection between nodes
+      operationId: createMoodboardEdge
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMoodboardEdgeRequest'
+      responses:
+        '201':
+          description: Edge created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardEdge'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ideas/{ideaId}/moodboard/edges/{edgeId}:
+    delete:
+      tags: [Moodboard Edges]
+      summary: Delete an edge
+      operationId: deleteMoodboardEdge
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: edgeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Edge deleted successfully
+
+  # === OPTIONS ===
+
+  /ideas/{ideaId}/options:
+    get:
+      tags: [Options]
+      summary: Get all options for an idea
+      operationId: getIdeaOptions
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      responses:
+        '200':
+          description: List of idea options
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdeaOption'
+
+    post:
+      tags: [Options]
+      summary: Create a new option
+      operationId: createIdeaOption
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIdeaOptionRequest'
+      responses:
+        '201':
+          description: Option created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaOption'
+
+  /ideas/{ideaId}/options/{optionId}:
+    patch:
+      tags: [Options]
+      summary: Update an option
+      operationId: updateIdeaOption
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: optionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIdeaOptionRequest'
+      responses:
+        '200':
+          description: Option updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaOption'
+
+    delete:
+      tags: [Options]
+      summary: Delete an option
+      operationId: deleteIdeaOption
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: optionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Option deleted successfully
+
+  # === BUDGET ITEMS ===
+
+  /ideas/{ideaId}/budget:
+    get:
+      tags: [Budget Items]
+      summary: Get all budget items for an idea
+      operationId: getIdeaBudgetItems
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: optionId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter by specific option
+      responses:
+        '200':
+          description: List of budget items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BudgetItem'
+
+    post:
+      tags: [Budget Items]
+      summary: Create a new budget item
+      operationId: createBudgetItem
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBudgetItemRequest'
+      responses:
+        '201':
+          description: Budget item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetItem'
+
+  /ideas/{ideaId}/budget/{budgetItemId}:
+    patch:
+      tags: [Budget Items]
+      summary: Update a budget item
+      operationId: updateBudgetItem
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: budgetItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBudgetItemRequest'
+      responses:
+        '200':
+          description: Budget item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetItem'
+
+    delete:
+      tags: [Budget Items]
+      summary: Delete a budget item
+      operationId: deleteBudgetItem
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: budgetItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Budget item deleted
+
+  /ideas/{ideaId}/budget/{budgetItemId}/add-to-canvas:
+    post:
+      tags: [Budget Items]
+      summary: Add budget item to canvas as a node
+      operationId: addBudgetItemToCanvas
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+        - name: budgetItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [positionX, positionY]
+              properties:
+                positionX:
+                  type: number
+                positionY:
+                  type: number
+      responses:
+        '201':
+          description: Budget item node created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardNode'
+
+  # === SHARING ===
+
+  /ideas/{ideaId}/share:
+    post:
+      tags: [Sharing]
+      summary: Create a shareable link for the moodboard
+      operationId: createMoodboardShare
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      responses:
+        '201':
+          description: Share link created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardShare'
+
+    get:
+      tags: [Sharing]
+      summary: Get share status for moodboard
+      operationId: getMoodboardShare
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      responses:
+        '200':
+          description: Share information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardShare'
+        '404':
+          description: No active share found
+
+    delete:
+      tags: [Sharing]
+      summary: Revoke moodboard sharing
+      operationId: revokeMoodboardShare
+      parameters:
+        - $ref: '#/components/parameters/IdeaId'
+      responses:
+        '204':
+          description: Share revoked successfully
+
+  /share/moodboard/{shareToken}:
+    get:
+      tags: [Sharing]
+      summary: View shared moodboard (public endpoint)
+      operationId: viewSharedMoodboard
+      security: []  # Public endpoint
+      parameters:
+        - name: shareToken
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shared moodboard data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharedMoodboard'
+        '404':
+          description: Invalid or revoked share token
+
+  /share/moodboard/{shareToken}/comments:
+    get:
+      tags: [Sharing]
+      summary: Get comments on shared moodboard
+      operationId: getSharedMoodboardComments
+      security: []  # Public endpoint
+      parameters:
+        - name: shareToken
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: nodeId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter comments for specific node
+      responses:
+        '200':
+          description: List of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodboardComment'
+
+    post:
+      tags: [Sharing]
+      summary: Add comment to shared moodboard (requires OAuth)
+      operationId: addMoodboardComment
+      security:
+        - oauth: []
+      parameters:
+        - name: shareToken
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentRequest'
+      responses:
+        '201':
+          description: Comment added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodboardComment'
+        '401':
+          description: Authentication required
+        '404':
+          description: Invalid share token
+
+  # === CONTACTS ===
+
+  /contacts:
+    get:
+      tags: [Contacts]
+      summary: Get all contacts for team
+      operationId: getContacts
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [commissioner, supplier, venue, photographer, other]
+        - name: isFavorite
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+
+    post:
+      tags: [Contacts]
+      summary: Create a new contact
+      operationId: createContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+      responses:
+        '201':
+          description: Contact created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+
+  /contacts/{contactId}:
+    get:
+      tags: [Contacts]
+      summary: Get contact details
+      operationId: getContact
+      parameters:
+        - name: contactId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Contact details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+
+    patch:
+      tags: [Contacts]
+      summary: Update a contact
+      operationId: updateContact
+      parameters:
+        - name: contactId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContactRequest'
+      responses:
+        '200':
+          description: Contact updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+
+    delete:
+      tags: [Contacts]
+      summary: Delete a contact
+      operationId: deleteContact
+      parameters:
+        - name: contactId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Contact deleted
+
+# === COMPONENTS ===
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /auth/oauth/authorize
+          tokenUrl: /auth/oauth/token
+          scopes:
+            comment: Add comments to shared moodboards
+
+  parameters:
+    IdeaId:
+      name: ideaId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    NodeId:
+      name: nodeId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    # === NODE SCHEMAS ===
+
+    NodeType:
+      type: string
+      enum:
+        - social_media
+        - image
+        - link
+        - note
+        - swatch
+        - budget_item
+        - contact
+
+    EdgeType:
+      type: string
+      enum:
+        - connection
+        - reference
+        - alternative
+        - shared_resource
+        - supplier_option
+
+    MoodboardNode:
+      type: object
+      required: [id, ideaId, nodeType, positionX, positionY, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+        nodeType:
+          $ref: '#/components/schemas/NodeType'
+        contentUrl:
+          type: string
+          format: uri
+          nullable: true
+        thumbnailUrl:
+          type: string
+          format: uri
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
+        shortComment:
+          type: string
+          nullable: true
+        longNote:
+          type: string
+          nullable: true
+        positionX:
+          type: number
+        positionY:
+          type: number
+        width:
+          type: integer
+          default: 300
+        height:
+          type: integer
+          nullable: true
+        zIndex:
+          type: integer
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        connectionCount:
+          type: integer
+          description: Number of edges connected to this node
+
+    CreateMoodboardNodeRequest:
+      type: object
+      required: [nodeType, positionX, positionY]
+      properties:
+        nodeType:
+          $ref: '#/components/schemas/NodeType'
+        contentUrl:
+          type: string
+          format: uri
+        metadata:
+          type: object
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
+        shortComment:
+          type: string
+        longNote:
+          type: string
+        positionX:
+          type: number
+        positionY:
+          type: number
+        width:
+          type: integer
+        height:
+          type: integer
+
+    UpdateMoodboardNodeRequest:
+      type: object
+      properties:
+        contentUrl:
+          type: string
+          format: uri
+        thumbnailUrl:
+          type: string
+          format: uri
+        metadata:
+          type: object
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
+        shortComment:
+          type: string
+        longNote:
+          type: string
+        positionX:
+          type: number
+        positionY:
+          type: number
+        width:
+          type: integer
+        height:
+          type: integer
+        zIndex:
+          type: integer
+
+    ParsedUrlMetadata:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum: [instagram, tiktok, pinterest, youtube, facebook, other]
+        title:
+          type: string
+        description:
+          type: string
+        thumbnailUrl:
+          type: string
+          format: uri
+        author:
+          type: string
+        authorAvatar:
+          type: string
+          format: uri
+        publishDate:
+          type: string
+          format: date-time
+        embedHtml:
+          type: string
+
+    # === EDGE SCHEMAS ===
+
+    MoodboardEdge:
+      type: object
+      required: [id, ideaId, sourceNodeId, targetNodeId, edgeType, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+        sourceNodeId:
+          type: string
+          format: uuid
+        targetNodeId:
+          type: string
+          format: uuid
+        edgeType:
+          $ref: '#/components/schemas/EdgeType'
+        label:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateMoodboardEdgeRequest:
+      type: object
+      required: [sourceNodeId, targetNodeId, edgeType]
+      properties:
+        sourceNodeId:
+          type: string
+          format: uuid
+        targetNodeId:
+          type: string
+          format: uuid
+        edgeType:
+          $ref: '#/components/schemas/EdgeType'
+        label:
+          type: string
+
+    # === OPTION SCHEMAS ===
+
+    IdeaOption:
+      type: object
+      required: [id, ideaId, name, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        budgetSummary:
+          $ref: '#/components/schemas/BudgetSummary'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateIdeaOptionRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        notes:
+          type: string
+
+    UpdateIdeaOptionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        notes:
+          type: string
+
+    # === BUDGET SCHEMAS ===
+
+    BudgetItem:
+      type: object
+      required: [id, itemName, estimatedCost, quantity, priority, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+          nullable: true
+        optionId:
+          type: string
+          format: uuid
+          nullable: true
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        itemName:
+          type: string
+        estimatedCost:
+          type: number
+          format: decimal
+        actualCost:
+          type: number
+          format: decimal
+          nullable: true
+        quantity:
+          type: integer
+          minimum: 1
+        contactId:
+          type: string
+          format: uuid
+          nullable: true
+        contact:
+          $ref: '#/components/schemas/Contact'
+        priority:
+          type: string
+          enum: [need, want, nice_to_have]
+        isShared:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+        linkedNodeId:
+          type: string
+          format: uuid
+          nullable: true
+        currency:
+          type: string
+          default: USD
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateBudgetItemRequest:
+      type: object
+      required: [itemName, estimatedCost, priority]
+      properties:
+        optionId:
+          type: string
+          format: uuid
+        itemName:
+          type: string
+        estimatedCost:
+          type: number
+          format: decimal
+        quantity:
+          type: integer
+          minimum: 1
+        contactId:
+          type: string
+          format: uuid
+        priority:
+          type: string
+          enum: [need, want, nice_to_have]
+        isShared:
+          type: boolean
+        notes:
+          type: string
+        currency:
+          type: string
+
+    UpdateBudgetItemRequest:
+      type: object
+      properties:
+        itemName:
+          type: string
+        estimatedCost:
+          type: number
+          format: decimal
+        actualCost:
+          type: number
+          format: decimal
+        quantity:
+          type: integer
+          minimum: 1
+        contactId:
+          type: string
+          format: uuid
+        priority:
+          type: string
+          enum: [need, want, nice_to_have]
+        isShared:
+          type: boolean
+        notes:
+          type: string
+
+    BudgetSummary:
+      type: object
+      properties:
+        itemCount:
+          type: integer
+        totalEstimated:
+          type: number
+          format: decimal
+        totalActual:
+          type: number
+          format: decimal
+        nonSharedCost:
+          type: number
+          format: decimal
+        currency:
+          type: string
+
+    # === SHARING SCHEMAS ===
+
+    MoodboardShare:
+      type: object
+      required: [id, ideaId, shareToken, isActive, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+        shareToken:
+          type: string
+        shareUrl:
+          type: string
+          format: uri
+          description: Full URL for sharing
+        createdBy:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    SharedMoodboard:
+      type: object
+      properties:
+        idea:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/MoodboardNode'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/MoodboardEdge'
+        commentCount:
+          type: integer
+
+    MoodboardComment:
+      type: object
+      required: [id, ideaId, commenterName, commentText, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ideaId:
+          type: string
+          format: uuid
+        nodeId:
+          type: string
+          format: uuid
+          nullable: true
+        oauthProvider:
+          type: string
+          enum: [google, github, facebook, microsoft]
+        commenterName:
+          type: string
+        commenterAvatar:
+          type: string
+          format: uri
+          nullable: true
+        commentText:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateCommentRequest:
+      type: object
+      required: [commentText]
+      properties:
+        nodeId:
+          type: string
+          format: uuid
+          description: If null, comment is on entire moodboard
+        commentText:
+          type: string
+          minLength: 1
+
+    # === CONTACT SCHEMAS ===
+
+    Contact:
+      type: object
+      required: [id, teamId, name, type, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        teamId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [commissioner, supplier, venue, photographer, other]
+        email:
+          type: string
+          format: email
+          nullable: true
+        website:
+          type: string
+          format: uri
+          nullable: true
+        socialMedia:
+          type: object
+          additionalProperties:
+            type: string
+        notes:
+          type: string
+          nullable: true
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          nullable: true
+        isFavorite:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateContactRequest:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [commissioner, supplier, venue, photographer, other]
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: uri
+        socialMedia:
+          type: object
+          additionalProperties:
+            type: string
+        notes:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        isFavorite:
+          type: boolean
+
+    UpdateContactRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [commissioner, supplier, venue, photographer, other]
+        email:
+          type: string
+          format: email
+        website:
+          type: string
+          format: uri
+        socialMedia:
+          type: object
+          additionalProperties:
+            type: string
+        notes:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        isFavorite:
+          type: boolean
+
+    # === ERROR SCHEMAS ===
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+security:
+  - bearerAuth: []

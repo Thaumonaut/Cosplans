@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Camera, Save } from 'lucide-svelte';
-  import { 
-    Button, 
-    Card, 
-    CardContent, 
-    CardDescription, 
-    CardHeader, 
+  import { Camera, Save, Trash2, AlertTriangle } from 'lucide-svelte';
+  import {
+    Button,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
     CardTitle,
     Avatar,
     AvatarFallback,
@@ -16,13 +16,20 @@
     Textarea,
     Switch
   } from '$lib/components/ui';
+  import Dialog from '$lib/components/ui/dialog.svelte';
+  import DialogFooter from '$lib/components/ui/dialog-footer.svelte';
   import { userService } from '$lib/api/services/userService';
   import { user, userProfile } from '$lib/stores/auth-store';
   import { toast } from '$lib/stores/toast';
   import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
 
   let loading = $state(true);
   let saving = $state(false);
+  let deleting = $state(false);
+  let showDeleteDialog = $state(false);
+  let deleteConfirmText = $state('');
+
   let profile = $state<{
     id: string;
     email: string;
@@ -65,8 +72,8 @@
         // Use data from auth store as fallback
         const profileData = get(userProfile);
         if (profileData) {
-          displayName = profileData.firstName && profileData.lastName 
-            ? `${profileData.firstName} ${profileData.lastName}` 
+          displayName = profileData.firstName && profileData.lastName
+            ? `${profileData.firstName} ${profileData.lastName}`
             : profileData.firstName || '';
           firstName = profileData.firstName || '';
           lastName = profileData.lastName || '';
@@ -95,7 +102,7 @@
       });
 
       toast.success('Profile Updated', 'Your profile has been saved successfully');
-      
+
       // Refresh profile data
       const updatedProfile = await userService.getProfile();
       if (updatedProfile) {
@@ -106,6 +113,28 @@
       toast.error('Failed to Update Profile', error?.message || 'Could not save your profile');
     } finally {
       saving = false;
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (deleting) return;
+    if (deleteConfirmText !== 'DELETE') {
+      toast.error('Invalid Confirmation', 'Please type DELETE to confirm account deletion');
+      return;
+    }
+
+    deleting = true;
+    try {
+      await userService.deleteAccount();
+      toast.success('Account Deleted', 'Your account has been permanently deleted');
+      // Redirect to home page after a short delay
+      setTimeout(() => {
+        goto('/');
+      }, 1000);
+    } catch (error: any) {
+      console.error('Failed to delete account:', error);
+      toast.error('Failed to Delete Account', error?.message || 'Could not delete your account');
+      deleting = false;
     }
   }
 
@@ -172,15 +201,15 @@
         <div class="grid gap-4 md:grid-cols-2">
           <div class="space-y-2">
             <Label>Display Name</Label>
-            <Input 
+            <Input
               bind:value={displayName}
               placeholder="Your display name"
             />
           </div>
           <div class="space-y-2">
             <Label>Email</Label>
-            <Input 
-              type="email" 
+            <Input
+              type="email"
               value={email}
               disabled
               class="bg-muted"
@@ -189,14 +218,14 @@
           </div>
           <div class="space-y-2">
             <Label>First Name</Label>
-            <Input 
+            <Input
               bind:value={firstName}
               placeholder="First name"
             />
           </div>
           <div class="space-y-2">
             <Label>Last Name</Label>
-            <Input 
+            <Input
               bind:value={lastName}
               placeholder="Last name"
             />
@@ -239,5 +268,80 @@
         <Button disabled>Update Password</Button>
       </CardContent>
     </Card>
+
+    <!-- Danger Zone -->
+    <Card class="border-destructive">
+      <CardHeader>
+        <CardTitle class="flex items-center gap-2 text-destructive">
+          <AlertTriangle class="size-5" />
+          Danger Zone
+        </CardTitle>
+        <CardDescription>Irreversible actions that will permanently affect your account</CardDescription>
+      </CardHeader>
+      <CardContent class="space-y-4">
+        <div class="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <h3 class="font-semibold text-destructive mb-2">Delete Account</h3>
+          <p class="text-sm text-muted-foreground mb-4">
+            Once you delete your account, there is no going back. This will permanently delete:
+          </p>
+          <ul class="text-sm text-muted-foreground list-disc list-inside space-y-1 mb-4">
+            <li>Your profile and personal information</li>
+            <li>All teams you created</li>
+            <li>All projects, tasks, and data associated with your account</li>
+            <li>Your team memberships</li>
+          </ul>
+          <Button
+            variant="destructive"
+            onclick={() => showDeleteDialog = true}
+            class="w-full sm:w-auto"
+          >
+            <Trash2 class="mr-2 size-4" />
+            Delete My Account
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   {/if}
 </div>
+
+<!-- Delete Account Confirmation Dialog -->
+<Dialog
+  bind:open={showDeleteDialog}
+  title="Delete Account"
+  description="This action cannot be undone. This will permanently delete your account and remove all associated data from our servers."
+>
+  <div class="space-y-4">
+    <div class="space-y-2">
+      <Label>Type <span class="font-mono font-bold">DELETE</span> to confirm</Label>
+      <Input
+        bind:value={deleteConfirmText}
+        placeholder="DELETE"
+        class="font-mono text-foreground"
+      />
+    </div>
+    <div class="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+      <p class="font-semibold mb-1">Warning:</p>
+      <p>All your data will be permanently deleted. This includes all teams, projects, tasks, and personal information.</p>
+    </div>
+  </div>
+  <DialogFooter>
+    <Button
+      variant="outline"
+      onclick={() => {
+        showDeleteDialog = false;
+        deleteConfirmText = '';
+      }}
+      disabled={deleting}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="destructive"
+      onclick={handleDeleteAccount}
+      disabled={deleting || deleteConfirmText !== 'DELETE'}
+    >
+      <Trash2 class="mr-2 size-4" />
+      {deleting ? 'Deleting...' : 'Delete Account'}
+    </Button>
+  </DialogFooter>
+</Dialog>

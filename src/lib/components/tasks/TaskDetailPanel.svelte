@@ -10,6 +10,8 @@
 	import type { TaskStage } from '$lib/types/domain/task';
 	import InlineTextEditor from '$lib/components/base/InlineTextEditor.svelte';
 	import InlineUserSelector from '$lib/components/base/InlineUserSelector.svelte';
+	import InlineProjectSelector from '$lib/components/base/InlineProjectSelector.svelte';
+	import InlineResourceSelector from '$lib/components/base/InlineResourceSelector.svelte';
 	import StageSelector from '$lib/components/base/StageSelector.svelte';
 	import PrioritySelector from '$lib/components/base/PrioritySelector.svelte';
 	import { DatePicker } from '$lib/components/ui';
@@ -20,7 +22,7 @@
 	import CustomFieldsSection from './detail/CustomFieldsSection.svelte';
 	import { Button } from '$lib/components/ui';
 	import CreationFlyout from '$lib/components/ui/CreationFlyout.svelte';
-	import { Loader2 } from 'lucide-svelte';
+	import { Loader2, Trash2 } from 'lucide-svelte';
 	import { get } from 'svelte/store';
 	
 	// Service instances
@@ -36,6 +38,7 @@
 		onClose = () => {},
 		onSave = (task: Task) => {},
 		onStartWorking = (taskId: string) => {},
+		onDelete = (taskId: string) => {},
 		initialData = null as Task | null
 	}: {
 		open?: boolean;
@@ -43,6 +46,7 @@
 		onClose?: () => void;
 		onSave?: (task: Task) => void;
 		onStartWorking?: (taskId: string) => void;
+		onDelete?: (taskId: string) => void;
 		initialData?: Task | null;
 	} = $props();
 
@@ -299,6 +303,13 @@
 	function handleAttachmentDeleted(attachmentId: string) {
 		attachments = attachments.filter((a) => a.id !== attachmentId);
 	}
+
+	// Handle delete
+	function handleDelete() {
+		if (taskId) {
+			onDelete(taskId);
+		}
+	}
 </script>
 
 <!-- Task Detail Panel -->
@@ -493,6 +504,26 @@
 								onSave={(value) => mode === 'create' ? (task.assigned_to = value) : updateField('assigned_to', value)}
 							/>
 						</div>
+
+						<!-- Project Link -->
+						<div>
+							<label class="mb-2 block text-sm font-medium" style="color: var(--theme-foreground);">Project</label>
+							<InlineProjectSelector
+								bind:value={task.project_id}
+								editable={isEditMode}
+								onSave={(value) => mode === 'create' ? (task.project_id = value) : updateField('project_id', value)}
+							/>
+						</div>
+
+						<!-- Resource Link -->
+						<div>
+							<label class="mb-2 block text-sm font-medium" style="color: var(--theme-foreground);">Resource</label>
+							<InlineResourceSelector
+								bind:value={task.resource_id}
+								editable={isEditMode}
+								onSave={(value) => mode === 'create' ? (task.resource_id = value) : updateField('resource_id', value)}
+							/>
+						</div>
 					</div>
 
 					<!-- Description -->
@@ -578,6 +609,30 @@
 								onAdd={handleAttachmentAdded}
 								onDelete={handleAttachmentDeleted}
 							/>
+						</div>
+
+						<!-- Danger Zone -->
+						<div class="pt-6 mt-6 border-t" style="border-color: var(--theme-border, #e7e5e4);">
+							<label class="mb-2 block text-sm font-medium" style="color: var(--color-danger, #dc2626);">
+								Danger Zone
+							</label>
+							<p class="text-xs mb-3" style="color: var(--theme-text-muted, #78716c);">
+								Once you delete a task, it will be hidden from all views. You can restore it within 30 days.
+							</p>
+							<button
+								type="button"
+								class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md border transition-colors"
+								style="
+									background-color: transparent;
+									border-color: var(--color-danger, #dc2626);
+									color: var(--color-danger, #dc2626);
+								"
+								onclick={handleDelete}
+								data-testid="detail-panel-delete-button"
+							>
+								<Trash2 class="w-4 h-4" />
+								Delete Task
+							</button>
 						</div>
 					{/if}
 				</div>

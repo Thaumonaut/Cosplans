@@ -1,23 +1,23 @@
-import { supabase } from '$lib/supabase'
+import { supabase } from "$lib/supabase";
 
 export interface UserProfile {
-  id: string
-  email: string
-  name?: string
-  firstName?: string
-  lastName?: string
-  avatarUrl?: string
-  bio?: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  email: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  bio?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserProfileUpdate {
-  name?: string
-  firstName?: string
-  lastName?: string
-  avatarUrl?: string
-  bio?: string
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  bio?: string;
 }
 
 export const userService = {
@@ -27,32 +27,35 @@ export const userService = {
   async getProfile(): Promise<UserProfile | null> {
     const {
       data: { user },
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
-    if (!user) return null
+    if (!user) return null;
 
     // Get profile from users table
     const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', user.id)
-      .single()
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         // User doesn't have a profile record yet, create one
         const { data: newProfile, error: createError } = await supabase
-          .from('users')
+          .from("users")
           .insert({
             id: user.id,
-            email: user.email || '',
-            name: user.user_metadata?.first_name || user.user_metadata?.name || null,
+            email: user.email || "",
+            name:
+              user.user_metadata?.first_name ||
+              user.user_metadata?.name ||
+              null,
             avatar_url: user.user_metadata?.avatar_url || null,
           } as any)
           .select()
-          .single()
+          .single();
 
-        if (createError) throw createError
+        if (createError) throw createError;
 
         return {
           id: newProfile.id,
@@ -64,9 +67,9 @@ export const userService = {
           bio: newProfile.bio || undefined,
           createdAt: newProfile.created_at,
           updatedAt: newProfile.updated_at,
-        }
+        };
       }
-      throw error
+      throw error;
     }
 
     return {
@@ -79,7 +82,7 @@ export const userService = {
       bio: data.bio || undefined,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-    }
+    };
   },
 
   /**
@@ -88,51 +91,56 @@ export const userService = {
   async updateProfile(updates: UserProfileUpdate): Promise<UserProfile> {
     const {
       data: { user },
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
-    if (!user) throw new Error('Not authenticated')
+    if (!user) throw new Error("Not authenticated");
 
     // Update users table
     const updateData: any = {
       updated_at: new Date().toISOString(),
-    }
+    };
 
-    if (updates.name !== undefined) updateData.name = updates.name
-    if (updates.avatarUrl !== undefined) updateData.avatar_url = updates.avatarUrl
-    if (updates.bio !== undefined) updateData.bio = updates.bio
+    if (updates.name !== undefined) updateData.name = updates.name;
+    if (updates.avatarUrl !== undefined)
+      updateData.avatar_url = updates.avatarUrl;
+    if (updates.bio !== undefined) updateData.bio = updates.bio;
 
     const { data, error } = await supabase
-      .from('users')
+      .from("users")
       .update(updateData)
-      .eq('id', user.id)
+      .eq("id", user.id)
       .select()
-      .single()
+      .single();
 
     if (error) {
       // If profile doesn't exist, create it
-      if (error.code === 'PGRST116' || error.code === '23503') {
+      if (error.code === "PGRST116" || error.code === "23503") {
         const { data: newData, error: createError } = await supabase
-          .from('users')
+          .from("users")
           .insert({
             id: user.id,
-            email: user.email || '',
+            email: user.email || "",
             name: updates.name || null,
             avatar_url: updates.avatarUrl || null,
             bio: updates.bio || null,
           } as any)
           .select()
-          .single()
+          .single();
 
-        if (createError) throw createError
+        if (createError) throw createError;
 
         // Update auth metadata if firstName/lastName provided
         if (updates.firstName !== undefined || updates.lastName !== undefined) {
-          const { data: { user: authUser } } = await supabase.auth.getUser()
+          const {
+            data: { user: authUser },
+          } = await supabase.auth.getUser();
           if (authUser) {
-            const metadata = { ...authUser.user_metadata }
-            if (updates.firstName !== undefined) metadata.first_name = updates.firstName
-            if (updates.lastName !== undefined) metadata.last_name = updates.lastName
-            await supabase.auth.updateUser({ data: metadata })
+            const metadata = { ...authUser.user_metadata };
+            if (updates.firstName !== undefined)
+              metadata.first_name = updates.firstName;
+            if (updates.lastName !== undefined)
+              metadata.last_name = updates.lastName;
+            await supabase.auth.updateUser({ data: metadata });
           }
         }
 
@@ -146,19 +154,23 @@ export const userService = {
           bio: newData.bio || undefined,
           createdAt: newData.created_at,
           updatedAt: newData.updated_at,
-        }
+        };
       }
-      throw error
+      throw error;
     }
 
     // Update auth metadata if firstName/lastName provided
     if (updates.firstName !== undefined || updates.lastName !== undefined) {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
       if (authUser) {
-        const metadata = { ...authUser.user_metadata }
-        if (updates.firstName !== undefined) metadata.first_name = updates.firstName
-        if (updates.lastName !== undefined) metadata.last_name = updates.lastName
-        await supabase.auth.updateUser({ data: metadata })
+        const metadata = { ...authUser.user_metadata };
+        if (updates.firstName !== undefined)
+          metadata.first_name = updates.firstName;
+        if (updates.lastName !== undefined)
+          metadata.last_name = updates.lastName;
+        await supabase.auth.updateUser({ data: metadata });
       }
     }
 
@@ -172,7 +184,29 @@ export const userService = {
       bio: data.bio || undefined,
       createdAt: data.created_at,
       updatedAt: data.updated_at,
-    }
+    };
   },
-}
 
+  /**
+   * Delete current user's account completely
+   * This calls a database function that deletes both the profile and auth user
+   */
+  async deleteAccount(): Promise<void> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) throw new Error("Not authenticated");
+
+    // Call the database function to delete the account
+    // This function has SECURITY DEFINER so it can delete from auth.users
+    const { error: rpcError } = await supabase.rpc("delete_user_account");
+
+    if (rpcError) throw rpcError;
+
+    // Sign out the user
+    const { error: signOutError } = await supabase.auth.signOut();
+
+    if (signOutError) throw signOutError;
+  },
+};

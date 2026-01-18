@@ -5,6 +5,7 @@
   import { currentTeam, teams } from '$lib/stores/teams'
   import { user } from '$lib/stores/auth-store'
   import { projectService } from '$lib/api/services/projectService'
+  import { moodboard } from '$lib/stores/moodboard'
   import { toast } from '$lib/stores/toast'
   import { Button, Dialog, DialogFooter } from '$lib/components/ui'
   import { AlertCircle, X, Calendar, DollarSign, Tag as TagIcon, Upload, ImageIcon, Clock, Trash2, ArrowLeft } from 'lucide-svelte'
@@ -19,6 +20,7 @@
   import ResourcesTab from './tabs/ResourcesTab.svelte'
   import TasksTab from './tabs/TasksTab.svelte'
   import GalleryTab from './tabs/GalleryTab.svelte'
+  import ReferencesTab from '$lib/components/ideas/ReferencesTab.svelte'
   import CommentBox from '$lib/components/base/CommentBox.svelte'
   import ResourceDetail from '$lib/components/resources/ResourceDetail.svelte'
   import CreationFlyout from '$lib/components/ui/CreationFlyout.svelte'
@@ -54,7 +56,7 @@
   let convertingToIdea = $state(false)
   let showDeleteDialog = $state(false)
   let showConvertToIdeaDialog = $state(false)
-  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery'>('overview')
+  let activeTab = $state<'overview' | 'resources' | 'tasks' | 'gallery' | 'notes' | 'references'>('overview')
 
   let estimatedBudgetValue = $state(0)
   let progressValue = $state(0)
@@ -90,6 +92,21 @@
     if (project?.id && currentMode() !== 'create') {
       loadProgress()
       loadLinkedResources()
+    }
+  })
+
+  // Load references (planning idea preferred, fallback to source idea, otherwise project-scoped)
+  $effect(() => {
+    if (currentMode() === 'create') return
+    const referenceIdeaId = project?.planningIdeaId ?? project?.fromIdeaId
+    if (referenceIdeaId) {
+      moodboard.load(referenceIdeaId).catch((err) => {
+        console.error('Failed to load moodboard:', err)
+      })
+    } else if (project?.id) {
+      moodboard.loadProjectReferences(project.id).catch((err) => {
+        console.error('Failed to load project references:', err)
+      })
     }
   })
 
@@ -367,6 +384,7 @@
   let seriesValue = $state('')
   let statusValue = $state<'planning' | 'in-progress' | 'completed' | 'archived'>('planning')
   let descriptionValue = $state('')
+  let notesValue = $state('')
   let deadlineValue = $state('')
   let imagesValue = $state<string[]>([])
 
@@ -396,6 +414,7 @@
       seriesValue = newProject.series ?? ''
       statusValue = newProject.status || 'planning'
       descriptionValue = newProject.description ?? ''
+      notesValue = ''
       deadlineValue = newProject.deadline ?? ''
       imagesValue = newProject.referenceImages ?? []
     } else if (project) {
@@ -403,6 +422,7 @@
       seriesValue = project.series ?? ''
       statusValue = project.status
       descriptionValue = project.description ?? ''
+      notesValue = project.notes ?? ''
       deadlineValue = project.deadline ?? ''
       imagesValue = project.referenceImages ?? []
     }
@@ -415,6 +435,10 @@
   </div>
 {:else if error && currentMode() !== 'create' && !project}
   <NotFound entityType="project" backUrl="/projects" searchUrl="/projects" />
+{:else if currentMode() !== 'create' && !project}
+  <div class="flex items-center justify-center py-20">
+    <div class="text-sm text-muted-foreground">Loading project...</div>
+  </div>
 {:else}
   <div class="flex h-full flex-col">
     <!-- Header with Image, Title and Metadata -->
@@ -428,29 +452,26 @@
             </div>
           {:else}
             <div class="flex size-32 items-center justify-center rounded-lg bg-muted shadow-sm">
-              <div class="text-center">
-                <ImageIcon class="mx-auto size-8 text-muted-foreground" />
-                {#if !isReadOnly}
-                  <div class="mt-2">
-                    <InlineImageUpload
-                      images={imagesValue}
-                      editable={true}
-                      folder="projects"
-                      onSave={async (v: string[]) => {
-                        if (currentMode() === 'create') {
-                          newProject.referenceImages = v
-                          imagesValue = v
-                        } else if (project) {
-                          project.referenceImages = v
-                          imagesValue = v
-                          await handleSaveField('referenceImages', v)
-                        }
-                      }}
-                      multiple={true}
-                    />
-                  </div>
-                {/if}
-              </div>
+              {#if !isReadOnly}
+                <InlineImageUpload
+                  images={imagesValue}
+                  editable={true}
+                  folder="projects"
+                  onSave={async (v: string[]) => {
+                    if (currentMode() === 'create') {
+                      newProject.referenceImages = v
+                      imagesValue = v
+                    } else if (project) {
+                      project.referenceImages = v
+                      imagesValue = v
+                      await handleSaveField('referenceImages', v)
+                    }
+                  }}
+                  multiple={true}
+                />
+              {:else}
+                <ImageIcon class="size-8 text-muted-foreground" />
+              {/if}
             </div>
           {/if}
         </div>
@@ -630,6 +651,20 @@
           class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'gallery' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
         >
           Gallery {#if imagesValue.length > 0}({imagesValue.length}){/if}
+        </button>
+        {#if project}
+          <button
+            onclick={() => activeTab = 'references'}
+            class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'references' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
+          >
+            References {#if $moodboard.nodes.length > 0}({$moodboard.nodes.length}){/if}
+          </button>
+        {/if}
+        <button
+          onclick={() => activeTab = 'notes'}
+          class="border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'notes' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}"
+        >
+          Notes
         </button>
       </div>
     </div>
@@ -930,13 +965,45 @@
         {:else if activeTab === 'tasks' && project}
           <!-- Tasks Tab -->
           <div class="p-8">
-            <TasksTab 
+            <TasksTab
               projectId={project.id}
               onTaskChange={async () => {
                 // Recalculate progress when tasks change
                 await recalculateMetrics()
               }}
             />
+          </div>
+
+        {:else if activeTab === 'references' && project}
+          <!-- References Tab: project-scoped when no idea exists -->
+          {#if project?.planningIdeaId || project?.fromIdeaId}
+            <ReferencesTab ideaId={project?.planningIdeaId ?? project?.fromIdeaId} />
+          {:else}
+            <ReferencesTab ideaId={project.id} projectId={project.id} />
+          {/if}
+
+        {:else if activeTab === 'notes'}
+          <!-- Notes Tab: Free-form Project Notes -->
+          <!-- Feature: 004-bugfix-testing - T038: Notes persisted from idea phase -->
+          <div class="mx-auto max-w-4xl space-y-6">
+            <div class="rounded-lg bg-background p-6 shadow-sm">
+              <h3 class="mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground">Project Notes</h3>
+              <InlineTextEditor
+                bind:value={notesValue}
+                editable={!isReadOnly}
+                onSave={async (v: string) => {
+                  if (project) {
+                    project.notes = v || undefined
+                    notesValue = v
+                    await handleSaveField('notes', v || undefined)
+                  }
+                }}
+                placeholder="Add notes about materials, techniques, references, or any ideas that come to mind..."
+                variant="body"
+                multiline={true}
+                className="text-base leading-relaxed min-h-[200px]"
+              />
+            </div>
           </div>
 
         {/if}

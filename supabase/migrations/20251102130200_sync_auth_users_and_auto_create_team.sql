@@ -12,7 +12,7 @@ AS $$
 DECLARE
   user_email TEXT;
   user_name TEXT;
-  team_id UUID;
+  v_team_id UUID;
   team_name TEXT;
 BEGIN
   -- Get user info from auth.users
@@ -56,12 +56,12 @@ BEGIN
     NOW(),
     NOW()
   )
-  RETURNING id INTO team_id;
+  RETURNING id INTO v_team_id;
   
   -- Add user as owner member of their personal team
   INSERT INTO public.team_members (team_id, user_id, role, status, joined_at, created_at)
   VALUES (
-    team_id,
+    v_team_id,
     NEW.id,
     'owner',
     'active',
@@ -91,7 +91,7 @@ AS $$
 DECLARE
   user_email TEXT;
   user_name TEXT;
-  team_id UUID;
+  v_team_id UUID;
   team_name TEXT;
   user_record RECORD;
 BEGIN
@@ -137,14 +137,14 @@ BEGIN
     updated_at = NOW();
   
   -- Check if user already has a personal team
-  SELECT id INTO team_id
+  SELECT id INTO v_team_id
   FROM public.teams
   WHERE created_by = p_user_id
   AND type = 'personal'
   LIMIT 1;
   
   -- Only create team if one doesn't exist
-  IF team_id IS NULL THEN
+  IF v_team_id IS NULL THEN
     INSERT INTO public.teams (name, type, created_by, created_at, updated_at)
     VALUES (
       team_name,
@@ -153,12 +153,12 @@ BEGIN
       NOW(),
       NOW()
     )
-    RETURNING id INTO team_id;
+    RETURNING id INTO v_team_id;
     
     -- Add user as owner member of their personal team
     INSERT INTO public.team_members (team_id, user_id, role, status, joined_at, created_at)
     VALUES (
-      team_id,
+      v_team_id,
       p_user_id,
       'owner',
       'active',
@@ -174,7 +174,7 @@ BEGIN
   RETURN jsonb_build_object(
     'success', true,
     'user_id', p_user_id,
-    'team_id', team_id
+    'team_id', v_team_id
   );
 END;
 $$;

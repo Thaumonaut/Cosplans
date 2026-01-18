@@ -1,13 +1,17 @@
 <script lang="ts">
 	/**
 	 * TaskListView Component
-	 * 
+	 *
 	 * Renders tasks grouped by status in accordions with flexbox layout.
 	 * Cards flow naturally with proper spacing using flexbox gap.
+	 *
+	 * Feature: 004-bugfix-testing T040 - Supports separate subtask viewing
 	 */
 	import { createEventDispatcher } from 'svelte';
-	import { ChevronDown, ChevronRight } from 'lucide-svelte';
+	import { ChevronDown, ChevronRight, Check } from 'lucide-svelte';
 	import TaskCard from './TaskCard.svelte';
+	import { SubtaskService } from '$lib/services/subtask-service';
+	import type { Subtask } from '$lib/types/tasks';
 
 	interface Task {
 		id: string;
@@ -29,14 +33,53 @@
 		statusOptions?: Array<{ value: string; label: string; color?: string }>;
 		selectable?: boolean;
 		selectedIds?: Set<string>;
+		showSubtaskToggle?: boolean; // Feature: 004-bugfix-testing T040
 	}
 
 	let {
 		tasks,
 		statusOptions = [],
 		selectable = false,
-		selectedIds = $bindable(new Set())
+		selectedIds = $bindable(new Set()),
+		showSubtaskToggle = false // Feature: 004-bugfix-testing T040
 	}: Props = $props();
+
+	// Feature: 004-bugfix-testing T040 - Subtask aggregation control
+	type SubtaskViewMode = 'together' | 'separate';
+	let subtaskViewMode = $state<SubtaskViewMode>('together');
+	let taskSubtasksMap = $state<Map<string, Subtask[]>>(new Map());
+	let isLoadingSubtasks = $state(false);
+	const subtaskService = new SubtaskService();
+
+	// Fetch subtasks when switching to separate mode
+	$effect(() => {
+		if (subtaskViewMode === 'separate' && showSubtaskToggle) {
+			loadSubtasksForTasks();
+		}
+	});
+
+	async function loadSubtasksForTasks() {
+		const tasksWithSubtasks = tasks.filter(t => (t.total_subtasks ?? 0) > 0);
+		if (tasksWithSubtasks.length === 0) return;
+
+		isLoadingSubtasks = true;
+		try {
+			const newMap = new Map<string, Subtask[]>();
+			await Promise.all(
+				tasksWithSubtasks.map(async (task) => {
+					const response = await subtaskService.getSubtasks(task.id);
+					if (response.data) {
+						newMap.set(task.id, response.data);
+					}
+				})
+			);
+			taskSubtasksMap = newMap;
+		} catch (err) {
+			console.error('Failed to load subtasks:', err);
+		} finally {
+			isLoadingSubtasks = false;
+		}
+	}
 
 	const dispatch = createEventDispatcher<{
 		taskClick: { id: string };
@@ -44,6 +87,7 @@
 		statusChange: { id: string; status_id: string };
 		priorityChange: { id: string; priority: string };
 		dueDateChange: { id: string; due_date: string | null };
+		delete: { id: string };
 	}>();
 
 	// Group tasks by status
@@ -162,6 +206,37 @@
 	class="task-list-container overflow-auto h-full"
 	style="background-color: var(--theme-section-bg);"
 >
+	<!-- Feature: 004-bugfix-testing T040 - Subtask aggregation controls -->
+	{#if showSubtaskToggle && tasks.length > 0}
+		<div class="flex items-center justify-end px-4 py-2 border-b" style="border-color: var(--theme-border); background-color: var(--theme-card-bg);">
+			<div class="flex items-center gap-2">
+				<span class="text-sm font-medium" style="color: var(--theme-text-muted);">Subtasks:</span>
+				<div class="inline-flex rounded-md border" style="border-color: var(--theme-border);" role="group">
+					<button
+						type="button"
+						onclick={() => subtaskViewMode = 'together'}
+						class="px-3 py-1 text-xs font-medium transition-colors {subtaskViewMode === 'together' ? '' : 'hover:bg-gray-50'}"
+						style={subtaskViewMode === 'together'
+							? 'background-color: var(--theme-primary); color: white;'
+							: 'background-color: transparent; color: var(--theme-text-muted);'}
+					>
+						Together
+					</button>
+					<button
+						type="button"
+						onclick={() => subtaskViewMode = 'separate'}
+						class="px-3 py-1 text-xs font-medium border-l transition-colors {subtaskViewMode === 'separate' ? '' : 'hover:bg-gray-50'}"
+						style={subtaskViewMode === 'separate'
+							? 'background-color: var(--theme-primary); color: white; border-left-color: rgba(255,255,255,0.3);'
+							: 'background-color: transparent; color: var(--theme-text-muted); border-left-color: var(--theme-border);'}
+					>
+						Separate
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	{#if tasks.length === 0}
 		<!-- Empty State -->
 		<div class="flex flex-col items-center justify-center h-full p-8 text-center">
@@ -244,7 +319,39 @@
 										on:statusChange={handleStatusChange}
 										on:priorityChange={handlePriorityChange}
 										on:dueDateChange={handleDueDateChange}
+										on:delete
 									/>
+
+									<!-- Feature: 004-bugfix-testing T040 - Show subtasks as separate entries when in "separate" mode -->
+									{#if subtaskViewMode === 'separate' && taskSubtasksMap.has(task.id)}
+										{@const subtasks = taskSubtasksMap.get(task.id) || []}
+										{#each subtasks as subtask (subtask.id)}
+											<div
+												class="ml-8 flex items-center gap-3 rounded-md border px-4 py-2.5 transition-colors hover:bg-gray-50"
+												style="border-color: var(--theme-border); background-color: var(--theme-card-bg);"
+											>
+												<div class="flex h-5 w-5 items-center justify-center rounded border flex-shrink-0"
+													style={subtask.completed
+														? 'background-color: var(--theme-primary); border-color: var(--theme-primary);'
+														: 'border-color: var(--theme-border);'}
+												>
+													{#if subtask.completed}
+														<Check class="h-3 w-3 text-white" />
+													{/if}
+												</div>
+												<span class="text-sm flex-1"
+													style={subtask.completed
+														? 'color: var(--theme-text-muted); text-decoration: line-through;'
+														: 'color: var(--theme-foreground);'}
+												>
+													{subtask.title}
+												</span>
+												<span class="text-xs px-2 py-0.5 rounded" style="background-color: var(--theme-section-bg); color: var(--theme-text-muted);">
+													Subtask
+												</span>
+											</div>
+										{/each}
+									{/if}
 								{/each}
 							</div>
 						{/if}

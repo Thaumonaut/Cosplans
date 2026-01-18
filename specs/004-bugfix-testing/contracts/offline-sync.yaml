@@ -1,0 +1,293 @@
+openapi: 3.0.0
+info:
+  title: Offline Sync Service
+  version: 1.0.0
+  description: |
+    Handles synchronization of offline operations when network connectivity is restored.
+    Supports conflict detection and resolution, retry with exponential backoff, and
+    queue management for pending operations.
+  contact:
+    name: Cosplay Tracker API Support
+
+servers:
+  - url: https://api.cosplaytracker.com
+    description: Production server
+  - url: http://localhost:5173
+    description: Development server
+
+paths:
+  /api/sync/queue:
+    post:
+      summary: Sync a queued operation to server
+      description: |
+        Processes a single queued operation from the client's offline sync queue.
+        The server validates the operation, checks for conflicts, and applies the change.
+        
+        If a conflict is detected (server version differs from client version),
+        the server returns conflict data for user resolution.
+      operationId: syncOperation
+      tags:
+        - Sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncOperation'
+      responses:
+        '200':
+          description: Operation synced successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - entity_id
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  entity_id:
+                    type: string
+                    description: Server-assigned entity ID (for create operations)
+                    example: "550e8400-e29b-41d4-a716-446655440000"
+                  server_version:
+                    type: integer
+                    description: Server version timestamp for conflict detection
+                    example: 1704283200000
+        '409':
+          description: Conflict detected - server version differs from client
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - conflict
+                  - server_data
+                  - client_data
+                properties:
+                  conflict:
+                    type: boolean
+                    example: true
+                  server_data:
+                    type: object
+                    description: Current server version of the entity
+                    additionalProperties: true
+                  client_data:
+                    type: object
+                    description: Client's version of the entity
+                    additionalProperties: true
+                  conflict_fields:
+                    type: array
+                    description: List of field names that conflict
+                    items:
+                      type: string
+                    example: ["title", "description"]
+        '400':
+          description: Invalid operation (validation error, missing required fields)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not authorized (user doesn't have permission for this operation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/sync/status:
+    get:
+      summary: Get sync queue status
+      description: |
+        Returns the current status of the client's sync queue, including queue length,
+        sync progress, and failed operations count.
+      operationId: getSyncStatus
+      tags:
+        - Sync
+      responses:
+        '200':
+          description: Current sync status
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - queue_length
+                  - is_syncing
+                  - failed_operations
+                properties:
+                  queue_length:
+                    type: integer
+                    description: Number of pending operations in queue
+                    example: 5
+                  is_syncing:
+                    type: boolean
+                    description: Whether sync is currently in progress
+                    example: false
+                  last_sync:
+                    type: string
+                    format: date-time
+                    nullable: true
+                    description: Timestamp of last successful sync
+                    example: "2026-01-03T10:00:00Z"
+                  failed_operations:
+                    type: integer
+                    description: Number of operations that failed after max retries
+                    example: 0
+                  pending_operations:
+                    type: integer
+                    description: Number of operations waiting to be synced
+                    example: 3
+                  syncing_operations:
+                    type: integer
+                    description: Number of operations currently being synced
+                    example: 2
+
+  /api/sync/resolve-conflict:
+    post:
+      summary: Resolve a sync conflict
+      description: |
+        Resolves a conflict by applying the user's chosen resolution strategy.
+        The user can choose to use their version, use the server version, or merge manually.
+      operationId: resolveConflict
+      tags:
+        - Sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - operation_id
+                - resolution
+              properties:
+                operation_id:
+                  type: string
+                  description: ID of the conflicted operation
+                  example: "local-uuid-123"
+                resolution:
+                  type: string
+                  enum: [use_client, use_server, merge]
+                  description: |
+                    Resolution strategy:
+                    - use_client: Use client's version (overwrite server)
+                    - use_server: Use server's version (discard client changes)
+                    - merge: Apply merged version (requires merged_data)
+                merged_data:
+                  type: object
+                  description: Manually merged entity data (required if resolution is 'merge')
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Conflict resolved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - entity_id
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  entity_id:
+                    type: string
+                    example: "550e8400-e29b-41d4-a716-446655440000"
+        '400':
+          description: Invalid resolution (missing merged_data for merge strategy)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Operation not found or already resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    SyncOperation:
+      type: object
+      required:
+        - operation
+        - entity_type
+        - entity_id
+        - data
+        - timestamp
+      properties:
+        operation:
+          type: string
+          enum: [create, update, delete]
+          description: Type of operation to sync
+          example: "update"
+        entity_type:
+          type: string
+          enum: [task, note, team, resource, project]
+          description: Type of entity being modified
+          example: "task"
+        entity_id:
+          type: string
+          description: |
+            Entity ID. For create operations, this is a local UUID that will be replaced
+            with server UUID. For update/delete, this is the server UUID.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        data:
+          type: object
+          description: The change payload (entity data for create/update, empty for delete)
+          additionalProperties: true
+          example:
+            title: "Updated Task Title"
+            description: "New description"
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds when operation was queued
+          example: 1704283200000
+        client_version:
+          type: integer
+          description: Client's version timestamp (for conflict detection)
+          nullable: true
+          example: 1704283100000
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid entity_type: must be one of task, note, team, resource, project"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from Supabase Auth
+
+security:
+  - BearerAuth: []
+
+
+

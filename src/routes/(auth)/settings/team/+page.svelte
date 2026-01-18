@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { 
-    Plus, 
-    UserPlus, 
-    Trash2, 
-    Crown, 
-    Shield, 
-    Mail, 
-    MoreVertical, 
-    Settings, 
+  import {
+    Plus,
+    UserPlus,
+    Trash2,
+    Crown,
+    Shield,
+    Mail,
+    MoreVertical,
+    Settings,
     Users,
     Loader2,
     Link2,
@@ -16,14 +16,15 @@
     Check,
     X,
     Sparkles,
-    RefreshCw
+    RefreshCw,
+    AlertTriangle
   } from 'lucide-svelte';
-  import { 
-    Button, 
-    Card, 
-    CardContent, 
-    CardDescription, 
-    CardHeader, 
+  import {
+    Button,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
     CardTitle,
     Avatar,
     AvatarFallback,
@@ -54,12 +55,15 @@
   let showInviteMemberDialog = $state(false);
   let showRemoveMemberDialog = $state(false);
   let memberToRemove = $state<TeamMember | null>(null);
-  
+  let showDeleteTeamDialog = $state(false);
+  let deletingTeam = $state(false);
+  let deleteConfirmText = $state('');
+
   let allTeams = $state<Team[]>([]);
   let currentTeamData = $state<Team | null>(null);
   let teamMembers = $state<TeamMember[]>([]);
   let pendingInvites = $state<any[]>([]); // For future implementation
-  
+
   // Join links
   let joinLinks = $state<TeamJoinLink[]>([]);
   let showJoinLinksDialog = $state(false);
@@ -79,13 +83,13 @@
       // Fallback to generic name
       return `My ${newTeamType === 'personal' ? 'Personal' : 'Private'} Team`;
     }
-    
+
     // Try to get name from user metadata first, then email
-    const firstName = currentUser.user_metadata?.first_name || 
+    const firstName = currentUser.user_metadata?.first_name ||
                       currentUser.user_metadata?.name?.split(' ')[0] ||
-                      currentUser.email?.split('@')[0] || 
+                      currentUser.email?.split('@')[0] ||
                       'User';
-    
+
     if (newTeamType === 'personal') {
       return `${firstName}'s Personal Team`;
     } else {
@@ -97,18 +101,18 @@
   // Generate a unique team name with random suffix
   function generateUniqueTeamName(): string {
     const currentUser = get(user);
-    const userName = currentUser?.user_metadata?.first_name || 
+    const userName = currentUser?.user_metadata?.first_name ||
                      currentUser?.user_metadata?.name?.split(' ')[0] ||
-                     currentUser?.email?.split('@')[0] || 
+                     currentUser?.email?.split('@')[0] ||
                      'Team';
-    
+
     // Generate random suffix (2-3 words from a list)
     const adjectives = ['Epic', 'Awesome', 'Creative', 'Amazing', 'Fantastic', 'Brilliant', 'Stellar', 'Dynamic'];
     const nouns = ['Squad', 'Group', 'Collective', 'Circle', 'Guild', 'Crew', 'Assembly'];
-    
+
     const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
     const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
-    
+
     if (newTeamType === 'personal') {
       return `${userName}'s ${randomAdjective} Team`;
     } else {
@@ -144,11 +148,11 @@
       console.log('[TeamSettings] Load already in progress, skipping');
       return;
     }
-    
+
     try {
       isLoadingInProgress = true;
       loading = true;
-      
+
       const currentUser = get(user);
       if (!currentUser) {
         console.warn('[TeamSettings] No user available, cannot load teams');
@@ -166,7 +170,7 @@
         console.error('[TeamSettings] teamService.list() failed:', listError);
         throw listError; // Re-throw to be caught by outer catch
       }
-      
+
       // Set current team (use selected team or first team)
       const selectedTeam = get(currentTeam);
       currentTeamData = selectedTeam || allTeams[0] || null;
@@ -227,7 +231,7 @@
       });
 
       toast.success('Team Created', `${created.name} has been created successfully`);
-      
+
       // Reset form
       newTeamName = '';
       newTeamType = 'private';
@@ -260,7 +264,7 @@
       });
 
       toast.success('Member Invited', `Invitation sent to ${inviteEmail}`);
-      
+
       // Reset form
       inviteEmail = '';
       inviteRole = 'editor';
@@ -381,6 +385,30 @@
     toast.success('Link Copied', 'Join link copied to clipboard');
   }
 
+  async function handleDeleteTeam() {
+    if (!currentTeamData) return;
+    if (deletingTeam) return;
+    if (deleteConfirmText !== currentTeamData.name) {
+      toast.error('Invalid Confirmation', `Please type "${currentTeamData.name}" to confirm deletion`);
+      return;
+    }
+
+    deletingTeam = true;
+    try {
+      await teamService.delete(currentTeamData.id);
+      toast.success('Team Deleted', 'The team has been permanently deleted');
+      showDeleteTeamDialog = false;
+      deleteConfirmText = '';
+      // Reload teams list
+      await loadData();
+    } catch (error: any) {
+      console.error('Failed to delete team:', error);
+      toast.error('Failed to Delete Team', error?.message || 'Could not delete team');
+    } finally {
+      deletingTeam = false;
+    }
+  }
+
   async function handleSwitchTeam(team: Team) {
     currentTeamData = team;
     await loadTeamMembers(team.id);
@@ -432,7 +460,7 @@
     // Wait for user to be available before loading
     let attempts = 0;
     const maxAttempts = 20; // 2 seconds total
-    
+
     while (attempts < maxAttempts) {
       const currentUser = get(user);
       if (currentUser) {
@@ -442,12 +470,12 @@
         }
         return;
       }
-      
+
       // Wait 100ms before checking again
       await new Promise(resolve => setTimeout(resolve, 100));
       attempts++;
     }
-    
+
     // If user still not available, try to get from Supabase directly
     if (!hasLoaded) {
       try {
@@ -462,7 +490,7 @@
       } catch (err) {
         console.error('[TeamSettings] Failed to get user:', err);
       }
-      
+
       // Still no user - show error
       if (!hasLoaded) {
         toast.error('Not Authenticated', 'Please sign in to view teams');
@@ -516,13 +544,13 @@
       {:else}
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
           {#each allTeams as team (team.id)}
-            <button 
+            <button
               type="button"
               class="w-full text-left h-full"
               onclick={() => handleSwitchTeam(team)}
               aria-label="Select team {team.name}"
             >
-            <Card 
+            <Card
               class="transition-all hover:shadow-md h-full flex flex-col {currentTeamData?.id === team.id ? 'ring-2 ring-primary' : ''}"
             >
           <CardHeader class="flex-shrink-0">
@@ -572,7 +600,7 @@
       <!-- Team Members -->
       <div>
             <h3 class="mb-3 font-semibold">
-              Team Members 
+              Team Members
               {#if loadingMembers}
                 <Loader2 class="ml-2 inline size-4 animate-spin" />
               {:else}
@@ -595,8 +623,8 @@
             <div class="flex items-center justify-between rounded-lg border p-3">
               <div class="flex items-center gap-3">
                 <Avatar>
-                        <AvatarImage 
-                          src={member.user?.avatarUrl || '/placeholder-user.jpg'} 
+                        <AvatarImage
+                          src={member.user?.avatarUrl || '/placeholder-user.jpg'}
                           alt={member.user?.name || member.user?.email || 'Team member'}
                         />
                         <AvatarFallback>
@@ -638,7 +666,7 @@
                               Change to Viewer
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               variant="destructive"
                               onclick={() => openRemoveMemberDialog(member)}
                             >
@@ -658,8 +686,8 @@
       <div class="border-t pt-6">
         <div class="mb-3 flex items-center justify-between">
           <h3 class="font-semibold">Join Links & Codes</h3>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onclick={() => {
               showJoinLinksDialog = true;
@@ -683,8 +711,8 @@
             <Link2 class="mx-auto mb-2 size-8 text-muted-foreground" />
             <p class="mb-2 text-sm font-medium">No join links yet</p>
             <p class="mb-4 text-xs text-muted-foreground">Create a join link to let others join your team with a code or link</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onclick={() => {
                 showJoinLinksDialog = true;
@@ -760,6 +788,31 @@
         {/if}
       </div>
 
+      <!-- Danger Zone -->
+      {#if currentTeamData.createdBy === get(user)?.id}
+        <div class="border-t pt-6 mt-6">
+          <div class="rounded-lg border border-destructive bg-destructive/5 p-6">
+            <div class="flex items-start gap-4">
+              <AlertTriangle class="size-6 text-destructive flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-semibold text-destructive mb-2">Delete Team</h3>
+                <p class="text-sm text-muted-foreground mb-4">
+                  Permanently delete this team and all associated data. This action cannot be undone.
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onclick={() => showDeleteTeamDialog = true}
+                >
+                  <Trash2 class="mr-2 size-4" />
+                  Delete Team
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/if}
+
       <!-- Custom Fields Section -->
       <div class="border-t pt-6 mt-6">
         <CustomFieldsManagement teamId={currentTeamData.id} />
@@ -777,7 +830,7 @@
 </div>
 
 <!-- Create Team Dialog -->
-<Dialog 
+<Dialog
   bind:open={showCreateTeamDialog}
   title="Create New Team"
   description="Set up a new team for collaboration"
@@ -787,9 +840,9 @@
           <div class="flex items-center justify-between">
             <Label>Team Name</Label>
             <div class="flex gap-2">
-              <Button 
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 size="sm"
                 onclick={() => {
                   newTeamName = generateTeamNameFromUser();
@@ -798,9 +851,9 @@
                 <Sparkles class="mr-1 size-3" />
                 Suggest
               </Button>
-              <Button 
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 size="sm"
                 onclick={() => {
                   newTeamName = generateUniqueTeamName();
@@ -811,13 +864,13 @@
               </Button>
             </div>
           </div>
-      <Input 
+      <Input
         bind:value={newTeamName}
         placeholder={suggestedTeamName || "Enter team name..."}
       />
           {#if suggestedTeamName && newTeamName !== suggestedTeamName}
             <p class="text-xs text-muted-foreground">
-              Suggested: <button 
+              Suggested: <button
                 type="button"
                 class="text-primary hover:underline"
                 onclick={() => newTeamName = suggestedTeamName}
@@ -829,7 +882,7 @@
         </div>
         <div class="space-y-2">
           <Label>Team Type</Label>
-      <Select 
+      <Select
         bind:value={newTeamType}
         options={[
           { value: 'private', label: 'Private Team' },
@@ -839,21 +892,21 @@
         </div>
         <div class="space-y-2">
       <Label>Description (Optional)</Label>
-      <Textarea 
+      <Textarea
         bind:value={newTeamDescription}
-        placeholder="What's this team for?" 
+        placeholder="What's this team for?"
       />
         </div>
     <div class="flex gap-2">
-      <Button 
-        class="flex-1" 
+      <Button
+        class="flex-1"
         onclick={handleCreateTeam}
         disabled={!newTeamName.trim()}
       >
         Create Team
       </Button>
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         class="flex-1"
         onclick={() => {
           showCreateTeamDialog = false;
@@ -870,7 +923,7 @@
   </Dialog>
 
 <!-- Invite Member Dialog -->
-<Dialog 
+<Dialog
   bind:open={showInviteMemberDialog}
   title="Invite Team Member"
   description="Send an invitation to join your team"
@@ -878,15 +931,15 @@
       <div class="space-y-4">
         <div class="space-y-2">
           <Label>Email Address</Label>
-      <Input 
-        type="email" 
+      <Input
+        type="email"
         bind:value={inviteEmail}
-        placeholder="member@example.com" 
+        placeholder="member@example.com"
       />
         </div>
         <div class="space-y-2">
           <Label>Role</Label>
-      <Select 
+      <Select
         bind:value={inviteRole}
         options={[
           { value: 'editor', label: 'Editor' },
@@ -895,15 +948,15 @@
       />
         </div>
     <div class="flex gap-2">
-      <Button 
-        class="flex-1" 
+      <Button
+        class="flex-1"
         onclick={handleInviteMember}
         disabled={!inviteEmail.trim()}
       >
         Send Invitation
       </Button>
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         class="flex-1"
         onclick={() => {
           showInviteMemberDialog = false;
@@ -918,9 +971,9 @@
   </Dialog>
 
   <!-- Remove Member Confirmation Dialog -->
-  <Dialog 
-    bind:open={showRemoveMemberDialog} 
-    title="Remove Team Member" 
+  <Dialog
+    bind:open={showRemoveMemberDialog}
+    title="Remove Team Member"
     description={memberToRemove ? `Are you sure you want to remove ${memberToRemove.user?.name || memberToRemove.user?.email || 'this member'} from the team? This action cannot be undone.` : 'Are you sure you want to remove this member from the team?'}
   >
     <DialogFooter>
@@ -943,7 +996,7 @@
   </Dialog>
 
   <!-- Create Join Link Dialog -->
-  <Dialog 
+  <Dialog
     bind:open={showJoinLinksDialog}
     title="Create Join Link"
     description="Generate a code or link that others can use to join your team"
@@ -951,7 +1004,7 @@
     <div class="space-y-4">
       <div class="space-y-2">
         <Label>Default Role</Label>
-        <Select 
+        <Select
           bind:value={newLinkRole}
           options={[
             { value: 'editor', label: 'Editor' },
@@ -980,4 +1033,45 @@
       </DialogFooter>
     </div>
   </Dialog>
-  
+
+<!-- Delete Team Confirmation Dialog -->
+<Dialog
+  bind:open={showDeleteTeamDialog}
+  title="Delete Team"
+  description={`This will permanently delete "${currentTeamData?.name || 'this team'}" and all associated data. This action cannot be undone.`}
+>
+  <div class="space-y-4">
+    <div class="space-y-2">
+      <Label>Type <span class="font-mono font-bold">{currentTeamData?.name}</span> to confirm</Label>
+      <Input
+        bind:value={deleteConfirmText}
+        placeholder={currentTeamData?.name || 'Team name'}
+        class="font-mono text-foreground"
+      />
+    </div>
+    <div class="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+      <p class="font-semibold mb-1">Warning:</p>
+      <p>All team data will be permanently deleted, including members, join links, and associated content.</p>
+    </div>
+  </div>
+  <DialogFooter>
+    <Button
+      variant="outline"
+      onclick={() => {
+        showDeleteTeamDialog = false;
+        deleteConfirmText = '';
+      }}
+      disabled={deletingTeam}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="destructive"
+      onclick={handleDeleteTeam}
+      disabled={deletingTeam || deleteConfirmText !== currentTeamData?.name}
+    >
+      <Trash2 class="mr-2 size-4" />
+      {deletingTeam ? 'Deleting...' : 'Delete Team'}
+    </Button>
+  </DialogFooter>
+</Dialog>

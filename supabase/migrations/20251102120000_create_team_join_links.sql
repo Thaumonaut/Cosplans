@@ -270,8 +270,8 @@ BEGIN
   -- Check if user is already a member
   IF EXISTS (
     SELECT 1 FROM public.team_members
-    WHERE team_id = link_record.team_id
-    AND user_id = current_user_id
+    WHERE team_members.team_id = link_record.team_id
+    AND team_members.user_id = current_user_id
   ) THEN
     RAISE EXCEPTION 'You are already a member of this team';
   END IF;
