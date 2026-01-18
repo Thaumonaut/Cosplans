@@ -153,6 +153,12 @@
    * Create moodboard node with extracted metadata
    */
   async function createMoodboardNode(ideaId: string) {
+    // Only create a node if we have some content to save
+    if (!sharedTitle && !sharedText && !sharedUrl) {
+      console.log('[Share Handler] No content to save, skipping moodboard node creation');
+      return;
+    }
+
     // Determine node type based on content
     nodeType = determineNodeType({
       url: sharedUrl,
@@ -237,24 +243,15 @@
       <p class="mt-4 text-muted-foreground">Loading...</p>
     </div>
   {:else}
-    <!-- No content shared message -->
-    {#if !sharedTitle && !sharedText && !sharedUrl}
-      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div class="mb-4 rounded-full bg-muted p-6">
-          <LinkIcon class="h-12 w-12 text-muted-foreground" />
-        </div>
-        <h2 class="text-2xl font-bold mb-2">No Content to Share</h2>
-        <p class="text-muted-foreground mb-6 max-w-md">
-          This page is used to save shared content to your moodboard. Share a post from Instagram, TikTok, or any app to get started!
-        </p>
-        <Button href="/dashboard">Go to Dashboard</Button>
-      </div>
-    {:else}
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold">Save Reference</h1>
+        <h1 class="text-3xl font-bold">
+          {sharedTitle || sharedText || sharedUrl ? 'Save Reference' : 'Create or Select Idea'}
+        </h1>
         <p class="text-muted-foreground mt-2">
-          Add this content to your cosplay moodboard
+          {sharedTitle || sharedText || sharedUrl
+            ? 'Add this content to your cosplay moodboard'
+            : 'Choose an existing idea or create a new one'}
         </p>
         <!-- Debug info -->
         {#if import.meta.env.DEV}
@@ -267,7 +264,8 @@
         {/if}
       </div>
 
-      <!-- Preview Card -->
+      <!-- Preview Card (only show if we have shared content) -->
+    {#if sharedTitle || sharedText || sharedUrl || metadata}
     <Card class="mb-8">
       <CardHeader>
         <CardTitle class="flex items-center gap-2">
@@ -330,6 +328,7 @@
         {/if}
       </CardContent>
     </Card>
+    {/if}
 
     <!-- Action Selection -->
     {#if mode === 'select'}
@@ -456,7 +455,6 @@
           </Button>
         </CardFooter>
       </Card>
-    {/if}
     {/if}
   {/if}
 </div>

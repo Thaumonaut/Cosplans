@@ -37,6 +37,9 @@
     import type { Idea, IdeaCreate } from "$lib/types/domain/idea";
     import { moodboard } from "$lib/stores/moodboard";
     import ReferencesTab from "./ReferencesTab.svelte";
+    import { getImageNodesForIdea } from "$lib/services/imageMigration";
+    import { moodboardService } from "$lib/api/services/moodboardService";
+    import type { MoodboardNode } from "$lib/types/domain/moodboard";
 
     interface Props {
         ideaId?: string;
@@ -65,6 +68,8 @@
     let deleting = $state(false);
     let showDeleteDialog = $state(false);
     let activeTab = $state<"overview" | "images" | "references">("overview");
+    let imageNodes = $state<MoodboardNode[]>([]);
+    let lastMoodboardIdeaId: string | null = null;
 
     let estimatedCostValue = $state(0);
     $effect(() => {
@@ -257,6 +262,11 @@
                 }
             } else {
                 idea = loaded;
+            }
+
+            // Load image nodes from moodboard
+            if (ideaId) {
+                imageNodes = await getImageNodesForIdea(ideaId);
             }
         } catch (err: any) {
             error = err?.message || "Failed to load idea";
@@ -606,6 +616,36 @@
         isPanning = false;
     }
 
+    // Helper function to create moodboard nodes for new image URLs
+    async function createImageNodes(newUrls: string[], ideaId: string) {
+        for (const url of newUrls) {
+            // Calculate grid position for new node
+            const nodeIndex = imageNodes.length + newUrls.indexOf(url);
+            const gridCol = nodeIndex % 4;
+            const gridRow = Math.floor(nodeIndex / 4);
+            const posX = 50 + (gridCol * 320);
+            const posY = 50 + (gridRow * 420);
+
+            await moodboardService.createNode({
+                ideaId,
+                nodeType: 'image',
+                contentUrl: url,
+                thumbnailUrl: url,
+                metadata: {},
+                tags: [],
+                positionX: posX,
+                positionY: posY,
+                width: 300,
+                height: null,
+                zIndex: 0,
+                isExpanded: true,
+            });
+        }
+
+        // Reload image nodes after creating
+        imageNodes = await getImageNodesForIdea(ideaId);
+    }
+
     // Handle gallery upload from compact placeholder
     async function handleGalleryUpload(files: FileList) {
         if (!files || files.length === 0 || isReadOnly) return;
@@ -639,14 +679,14 @@
                 newUrls.push(result.url);
             }
 
-            const updated = [...imagesValue, ...newUrls];
             if (currentMode() === "create") {
+                // In create mode, keep using idea.images[]
+                const updated = [...imagesValue, ...newUrls];
                 newIdea.images = updated;
                 imagesValue = updated;
             } else if (idea) {
-                idea.images = updated;
-                imagesValue = updated;
-                await handleSaveField("images", updated);
+                // In edit mode, create moodboard nodes
+                await createImageNodes(newUrls, idea.id);
             }
 
             toast.success(
@@ -691,7 +731,10 @@
             difficultyValue = idea.difficulty;
             descriptionValue = idea.description ?? "";
             notesValue = idea.notes ?? "";
-            const newImages = idea.images ?? [];
+
+            // Use image nodes from moodboard instead of idea.images
+            const newImages = imageNodes.map(node => node.contentUrl).filter(Boolean) as string[];
+
             // Only reset if images actually changed
             const imagesChanged =
                 JSON.stringify(imagesValue) !== JSON.stringify(newImages);
@@ -711,8 +754,17 @@
 
             // Load moodboard nodes for this idea
             if (idea.id) {
-                moodboard.load(idea.id).catch(err => {
-                    console.error('Failed to load moodboard:', err);
+                if (lastMoodboardIdeaId !== idea.id) {
+                    lastMoodboardIdeaId = idea.id;
+                    moodboard.load(idea.id).catch(err => {
+                        console.error('Failed to load moodboard:', err);
+                    });
+                }
+                // Reload image nodes when idea changes
+                getImageNodesForIdea(idea.id).then(nodes => {
+                    imageNodes = nodes;
+                }).catch(err => {
+                    console.error('Failed to load image nodes:', err);
                 });
             }
         }
@@ -1064,12 +1116,11 @@
                                                         newIdea.images = v;
                                                         imagesValue = v;
                                                     } else if (idea) {
-                                                        idea.images = v;
-                                                        imagesValue = v;
-                                                        await handleSaveField(
-                                                            "images",
-                                                            v,
-                                                        );
+                                                        // Find new URLs that were added
+                                                        const newUrls = v.filter(url => !imagesValue.includes(url));
+                                                        if (newUrls.length > 0) {
+                                                            await createImageNodes(newUrls, idea.id);
+                                                        }
                                                     }
                                                 }}
                                                 multiple={true}
@@ -1302,7 +1353,6 @@
                                                     },
                                                 );
 
-                                                imagesValue = newImages;
                                                 imageErrors = newErrors;
                                                 primaryImageIndex =
                                                     newPrimaryIndex;
@@ -1310,13 +1360,31 @@
                                                 if (
                                                     currentMode() === "create"
                                                 ) {
+                                                    imagesValue = newImages;
                                                     newIdea.images = newImages;
                                                 } else if (idea) {
-                                                    idea.images = newImages;
-                                                    await handleSaveField(
-                                                        "images",
-                                                        newImages,
-                                                    );
+                                                    // Reorder moodboard nodes
+                                                    const newNodes = [...imageNodes];
+                                                    const [removedNode] = newNodes.splice(draggedIndex, 1);
+                                                    newNodes.splice(index, 0, removedNode);
+
+                                                    // Update positions for all reordered nodes
+                                                    for (let i = 0; i < newNodes.length; i++) {
+                                                        const node = newNodes[i];
+                                                        const gridCol = i % 4;
+                                                        const gridRow = Math.floor(i / 4);
+                                                        const posX = 50 + (gridCol * 320);
+                                                        const posY = 50 + (gridRow * 420);
+
+                                                        await moodboardService.updateNode(node.id, {
+                                                            positionX: posX,
+                                                            positionY: posY,
+                                                        });
+                                                    }
+
+                                                    // Reload image nodes after reordering
+                                                    imageNodes = await getImageNodesForIdea(idea.id);
+
                                                     await handleSaveField(
                                                         "primaryImageIndex",
                                                         newPrimaryIndex,
@@ -1470,9 +1538,11 @@
                                             newIdea.images = v;
                                             imagesValue = v;
                                         } else if (idea) {
-                                            idea.images = v;
-                                            imagesValue = v;
-                                            await handleSaveField("images", v);
+                                            // Find new URLs that were added
+                                            const newUrls = v.filter(url => !imagesValue.includes(url));
+                                            if (newUrls.length > 0) {
+                                                await createImageNodes(newUrls, idea.id);
+                                            }
                                         }
                                     }}
                                     multiple={true}
@@ -1885,25 +1955,29 @@
                             });
                             imageErrors = adjustedErrors;
 
-                            const newImages = imagesValue.filter(
-                                (_, i) => i !== currentIndex,
-                            );
-
                             // Update lightbox index if needed
-                            if (lightboxImageIndex >= newImages.length) {
+                            if (lightboxImageIndex >= imagesValue.length - 1) {
                                 lightboxImageIndex = Math.max(
                                     0,
-                                    newImages.length - 1,
+                                    imagesValue.length - 2,
                                 );
                             }
 
                             if (currentMode() === "create") {
+                                const newImages = imagesValue.filter(
+                                    (_, i) => i !== currentIndex,
+                                );
                                 newIdea.images = newImages;
                                 imagesValue = newImages;
                             } else if (idea) {
-                                idea.images = newImages;
-                                imagesValue = newImages;
-                                await handleSaveField("images", newImages);
+                                // Delete moodboard node
+                                const nodeToDelete = imageNodes[currentIndex];
+                                if (nodeToDelete) {
+                                    await moodboardService.deleteNode(nodeToDelete.id);
+                                    // Reload image nodes after deleting
+                                    imageNodes = await getImageNodesForIdea(idea.id);
+                                }
+
                                 if (primaryImageIndex !== currentIndex) {
                                     await handleSaveField(
                                         "primaryImageIndex",
@@ -1913,7 +1987,7 @@
                             }
 
                             // Close lightbox if no images left
-                            if (newImages.length === 0) {
+                            if (imagesValue.length <= 1) {
                                 lightboxOpen = false;
                             }
 

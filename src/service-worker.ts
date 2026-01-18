@@ -13,7 +13,20 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-import { build, files, version } from '$service-worker';
+// Try to import SvelteKit service worker assets, but handle failure gracefully
+let build: string[] = [];
+let files: string[] = [];
+let version = 'dev';
+
+try {
+  const swModule = await import('$service-worker');
+  build = swModule.build || [];
+  files = swModule.files || [];
+  version = swModule.version || 'dev';
+} catch (error) {
+  console.warn('[Service Worker] Failed to import $service-worker module:', error);
+  // Continue with empty arrays for development
+}
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
@@ -24,7 +37,7 @@ const CACHE_NAME = `cosplans-cache-${version}`;
 const ASSETS_TO_CACHE = [
   ...build, // SvelteKit build artifacts
   ...files, // Static files from /static
-];
+].filter(Boolean); // Filter out any null/undefined values
 
 // ============================================================================
 // Install Event - Cache Assets
@@ -101,7 +114,7 @@ sw.addEventListener('fetch', (event) => {
   }
 
   // Ignore certain paths that should always be fresh
-  const ignorePaths = ['/api/', '/auth/', '/supabase/'];
+  const ignorePaths = ['/api/', '/auth/', '/supabase/', '/rest/v1/rpc/setup_new_user'];
   if (ignorePaths.some((path) => url.pathname.startsWith(path))) {
     console.log('[Service Worker] Ignoring API/auth request:', url.pathname);
     return;

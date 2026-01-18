@@ -11,10 +11,16 @@ import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   console.log('[Share Target] Received share request');
+  console.log('[Share Target] Request headers:', Object.fromEntries(request.headers.entries()));
 
   try {
     // Parse the multipart form data
     const formData = await request.formData();
+
+    // Log all form fields for debugging
+    console.log('[Share Target] All form fields:', Array.from(formData.entries()).map(([key, value]) =>
+      ({ key, value: value instanceof File ? `File: ${value.name}` : value })
+    ));
 
     // Extract shared content
     const title = formData.get('title')?.toString() || '';
@@ -35,6 +41,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (title) params.set('title', title);
     if (text) params.set('text', text);
     if (url) params.set('url', url);
+
+    console.log('[Share Target] Built redirect params:', params.toString());
 
     // If not authenticated, redirect to login with return URL
     if (!session || !session.user) {

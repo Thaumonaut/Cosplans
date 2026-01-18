@@ -26,7 +26,8 @@ export type SocialMediaPlatform =
   | 'tiktok'
   | 'pinterest'
   | 'youtube'
-  | 'facebook';
+  | 'facebook'
+  | 'google_maps';  // NEW: For location scout ideas
 
 // ============================================================================
 // Metadata Structures (JSONB field)
@@ -40,6 +41,23 @@ export interface SocialMediaMetadata {
   caption?: string;
   publish_date?: string;
   embed_html?: string;
+  extracted_at: string;
+  // NEW: Embedding support
+  embed_type?: 'iframe' | 'oembed' | 'fallback';
+  embed_url?: string;
+}
+
+// NEW: Google Maps metadata
+export interface GoogleMapsMetadata {
+  platform: 'google_maps';
+  place_id?: string;
+  place_name?: string;
+  address?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  place_type?: string;
   extracted_at: string;
 }
 
@@ -105,6 +123,7 @@ export interface ContactMetadata {
 // Union type for all metadata
 export type MoodboardNodeMetadata =
   | SocialMediaMetadata
+  | GoogleMapsMetadata  // NEW
   | ImageMetadata
   | LinkMetadata
   | NoteMetadata
@@ -263,6 +282,8 @@ export function detectPlatformFromUrl(url: string): SocialMediaPlatform | null {
   if (lowerUrl.includes('pinterest.com')) return 'pinterest';
   if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'youtube';
   if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.com')) return 'facebook';
+  // NEW: Google Maps support
+  if (lowerUrl.includes('google.com/maps') || lowerUrl.includes('goo.gl/maps') || lowerUrl.includes('maps.app.goo.gl')) return 'google_maps';
 
   return null;
 }
@@ -394,4 +415,128 @@ export function mapMoodboardNodeToDb(node: MoodboardNodeCreate): Record<string, 
     parent_id: node.parentId || null,
     is_expanded: node.isExpanded !== undefined ? node.isExpanded : true,
   };
+}
+
+// ============================================================================
+// Additional Domain Types
+// ============================================================================
+
+export type BudgetPriority = 'need' | 'want' | 'nice_to_have';
+export type ContactType = 'commissioner' | 'supplier' | 'venue' | 'photographer' | 'other';
+export type OAuthProvider = 'google' | 'github' | 'facebook' | 'microsoft';
+
+// Idea Option (costume variation)
+export interface IdeaOption {
+  id: string;
+  ideaId: string;
+  name: string;
+  description?: string | null;
+  difficulty?: number | null;  // 1-5
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Budget Item
+export interface BudgetItem {
+  id: string;
+  ideaId?: string | null;
+  optionId?: string | null;
+  projectId?: string | null;
+  itemName: string;
+  estimatedCost: number;
+  actualCost?: number | null;
+  quantity: number;
+  contactId?: string | null;
+  priority: BudgetPriority;
+  isShared: boolean;
+  notes?: string | null;
+  linkedNodeId?: string | null;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Contact/vendor
+export interface Contact {
+  id: string;
+  teamId: string;
+  name: string;
+  type: ContactType;
+  email?: string | null;
+  website?: string | null;
+  socialMedia: Record<string, string>;
+  notes?: string | null;
+  rating?: number | null;  // 1-5
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Moodboard share
+export interface MoodboardShare {
+  id: string;
+  ideaId: string;
+  shareToken: string;
+  createdBy: string;
+  isActive: boolean;
+  createdAt: string;
+  revokedAt?: string | null;
+}
+
+// Moodboard comment
+export interface MoodboardComment {
+  id: string;
+  ideaId: string;
+  nodeId?: string | null;
+  oauthProvider: OAuthProvider;
+  oauthUserId: string;
+  commenterName: string;
+  commenterAvatar?: string | null;
+  commenterEmail?: string | null;
+  commentText: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Character link (multi-character resources)
+export interface CharacterLink {
+  id: string;
+  nodeId: string;
+  characterName: string;
+  ideaId: string;
+  createdAt: string;
+}
+
+// Tab state (navigation persistence)
+export interface TabState {
+  id: string;
+  ideaId: string;
+  userId: string;
+  activeCharacterTab?: string | null;
+  activeVariationTab?: string | null;
+  tabOrder: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Tutorial
+export interface Tutorial {
+  id: string;
+  teamId: string;
+  title: string;
+  url: string;
+  techniqueTags: string[];
+  notes?: string | null;
+  rating?: number | null;  // 1-5
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Helper to check if platform supports embedding
+ */
+export function supportsEmbedding(platform: SocialMediaPlatform): boolean {
+  // Instagram, TikTok, YouTube support embedding
+  return ['instagram', 'tiktok', 'youtube'].includes(platform);
 }

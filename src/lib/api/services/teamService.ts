@@ -71,7 +71,7 @@ export const teamService = {
 
             if (allError) throw allError;
 
-            const teamIds = (allMemberships || []).map((m) => m.team_id);
+            const teamIds = (allMemberships || []).map((m: any) => m.team_id);
 
             if (teamIds.length === 0) {
               return [];
@@ -96,7 +96,7 @@ export const teamService = {
           throw membershipError;
         }
 
-        const teamIds = (memberships || []).map((m) => m.team_id);
+        const teamIds = (memberships || []).map((m: any) => m.team_id);
 
         if (teamIds.length === 0) {
           return [];
@@ -217,7 +217,7 @@ export const teamService = {
 
     // Create team - use raw SQL via RPC to bypass schema cache
     // Try SQL function first (always works, bypasses cache)
-    const rpcAttempt = await supabase.rpc("create_team_safe", {
+    const rpcAttempt = await (supabase.rpc as any)("create_team_safe", {
       team_name: team.name,
       creator_id: user.id,
       team_type: team.type || "private",
@@ -253,7 +253,7 @@ export const teamService = {
       ) {
         // Function executed but PostgREST can't see the return type
         // Use list_user_teams_safe to get teams for this user (includes the new one)
-        const { data: userTeams, error: listError } = await supabase.rpc(
+        const { data: userTeams, error: listError } = await (supabase.rpc as any)(
           "list_user_teams_safe",
           {
             user_uuid: user.id,
@@ -263,7 +263,7 @@ export const teamService = {
         if (!listError && userTeams && userTeams.length > 0) {
           // Find the team with matching name (should be the one we just created)
           const newTeam =
-            userTeams.find((t) => t.name === team.name) ||
+            userTeams.find((t: any) => t.name === team.name) ||
             userTeams[userTeams.length - 1];
 
           if (newTeam) {
@@ -340,9 +340,8 @@ export const teamService = {
           team_id: attempt1.data.id,
           user_id: user.id,
           role: "owner",
-          status: "active",
           joined_at: new Date().toISOString(),
-        });
+        } as any);
 
         if (memberInsert.error) {
           console.error(

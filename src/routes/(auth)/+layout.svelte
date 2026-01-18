@@ -109,12 +109,43 @@
                 }
             });
 
-            // Preload critical resources
+            // Preload critical resources with proper as, type, and crossorigin attributes
             CRITICAL_RESOURCES.forEach((resource) => {
                 const link = document.createElement("link");
                 link.rel = "preload";
-                link.as = resource.endsWith(".svg") ? "image" : "image";
                 link.href = resource;
+                
+                // Determine appropriate as attribute based on file extension
+                if (resource.endsWith('.svg')) {
+                    link.as = 'image';
+                    link.type = 'image/svg+xml';
+                    // SVG images from same origin don't need crossorigin
+                    if (!resource.startsWith('/')) {
+                        link.crossOrigin = 'anonymous';
+                    }
+                } else if (resource.endsWith('.jpg') || resource.endsWith('.jpeg')) {
+                    link.as = 'image';
+                    link.type = 'image/jpeg';
+                } else if (resource.endsWith('.png')) {
+                    link.as = 'image';
+                    link.type = 'image/png';
+                } else if (resource.endsWith('.css')) {
+                    link.as = 'style';
+                    link.type = 'text/css';
+                } else if (resource.endsWith('.js')) {
+                    link.as = 'script';
+                    link.type = 'application/javascript';
+                } else {
+                    link.as = 'fetch';
+                }
+                
+                // Set crossorigin for resources that need it
+                // Fonts and some images may need crossorigin if served from CDN
+                // For same-origin resources, it's usually not needed
+                if (resource.includes('://') && !resource.startsWith(window.location.origin)) {
+                    link.crossOrigin = 'anonymous';
+                }
+                
                 document.head.appendChild(link);
             });
 

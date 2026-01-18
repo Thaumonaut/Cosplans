@@ -4,8 +4,8 @@
   import { uploadImageToStorage } from '$lib/utils/storage';
   import { currentTeam } from '$lib/stores/teams';
   import { toast } from '$lib/stores/toast';
-  import { Button, Input, Label, Card, CardContent } from '$lib/components/ui';
-  import { Link, Image as ImageIcon, StickyNote, Loader2, X } from 'lucide-svelte';
+  import { Button, Input, Label, Card, CardContent, Dialog, DialogFooter, Textarea } from '$lib/components/ui';
+  import { Link, Image as ImageIcon, StickyNote, Loader2, X, Plus } from 'lucide-svelte';
   import ReferenceCard from './ReferenceCard.svelte';
   import { determineNodeType } from '$lib/types/domain/moodboard';
 
@@ -15,12 +15,13 @@
 
   let { ideaId }: Props = $props();
 
-  let showUrlInput = $state(false);
-  let showNoteInput = $state(false);
+  let showAddReferenceModal = $state(false);
+  let selectedType = $state<'url' | 'note' | 'image'>('url');
   let urlInput = $state('');
   let noteText = $state('');
   let uploading = $state(false);
   let extracting = $state(false);
+  let selectedFiles = $state<FileList | null>(null);
 
   /**
    * Add URL reference
@@ -57,7 +58,7 @@
       });
 
       toast.success('Reference Added', 'URL reference added to moodboard');
-      showUrlInput = false;
+      showAddReferenceModal = false;
       urlInput = '';
     } catch (err: any) {
       console.error('[ReferencesTab] Error adding URL:', err);
@@ -82,7 +83,7 @@
       });
 
       toast.success('Note Added', 'Note added to moodboard');
-      showNoteInput = false;
+      showAddReferenceModal = false;
       noteText = '';
     } catch (err: any) {
       console.error('[ReferencesTab] Error adding note:', err);
@@ -157,7 +158,15 @@
       // Reset file input
       const fileInput = document.getElementById('ref-image-upload') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
+      selectedFiles = null;
     }
+  }
+
+  function resetModalState() {
+    urlInput = '';
+    noteText = '';
+    selectedFiles = null;
+    extracting = false;
   }
 
   /**
@@ -175,6 +184,20 @@
 </script>
 
 <div class="mx-auto max-w-5xl space-y-6 px-4 sm:px-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-semibold">References</h3>
+      <p class="text-sm text-muted-foreground">Save links, images, or notes for inspiration.</p>
+    </div>
+    <Button onclick={() => {
+      showAddReferenceModal = true;
+      selectedType = 'url';
+    }}>
+      <Plus class="h-4 w-4" />
+      Add Reference
+    </Button>
+  </div>
+
   <!-- Hidden file input -->
   <input
     id="ref-image-upload"
@@ -182,7 +205,9 @@
     accept="image/*"
     multiple
     hidden
-    onchange={(e) => handleImageUpload(e.currentTarget.files)}
+    onchange={(e) => {
+      selectedFiles = e.currentTarget.files;
+    }}
   />
 
   <!-- References Grid with Quick-Add Cards -->
@@ -192,137 +217,6 @@
     </div>
   {:else}
     <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-      <!-- Quick Add URL Card -->
-      <Card class="overflow-hidden hover:shadow-lg transition-shadow {showUrlInput ? '' : 'cursor-pointer'}">
-        {#if !showUrlInput}
-          <CardContent
-            class="pt-6 pb-4 flex flex-col items-center justify-center min-h-[200px] text-muted-foreground hover:text-foreground transition-colors"
-            onclick={() => showUrlInput = true}
-            role="button"
-            tabindex="0"
-            onkeydown={(e) => e.key === 'Enter' && (showUrlInput = true)}
-          >
-            <Link class="h-12 w-12 mb-3" />
-            <p class="text-sm font-medium">Add URL Reference</p>
-            <p class="text-xs text-center mt-1 px-4">Instagram, TikTok, Pinterest, YouTube</p>
-          </CardContent>
-        {:else}
-          <CardContent class="pt-6 pb-4 space-y-4">
-            <div class="flex items-center justify-between mb-2">
-              <Label for="inline-url" class="text-sm font-medium">URL</Label>
-              <Button
-                variant="ghost"
-                size="sm"
-                onclick={() => { showUrlInput = false; urlInput = ''; }}
-                class="h-8 w-8 p-0"
-              >
-                <X class="h-4 w-4" />
-              </Button>
-            </div>
-            <Input
-              id="inline-url"
-              bind:value={urlInput}
-              placeholder="https://instagram.com/p/..."
-              disabled={extracting}
-              class="w-full"
-              autofocus
-              onkeydown={(e) => {
-                if (e.key === 'Enter' && urlInput.trim()) {
-                  handleAddUrl();
-                } else if (e.key === 'Escape') {
-                  showUrlInput = false;
-                  urlInput = '';
-                }
-              }}
-            />
-            <Button
-              size="sm"
-              onclick={handleAddUrl}
-              disabled={!urlInput.trim() || extracting}
-              class="w-full"
-            >
-              {#if extracting}
-                <Loader2 class="mr-2 h-4 w-4 animate-spin" />
-              {/if}
-              Add Reference
-            </Button>
-          </CardContent>
-        {/if}
-      </Card>
-
-      <!-- Quick Add Note Card -->
-      <Card class="overflow-hidden hover:shadow-lg transition-shadow {showNoteInput ? '' : 'cursor-pointer'}">
-        {#if !showNoteInput}
-          <CardContent
-            class="pt-6 pb-4 flex flex-col items-center justify-center min-h-[200px] text-muted-foreground hover:text-foreground transition-colors"
-            onclick={() => showNoteInput = true}
-            role="button"
-            tabindex="0"
-            onkeydown={(e) => e.key === 'Enter' && (showNoteInput = true)}
-          >
-            <StickyNote class="h-12 w-12 mb-3" />
-            <p class="text-sm font-medium">Add Note</p>
-            <p class="text-xs text-center mt-1 px-4">Write thoughts, ideas, or reminders</p>
-          </CardContent>
-        {:else}
-          <CardContent class="pt-6 pb-4 space-y-4">
-            <div class="flex items-center justify-between mb-2">
-              <Label for="inline-note" class="text-sm font-medium">Note</Label>
-              <Button
-                variant="ghost"
-                size="sm"
-                onclick={() => { showNoteInput = false; noteText = ''; }}
-                class="h-8 w-8 p-0"
-              >
-                <X class="h-4 w-4" />
-              </Button>
-            </div>
-            <textarea
-              id="inline-note"
-              bind:value={noteText}
-              placeholder="Write your thoughts, ideas, or reminders..."
-              rows="4"
-              class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-              autofocus
-              onkeydown={(e) => {
-                if (e.key === 'Escape') {
-                  showNoteInput = false;
-                  noteText = '';
-                }
-              }}
-            />
-            <Button
-              size="sm"
-              onclick={handleAddNote}
-              disabled={!noteText.trim()}
-              class="w-full"
-            >
-              Add Note
-            </Button>
-          </CardContent>
-        {/if}
-      </Card>
-
-      <!-- Upload Image Card -->
-      <Card class="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-        <CardContent
-          class="pt-6 pb-4 flex flex-col items-center justify-center min-h-[200px] text-muted-foreground hover:text-foreground transition-colors"
-          onclick={() => document.getElementById('ref-image-upload')?.click()}
-          role="button"
-          tabindex="0"
-          onkeydown={(e) => e.key === 'Enter' && document.getElementById('ref-image-upload')?.click()}
-        >
-          {#if uploading}
-            <Loader2 class="h-12 w-12 mb-3 animate-spin" />
-            <p class="text-sm font-medium">Uploading...</p>
-          {:else}
-            <ImageIcon class="h-12 w-12 mb-3" />
-            <p class="text-sm font-medium">Upload Image</p>
-            <p class="text-xs text-center mt-1 px-4">Click to select images</p>
-          {/if}
-        </CardContent>
-      </Card>
-
       <!-- Existing Reference Cards -->
       {#each $moodboard.nodes as node (node.id)}
         <ReferenceCard {node} onDelete={handleDeleteNode} />
@@ -330,4 +224,118 @@
     </div>
   {/if}
 
+  <Dialog
+    bind:open={showAddReferenceModal}
+    title="Add Reference"
+    description="Choose the type of content and add it to the moodboard."
+    onOpenChange={(open) => {
+      showAddReferenceModal = open;
+      if (!open) resetModalState();
+    }}
+  >
+    <div class="space-y-5">
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors {selectedType === 'url' ? 'border-primary bg-primary/10 text-primary' : 'border-input text-muted-foreground hover:text-foreground'}"
+          onclick={() => selectedType = 'url'}
+        >
+          <Link class="h-4 w-4" />
+          URL
+        </button>
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors {selectedType === 'note' ? 'border-primary bg-primary/10 text-primary' : 'border-input text-muted-foreground hover:text-foreground'}"
+          onclick={() => selectedType = 'note'}
+        >
+          <StickyNote class="h-4 w-4" />
+          Note
+        </button>
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors {selectedType === 'image' ? 'border-primary bg-primary/10 text-primary' : 'border-input text-muted-foreground hover:text-foreground'}"
+          onclick={() => selectedType = 'image'}
+        >
+          <ImageIcon class="h-4 w-4" />
+          Image
+        </button>
+      </div>
+
+      {#if selectedType === 'url'}
+        <div class="space-y-3">
+          <Label for="reference-url" class="text-sm font-medium">URL</Label>
+          <Input
+            id="reference-url"
+            bind:value={urlInput}
+            placeholder="https://instagram.com/p/..."
+            disabled={extracting}
+            class="w-full"
+            onkeydown={(e) => {
+              if (e.key === 'Enter' && urlInput.trim()) {
+                handleAddUrl();
+              }
+            }}
+          />
+          <p class="text-xs text-muted-foreground">Instagram, TikTok, Pinterest, YouTube, and other links.</p>
+        </div>
+      {:else if selectedType === 'note'}
+        <div class="space-y-3">
+          <Label for="reference-note" class="text-sm font-medium">Note</Label>
+          <Textarea
+            id="reference-note"
+            bind:value={noteText}
+            placeholder="Write your thoughts, ideas, or reminders..."
+            rows={5}
+          />
+        </div>
+      {:else}
+        <div class="space-y-3">
+          <Label class="text-sm font-medium">Images</Label>
+          <Button variant="outline" onclick={() => document.getElementById('ref-image-upload')?.click()}>
+            <ImageIcon class="h-4 w-4" />
+            Choose Images
+          </Button>
+          {#if selectedFiles?.length}
+            <p class="text-xs text-muted-foreground">Selected {selectedFiles.length} image{selectedFiles.length === 1 ? '' : 's'}.</p>
+          {:else}
+            <p class="text-xs text-muted-foreground">Select one or more images to upload.</p>
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <DialogFooter class="mt-6">
+      <Button variant="outline" onclick={() => { showAddReferenceModal = false; resetModalState(); }}>
+        Cancel
+      </Button>
+      {#if selectedType === 'url'}
+        <Button onclick={handleAddUrl} disabled={!urlInput.trim() || extracting}>
+          {#if extracting}
+            <Loader2 class="h-4 w-4 animate-spin" />
+          {/if}
+          Add URL
+        </Button>
+      {:else if selectedType === 'note'}
+        <Button onclick={handleAddNote} disabled={!noteText.trim()}>
+          Add Note
+        </Button>
+      {:else}
+        <Button
+          onclick={async () => {
+            await handleImageUpload(selectedFiles);
+            if (!uploading) {
+              showAddReferenceModal = false;
+              resetModalState();
+            }
+          }}
+          disabled={!selectedFiles || uploading}
+        >
+          {#if uploading}
+            <Loader2 class="h-4 w-4 animate-spin" />
+          {/if}
+          Upload Images
+        </Button>
+      {/if}
+    </DialogFooter>
+  </Dialog>
 </div>
