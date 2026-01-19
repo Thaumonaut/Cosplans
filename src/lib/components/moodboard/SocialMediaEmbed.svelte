@@ -16,10 +16,11 @@
     metadata: SocialMediaMetadata;
     contentUrl: string;
     thumbnailUrl?: string | null;
+    note?: string | null;
     class?: string;
   }
 
-  let { metadata, contentUrl, thumbnailUrl, class: className = '' }: Props = $props();
+  let { metadata, contentUrl, thumbnailUrl, note = null, class: className = '' }: Props = $props();
 
   // Generate unique component ID for debugging
   const componentId = Math.random().toString(36).substring(7);
@@ -50,11 +51,14 @@
 
   let fallbackEmbedUrl = $state<string | null>(null);
 
+  const mediaCategory = $derived.by(() => getMediaCategory(metadata.platform, contentUrl));
+  const mediaCategoryLabel = $derived.by(() => (mediaCategory === 'video' ? 'Video / Reel / TikTok' : 'Photo / Post'));
+
   $effect(()=> {
     if (metadata.platform === 'instagram' && contentUrl && !fallbackEmbedUrl) {
       fallbackEmbedUrl = getInstagramEmbedUrl(contentUrl);
     }
-  }) 
+  })
 
   const MAX_RETRIES = 3;
   let failedAttempts = $state<Set<string>>(new Set());
@@ -240,6 +244,17 @@
     } catch {
       return `${url.replace(/\/$/, '')}/embed`;
     }
+  }
+
+  function getMediaCategory(platform: SocialMediaPlatform, url: string): 'post' | 'video' {
+    const normalizedUrl = url.toLowerCase();
+    if (platform === 'instagram') {
+      if (normalizedUrl.includes('/reel/') || normalizedUrl.includes('/tv/')) return 'video';
+      return 'post';
+    }
+
+    if (platform === 'tiktok' || platform === 'youtube') return 'video';
+    return 'post';
   }
 
   /**
@@ -496,8 +511,16 @@
       }
     }
 
-    // For Instagram and TikTok, use oEmbed API
-    if (metadata.platform === 'instagram' || metadata.platform === 'tiktok') {
+    // For Instagram, use iframe embed directly (no oEmbed)
+    if (metadata.platform === 'instagram') {
+      const embedUrl = fallbackEmbedUrl ?? getInstagramEmbedUrl(contentUrl);
+      embedHtml = `<iframe width="100%" height="640" src="${embedUrl}" frameborder="0" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+      initialized = true;
+      return;
+    }
+
+    // For TikTok, use oEmbed API
+    if (metadata.platform === 'tiktok') {
       loading = true; // Only set loading when we actually start fetching
       initialized = true;
       fetchOEmbedData();
@@ -512,7 +535,7 @@
   });
 </script>
 
-<div class="social-media-embed {className}">
+<div class="social-media-embed {className}" data-media-category={mediaCategory}>
   {#if !initialized}
     <!-- Show nothing until we've determined what to display -->
     <!-- This prevents any flickering during the synchronous onMount checks -->
@@ -616,6 +639,13 @@
           </p>
         {/if}
 
+        {#if note}
+          <div class="rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+            <span class="font-medium text-foreground/80">Notes</span>
+            <p class="mt-1 whitespace-pre-wrap break-words">{note}</p>
+          </div>
+        {/if}
+
         {#if metadata.author || metadata.tags?.length}
           <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
             {#if metadata.author}
@@ -641,6 +671,10 @@
             <ExternalLink class="h-4 w-4" />
             View on {metadata.platform}
           </a>
+
+          <span class="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">
+            {mediaCategoryLabel}
+          </span>
           
           {#if errorType === 'configuration' && metadata.platform === 'instagram'}
             <span class="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">

@@ -65,6 +65,7 @@
           metadata={node.metadata}
           contentUrl={node.contentUrl}
           thumbnailUrl={node.thumbnailUrl}
+          note={node.shortComment || node.longNote || null}
         />
         <!-- Platform badge -->
         <div class="absolute top-2 right-2 pointer-events-none z-10">

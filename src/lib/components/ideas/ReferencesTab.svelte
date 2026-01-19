@@ -18,7 +18,9 @@
 
   let showAddReferenceModal = $state(false);
   let selectedType = $state<'url' | 'note' | 'image'>('url');
+  let contentFilter = $state<'all' | 'post' | 'video'>('all');
   let urlInput = $state('');
+  let urlNoteInput = $state('');
   let noteText = $state('');
   let uploading = $state(false);
   let extracting = $state(false);
@@ -59,12 +61,14 @@
         thumbnailUrl: metadata.thumbnailUrl,
         metadata: nodeMetadata,
         shortComment: socialCaption || metadata.title,
+        longNote: urlNoteInput.trim() ? urlNoteInput.trim() : undefined,
         tags: [],
       });
 
       toast.success('Reference Added', 'URL reference added to moodboard');
       showAddReferenceModal = false;
       urlInput = '';
+      urlNoteInput = '';
     } catch (err: any) {
       console.error('[ReferencesTab] Error adding URL:', err);
       toast.error('Failed to Add Reference', err?.message || 'An error occurred');
@@ -167,6 +171,7 @@
 
   function resetModalState() {
     urlInput = '';
+    urlNoteInput = '';
     noteText = '';
     selectedFiles = null;
     extracting = false;
@@ -218,21 +223,69 @@
       longNote: payload.longNote,
     });
   }
+
+  function getContentCategory(node: (typeof $moodboard.nodes)[number]): 'post' | 'video' {
+    if (node.nodeType !== 'social_media' || !node.contentUrl || !node.metadata) return 'post';
+
+    const platform =
+      typeof node.metadata === 'object' && node.metadata && 'platform' in node.metadata
+        ? (node.metadata as { platform?: string }).platform
+        : undefined;
+
+    const url = node.contentUrl.toLowerCase();
+    if (platform === 'instagram') {
+      if (url.includes('/reel/') || url.includes('/tv/')) return 'video';
+      return 'post';
+    }
+    if (platform === 'tiktok' || platform === 'youtube') return 'video';
+    return 'post';
+  }
+
+  const filteredNodes = $derived.by(() => {
+    const nodes = $moodboard.nodes;
+    if (contentFilter === 'all') return nodes;
+    return nodes.filter((node) => getContentCategory(node) === contentFilter);
+  });
 </script>
 
 <div class="mx-auto max-w-5xl space-y-6 px-4 sm:px-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <div>
       <h3 class="text-lg font-semibold">References</h3>
       <p class="text-sm text-muted-foreground">Save links, images, or notes for inspiration.</p>
     </div>
-    <Button onclick={() => {
-      showAddReferenceModal = true;
-      selectedType = 'url';
-    }}>
-      <Plus class="h-4 w-4" />
-      Add Reference
-    </Button>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="inline-flex rounded-md border bg-background">
+        <button
+          class="px-3 py-1.5 text-xs font-medium transition-colors {contentFilter === 'all' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}"
+          onclick={() => (contentFilter = 'all')}
+          type="button"
+        >
+          All
+        </button>
+        <button
+          class="px-3 py-1.5 text-xs font-medium transition-colors {contentFilter === 'post' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}"
+          onclick={() => (contentFilter = 'post')}
+          type="button"
+        >
+          Photos/Posts
+        </button>
+        <button
+          class="px-3 py-1.5 text-xs font-medium transition-colors {contentFilter === 'video' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}"
+          onclick={() => (contentFilter = 'video')}
+          type="button"
+        >
+          Videos/Reels
+        </button>
+      </div>
+      <Button onclick={() => {
+        showAddReferenceModal = true;
+        selectedType = 'url';
+      }}>
+        <Plus class="h-4 w-4" />
+        Add Reference
+      </Button>
+    </div>
   </div>
 
   <!-- Hidden file input -->
@@ -253,9 +306,9 @@
       <Loader2 class="h-8 w-8 animate-spin text-primary" />
     </div>
   {:else}
-    <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+       <div class="grid gap-3 sm:gap-4 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))]">
       <!-- Existing Reference Cards -->
-      {#each $moodboard.nodes as node (node.id)}
+      {#each filteredNodes as node (node.id)}
         <ReferenceCard {node} onDelete={handleDeleteNode} />
       {/each}
     </div>
@@ -298,7 +351,7 @@
         </button>
       </div>
 
-      {#if selectedType === 'url'}
+        {#if selectedType === 'url'}
         <div class="space-y-3">
           <Label for="reference-url" class="text-sm font-medium">URL</Label>
           <Input
@@ -312,6 +365,13 @@
                 handleAddUrl();
               }
             }}
+          />
+          <Label for="reference-url-note" class="text-sm font-medium">Notes</Label>
+          <Textarea
+            id="reference-url-note"
+            bind:value={urlNoteInput}
+            placeholder="Add notes for this reference (optional)"
+            rows={3}
           />
           <p class="text-xs text-muted-foreground">Instagram, TikTok, Pinterest, YouTube, and other links.</p>
         </div>

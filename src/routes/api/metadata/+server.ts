@@ -151,6 +151,20 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       }
     }
 
+    if (metadata.platform === 'instagram') {
+      const caption = extractInstagramCaption(metadata.description);
+      if (caption) {
+        metadata.description = caption;
+      } else {
+        const profileMatch = targetUrl.match(/instagram\.com\/([A-Za-z0-9._]+)/i);
+        if (profileMatch?.[1] && !['p', 'reel', 'tv', 'stories'].includes(profileMatch[1])) {
+          metadata.description = `@${profileMatch[1]}`;
+        } else if (metadata.author) {
+          metadata.description = `@${metadata.author}`;
+        }
+      }
+    }
+
     console.log('[Metadata API] Extracted metadata:', metadata);
 
     return json(metadata);
@@ -166,3 +180,14 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     );
   }
 };
+
+function extractInstagramCaption(description?: string): string | undefined {
+  if (!description) return undefined;
+  const quotedMatch = description.match(/["“]([^"”]+)["”]/);
+  if (quotedMatch?.[1]) return quotedMatch[1].trim();
+
+  const afterColonMatch = description.match(/on Instagram:\s*(.+)$/i);
+  if (afterColonMatch?.[1]) return afterColonMatch[1].trim();
+
+  return undefined;
+}
