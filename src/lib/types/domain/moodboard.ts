@@ -11,23 +11,43 @@
 // ============================================================================
 
 export type MoodboardNodeType =
-  | 'social_media'  // Instagram, TikTok, Pinterest, YouTube posts
-  | 'image'         // Uploaded images
-  | 'link'          // Generic web links
-  | 'note'          // Text notes
-  | 'swatch'        // Color swatches
-  | 'budget_item'   // Budget item cards
-  | 'contact'       // Vendor/commissioner contacts
-  | 'sketch'        // Hand-drawn sketches
-  | 'pile';         // Expandable groups
+  // Containers (can have children)
+  | "container" // Generic container with container_type
+  | "moodboard_link" // Portal to another moodboard
+  | "container_details" // Special node for storing container metadata and custom fields
+  // References
+  | "social_media" // Instagram, TikTok, Pinterest, YouTube posts
+  | "image" // Uploaded images
+  | "link" // Generic web links
+  | "note" // Text notes
+  // Design
+  | "color_palette" // Color swatch collection
+  | "measurements" // Body or garment measurements
+  // Materials
+  | "fabric" // Fabric swatch with properties
+  // People & Money
+  | "budget_item" // Budget item cards
+  | "contact" // Vendor/commissioner contacts
+  // Legacy (keep for backwards compatibility)
+  | "swatch" // Color swatches (deprecated, use color_palette)
+  | "sketch" // Hand-drawn sketches
+  | "pile"; // Expandable groups (deprecated, use container)
+
+// Container subtypes (when node_type is 'container')
+export type ContainerType =
+  | "group" // Generic grouping (wig options, fabric swatches, props)
+  | "character"; // Character being cosplayed (with optional variant)
+
+// Moodboard owner types
+export type MoodboardOwnerType = "user" | "team" | "idea" | "project";
 
 export type SocialMediaPlatform =
-  | 'instagram'
-  | 'tiktok'
-  | 'pinterest'
-  | 'youtube'
-  | 'facebook'
-  | 'google_maps';  // NEW: For location scout ideas
+  | "instagram"
+  | "tiktok"
+  | "pinterest"
+  | "youtube"
+  | "facebook"
+  | "google_maps"; // NEW: For location scout ideas
 
 // ============================================================================
 // Metadata Structures (JSONB field)
@@ -44,13 +64,13 @@ export interface SocialMediaMetadata {
   embed_html?: string;
   extracted_at: string;
   // NEW: Embedding support
-  embed_type?: 'iframe' | 'oembed' | 'fallback';
+  embed_type?: "iframe" | "oembed" | "fallback";
   embed_url?: string;
 }
 
 // NEW: Google Maps metadata
 export interface GoogleMapsMetadata {
-  platform: 'google_maps';
+  platform: "google_maps";
   place_id?: string;
   place_name?: string;
   address?: string;
@@ -94,7 +114,7 @@ export interface SwatchMetadata {
 
 export interface SketchMetadata {
   drawing_data: string;
-  template_type?: 'blank' | 'figure' | 'grid';
+  template_type?: "blank" | "figure" | "grid";
   dimensions: {
     width: number;
     height: number;
@@ -121,10 +141,48 @@ export interface ContactMetadata {
   contact_id: string;
 }
 
+export interface CharacterContainerMetadata {
+  character_name?: string;
+  series_name?: string;
+  variant?: string; // e.g., "Base", "Super Saiyan", "Ultra Instinct"
+  character_image_url?: string;
+}
+
+export type CustomFieldType =
+  | "text"
+  | "number"
+  | "checkbox"
+  | "date"
+  | "url"
+  | "textarea";
+
+export interface CustomField {
+  id: string;
+  label: string;
+  type: CustomFieldType;
+  value: string | number | boolean;
+  placeholder?: string;
+}
+
+export interface ContainerDetailsMetadata {
+  container_type?: ContainerType; // Reference to parent container type
+  description?: string;
+  custom_fields?: CustomField[]; // Dynamic custom fields
+  // Character-specific fields (for character containers)
+  character_name?: string;
+  series_name?: string;
+  variant?: string;
+  character_image_url?: string;
+  // Budget tracking
+  estimated_budget?: number;
+  actual_budget?: number;
+  currency?: string;
+}
+
 // Union type for all metadata
 export type MoodboardNodeMetadata =
   | SocialMediaMetadata
-  | GoogleMapsMetadata  // NEW
+  | GoogleMapsMetadata // NEW
   | ImageMetadata
   | LinkMetadata
   | NoteMetadata
@@ -133,7 +191,32 @@ export type MoodboardNodeMetadata =
   | PileMetadata
   | BudgetItemMetadata
   | ContactMetadata
+  | CharacterContainerMetadata
+  | ContainerDetailsMetadata
   | Record<string, unknown>; // Fallback for unknown metadata
+
+// ============================================================================
+// Moodboard Interface (First-Class Entity)
+// ============================================================================
+
+export interface Moodboard {
+  id: string;
+  ownerType: MoodboardOwnerType;
+  ownerId: string;
+  title: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MoodboardCreate {
+  ownerType: MoodboardOwnerType;
+  ownerId: string;
+  title?: string;
+}
+
+export interface MoodboardUpdate {
+  title?: string;
+}
 
 // ============================================================================
 // Moodboard Node Interface
@@ -141,9 +224,13 @@ export type MoodboardNodeMetadata =
 
 export interface MoodboardNode {
   id: string;
-  ideaId: string;
+  moodboardId: string; // NEW: Reference to parent moodboard
+  ideaId?: string | null; // DEPRECATED: Keep for backwards compatibility
   referenceId?: string | null;
   nodeType: MoodboardNodeType;
+  containerType?: ContainerType | null; // NEW: For container nodes
+  linkedMoodboardId?: string | null; // NEW: For moodboard_link nodes
+  title?: string | null; // NEW: Node title
   contentUrl?: string | null;
   thumbnailUrl?: string | null;
   metadata: MoodboardNodeMetadata;
@@ -162,9 +249,13 @@ export interface MoodboardNode {
 }
 
 export interface MoodboardNodeCreate {
-  ideaId: string;
+  moodboardId: string; // NEW: Required moodboard reference
+  ideaId?: string; // DEPRECATED: Optional for backwards compatibility
   referenceId?: string | null;
   nodeType: MoodboardNodeType;
+  containerType?: ContainerType; // NEW: For container nodes
+  linkedMoodboardId?: string; // NEW: For moodboard_link nodes
+  title?: string; // NEW: Node title
   contentUrl?: string;
   thumbnailUrl?: string;
   metadata?: MoodboardNodeMetadata;
@@ -182,6 +273,9 @@ export interface MoodboardNodeCreate {
 
 export interface MoodboardNodeUpdate {
   referenceId?: string | null;
+  containerType?: ContainerType | null; // NEW
+  linkedMoodboardId?: string | null; // NEW
+  title?: string | null; // NEW
   contentUrl?: string | null;
   thumbnailUrl?: string | null;
   metadata?: MoodboardNodeMetadata;
@@ -213,11 +307,11 @@ export interface MoodboardProjectReferenceCreate {
 // ============================================================================
 
 export type MoodboardEdgeType =
-  | 'connection'      // Generic connection
-  | 'reference'       // References inspiration
-  | 'alternative'     // Alternative approach
-  | 'shared_resource' // Shared across options
-  | 'supplier_option'; // Vendor/supplier link
+  | "connection" // Generic connection
+  | "reference" // References inspiration
+  | "alternative" // Alternative approach
+  | "shared_resource" // Shared across options
+  | "supplier_option"; // Vendor/supplier link
 
 export interface MoodboardEdge {
   id: string;
@@ -275,7 +369,7 @@ export const DEFAULT_GRID_CONFIG: GridLayoutConfig = {
  */
 export function calculateGridPosition(
   nodeIndex: number,
-  config: GridLayoutConfig = DEFAULT_GRID_CONFIG
+  config: GridLayoutConfig = DEFAULT_GRID_CONFIG,
 ): GridPosition {
   const col = nodeIndex % config.columns;
   const row = Math.floor(nodeIndex / config.columns);
@@ -292,13 +386,20 @@ export function calculateGridPosition(
 export function detectPlatformFromUrl(url: string): SocialMediaPlatform | null {
   const lowerUrl = url.toLowerCase();
 
-  if (lowerUrl.includes('instagram.com')) return 'instagram';
-  if (lowerUrl.includes('tiktok.com')) return 'tiktok';
-  if (lowerUrl.includes('pinterest.com')) return 'pinterest';
-  if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'youtube';
-  if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.com')) return 'facebook';
+  if (lowerUrl.includes("instagram.com")) return "instagram";
+  if (lowerUrl.includes("tiktok.com")) return "tiktok";
+  if (lowerUrl.includes("pinterest.com")) return "pinterest";
+  if (lowerUrl.includes("youtube.com") || lowerUrl.includes("youtu.be"))
+    return "youtube";
+  if (lowerUrl.includes("facebook.com") || lowerUrl.includes("fb.com"))
+    return "facebook";
   // NEW: Google Maps support
-  if (lowerUrl.includes('google.com/maps') || lowerUrl.includes('goo.gl/maps') || lowerUrl.includes('maps.app.goo.gl')) return 'google_maps';
+  if (
+    lowerUrl.includes("google.com/maps") ||
+    lowerUrl.includes("goo.gl/maps") ||
+    lowerUrl.includes("maps.app.goo.gl")
+  )
+    return "google_maps";
 
   return null;
 }
@@ -314,54 +415,54 @@ export function determineNodeType(params: {
   const { url, text, file } = params;
 
   // If file provided, it's an image
-  if (file && file.type.startsWith('image/')) {
-    return 'image';
+  if (file && file.type.startsWith("image/")) {
+    return "image";
   }
 
   // If URL provided, check if it's social media
   if (url) {
     const platform = detectPlatformFromUrl(url);
     if (platform) {
-      return 'social_media';
+      return "social_media";
     }
     // Generic URL
-    return 'link';
+    return "link";
   }
 
   // If only text provided, it's a note
   if (text && !url) {
-    return 'note';
+    return "note";
   }
 
   // Default to note
-  return 'note';
+  return "note";
 }
 
 /**
  * Type guard to check if metadata is social media
  */
 export function isSocialMediaMetadata(
-  metadata: MoodboardNodeMetadata
+  metadata: MoodboardNodeMetadata,
 ): metadata is SocialMediaMetadata {
-  return 'platform' in metadata && typeof metadata.platform === 'string';
+  return "platform" in metadata && typeof metadata.platform === "string";
 }
 
 /**
  * Type guard to check if metadata is image
  */
 export function isImageMetadata(
-  metadata: MoodboardNodeMetadata
+  metadata: MoodboardNodeMetadata,
 ): metadata is ImageMetadata {
-  return 'storage_path' in metadata && 'mime_type' in metadata;
+  return "storage_path" in metadata && "mime_type" in metadata;
 }
 
 /**
  * Type guard to check if metadata is link
  */
 export function isLinkMetadata(
-  metadata: MoodboardNodeMetadata
+  metadata: MoodboardNodeMetadata,
 ): metadata is LinkMetadata {
-  return 'site_name' in metadata || 'og_image' in metadata;
+  return "site_name" in metadata || "og_image" in metadata;
 }
 
 // ============================================================================
@@ -369,14 +470,32 @@ export function isLinkMetadata(
 // ============================================================================
 
 /**
+ * Map database row to Moodboard
+ */
+export function mapMoodboardFromDb(row: any): Moodboard {
+  return {
+    id: row.id,
+    ownerType: row.owner_type as MoodboardOwnerType,
+    ownerId: row.owner_id,
+    title: row.title,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+/**
  * Map database row to MoodboardNode
  */
 export function mapMoodboardNodeFromDb(row: any): MoodboardNode {
   return {
     id: row.id,
-    ideaId: row.idea_id,
+    moodboardId: row.moodboard_id,
+    ideaId: row.idea_id ?? null,
     referenceId: row.reference_id ?? null,
     nodeType: row.node_type as MoodboardNodeType,
+    containerType: row.container_type as ContainerType | null,
+    linkedMoodboardId: row.linked_moodboard_id ?? null,
+    title: row.title ?? null,
     contentUrl: row.content_url,
     thumbnailUrl: row.thumbnail_url,
     metadata: row.metadata || {},
@@ -413,11 +532,17 @@ export function mapMoodboardEdgeFromDb(row: any): MoodboardEdge {
 /**
  * Convert MoodboardNodeCreate to database format
  */
-export function mapMoodboardNodeToDb(node: MoodboardNodeCreate): Record<string, unknown> {
+export function mapMoodboardNodeToDb(
+  node: MoodboardNodeCreate,
+): Record<string, unknown> {
   return {
-    idea_id: node.ideaId,
+    moodboard_id: node.moodboardId,
+    idea_id: node.ideaId || null,
     reference_id: node.referenceId ?? null,
     node_type: node.nodeType,
+    container_type: node.containerType || null,
+    linked_moodboard_id: node.linkedMoodboardId || null,
+    title: node.title || null,
     content_url: node.contentUrl || null,
     thumbnail_url: node.thumbnailUrl || null,
     metadata: node.metadata || {},
@@ -438,9 +563,14 @@ export function mapMoodboardNodeToDb(node: MoodboardNodeCreate): Record<string, 
 // Additional Domain Types
 // ============================================================================
 
-export type BudgetPriority = 'need' | 'want' | 'nice_to_have';
-export type ContactType = 'commissioner' | 'supplier' | 'venue' | 'photographer' | 'other';
-export type OAuthProvider = 'google' | 'github' | 'facebook' | 'microsoft';
+export type BudgetPriority = "need" | "want" | "nice_to_have";
+export type ContactType =
+  | "commissioner"
+  | "supplier"
+  | "venue"
+  | "photographer"
+  | "other";
+export type OAuthProvider = "google" | "github" | "facebook" | "microsoft";
 
 // Idea Option (costume variation)
 export interface IdeaOption {
@@ -448,7 +578,7 @@ export interface IdeaOption {
   ideaId: string;
   name: string;
   description?: string | null;
-  difficulty?: number | null;  // 1-5
+  difficulty?: number | null; // 1-5
   notes?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -484,7 +614,7 @@ export interface Contact {
   website?: string | null;
   socialMedia: Record<string, string>;
   notes?: string | null;
-  rating?: number | null;  // 1-5
+  rating?: number | null; // 1-5
   isFavorite: boolean;
   createdAt: string;
   updatedAt: string;
@@ -545,7 +675,7 @@ export interface Tutorial {
   url: string;
   techniqueTags: string[];
   notes?: string | null;
-  rating?: number | null;  // 1-5
+  rating?: number | null; // 1-5
   createdAt: string;
   updatedAt: string;
 }
@@ -555,5 +685,5 @@ export interface Tutorial {
  */
 export function supportsEmbedding(platform: SocialMediaPlatform): boolean {
   // Instagram, TikTok, YouTube support embedding
-  return ['instagram', 'tiktok', 'youtube'].includes(platform);
+  return ["instagram", "tiktok", "youtube"].includes(platform);
 }

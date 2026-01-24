@@ -61,7 +61,7 @@ export interface Database {
           id: string;
           team_id: string;
           user_id: string;
-          role: 'owner' | 'admin' | 'member' | 'viewer';
+          role: "owner" | "admin" | "member" | "viewer";
           status?: string | null;
           invited_by?: string | null;
           invited_at?: string | null;
@@ -72,7 +72,7 @@ export interface Database {
           id?: string;
           team_id: string;
           user_id: string;
-          role?: 'owner' | 'admin' | 'member' | 'viewer';
+          role?: "owner" | "admin" | "member" | "viewer";
           status?: string | null;
           invited_by?: string | null;
           invited_at?: string | null;
@@ -80,7 +80,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: {
-          role?: 'owner' | 'admin' | 'member' | 'viewer';
+          role?: "owner" | "admin" | "member" | "viewer";
           status?: string | null;
           invited_by?: string | null;
           invited_at?: string | null;
@@ -93,10 +93,17 @@ export interface Database {
           id: string;
           name: string;
           series: string;
-          source_medium: 'anime' | 'manga' | 'game' | 'movie' | 'tv' | 'book' | 'original';
+          source_medium:
+            | "anime"
+            | "manga"
+            | "game"
+            | "movie"
+            | "tv"
+            | "book"
+            | "original";
           team_id: string;
           reference_images: string[];
-          budget_mode: 'personal' | 'commission';
+          budget_mode: "personal" | "commission";
           budget_limit: number | null;
           completion_percentage: number;
           created_at: string;
@@ -106,10 +113,17 @@ export interface Database {
           id?: string;
           name: string;
           series: string;
-          source_medium: 'anime' | 'manga' | 'game' | 'movie' | 'tv' | 'book' | 'original';
+          source_medium:
+            | "anime"
+            | "manga"
+            | "game"
+            | "movie"
+            | "tv"
+            | "book"
+            | "original";
           team_id: string;
           reference_images?: string[];
-          budget_mode?: 'personal' | 'commission';
+          budget_mode?: "personal" | "commission";
           budget_limit?: number | null;
           completion_percentage?: number;
           created_at?: string;
@@ -118,9 +132,16 @@ export interface Database {
         Update: {
           name?: string;
           series?: string;
-          source_medium?: 'anime' | 'manga' | 'game' | 'movie' | 'tv' | 'book' | 'original';
+          source_medium?:
+            | "anime"
+            | "manga"
+            | "game"
+            | "movie"
+            | "tv"
+            | "book"
+            | "original";
           reference_images?: string[];
-          budget_mode?: 'personal' | 'commission';
+          budget_mode?: "personal" | "commission";
           budget_limit?: number | null;
           completion_percentage?: number;
           updated_at?: string;
@@ -169,12 +190,12 @@ export interface Database {
           character: string;
           series: string;
           description: string | null;
-          difficulty: 'beginner' | 'intermediate' | 'advanced';
+          difficulty: "beginner" | "intermediate" | "advanced";
           estimated_cost: number | null;
           images: string[];
           tags: string[];
           notes: string | null;
-          status: 'saved' | 'converted';
+          status: "saved" | "converted";
           converted_project_id: string | null;
           created_at: string;
           updated_at: string;
@@ -185,12 +206,12 @@ export interface Database {
           character: string;
           series: string;
           description?: string | null;
-          difficulty: 'beginner' | 'intermediate' | 'advanced';
+          difficulty: "beginner" | "intermediate" | "advanced";
           estimated_cost?: number | null;
           images?: string[];
           tags?: string[];
           notes?: string | null;
-          status?: 'saved' | 'converted';
+          status?: "saved" | "converted";
           converted_project_id?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -199,12 +220,12 @@ export interface Database {
           character?: string;
           series?: string;
           description?: string | null;
-          difficulty?: 'beginner' | 'intermediate' | 'advanced';
+          difficulty?: "beginner" | "intermediate" | "advanced";
           estimated_cost?: number | null;
           images?: string[];
           tags?: string[];
           notes?: string | null;
-          status?: 'saved' | 'converted';
+          status?: "saved" | "converted";
           converted_project_id?: string | null;
           updated_at?: string;
         };
@@ -217,7 +238,7 @@ export interface Database {
           from_idea_id: string | null;
           character: string;
           series: string;
-          status: 'planning' | 'in-progress' | 'completed' | 'archived';
+          status: "planning" | "in-progress" | "completed" | "archived";
           progress: number;
           estimated_budget: number | null;
           spent_budget: number;
@@ -235,7 +256,7 @@ export interface Database {
           from_idea_id?: string | null;
           character: string;
           series: string;
-          status?: 'planning' | 'in-progress' | 'completed' | 'archived';
+          status?: "planning" | "in-progress" | "completed" | "archived";
           progress?: number;
           estimated_budget?: number | null;
           spent_budget?: number;
@@ -251,7 +272,7 @@ export interface Database {
           from_idea_id?: string | null;
           character?: string;
           series?: string;
-          status?: 'planning' | 'in-progress' | 'completed' | 'archived';
+          status?: "planning" | "in-progress" | "completed" | "archived";
           progress?: number;
           estimated_budget?: number | null;
           spent_budget?: number;
@@ -309,7 +330,7 @@ export interface Database {
           project_id: string;
           resource_id: string;
           quantity: number;
-          status: 'needed' | 'acquired' | 'in-progress' | 'completed';
+          status: "needed" | "acquired" | "in-progress" | "completed";
           notes: string | null;
           added_at: string;
         };
@@ -318,13 +339,13 @@ export interface Database {
           project_id: string;
           resource_id: string;
           quantity?: number;
-          status?: 'needed' | 'acquired' | 'in-progress' | 'completed';
+          status?: "needed" | "acquired" | "in-progress" | "completed";
           notes?: string | null;
           added_at?: string;
         };
         Update: {
           quantity?: number;
-          status?: 'needed' | 'acquired' | 'in-progress' | 'completed';
+          status?: "needed" | "acquired" | "in-progress" | "completed";
           notes?: string | null;
         };
       };
@@ -338,7 +359,7 @@ export interface Database {
           description: string | null;
           completed: boolean;
           due_date: string | null;
-          priority: 'low' | 'medium' | 'high';
+          priority: "low" | "medium" | "high";
           assigned_to: string | null;
           created_at: string;
           updated_at: string;
@@ -351,7 +372,7 @@ export interface Database {
           description?: string | null;
           completed?: boolean;
           due_date?: string | null;
-          priority?: 'low' | 'medium' | 'high';
+          priority?: "low" | "medium" | "high";
           assigned_to?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -361,7 +382,7 @@ export interface Database {
           description?: string | null;
           completed?: boolean;
           due_date?: string | null;
-          priority?: 'low' | 'medium' | 'high';
+          priority?: "low" | "medium" | "high";
           assigned_to?: string | null;
           updated_at?: string;
         };
@@ -370,9 +391,13 @@ export interface Database {
       moodboard_nodes: {
         Row: {
           id: string;
-          idea_id: string;
+          idea_id: string | null;
+          moodboard_id: string | null;
           reference_id: string | null;
           node_type: string;
+          container_type: string | null;
+          linked_moodboard_id: string | null;
+          title: string | null;
           content_url: string | null;
           thumbnail_url: string | null;
           metadata: Record<string, unknown>;
@@ -391,9 +416,13 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          idea_id: string;
+          idea_id?: string | null;
+          moodboard_id?: string | null;
           reference_id?: string | null;
           node_type: string;
+          container_type?: string | null;
+          linked_moodboard_id?: string | null;
+          title?: string | null;
           content_url?: string | null;
           thumbnail_url?: string | null;
           metadata?: Record<string, unknown>;
@@ -411,9 +440,13 @@ export interface Database {
           updated_at?: string;
         };
         Update: {
-          idea_id?: string;
+          idea_id?: string | null;
+          moodboard_id?: string | null;
           reference_id?: string | null;
           node_type?: string;
+          container_type?: string | null;
+          linked_moodboard_id?: string | null;
+          title?: string | null;
           content_url?: string | null;
           thumbnail_url?: string | null;
           metadata?: Record<string, unknown>;
@@ -511,22 +544,29 @@ export interface Database {
 }
 
 // Type aliases for convenience
-export type User = Database['public']['Tables']['users']['Row'];
-export type Team = Database['public']['Tables']['teams']['Row'];
-export type TeamMember = Database['public']['Tables']['team_members']['Row'];
-export type Character = Database['public']['Tables']['characters']['Row'];
-export type DashboardWidget = Database['public']['Tables']['dashboard_widgets']['Row'];
+export type User = Database["public"]["Tables"]["users"]["Row"];
+export type Team = Database["public"]["Tables"]["teams"]["Row"];
+export type TeamMember = Database["public"]["Tables"]["team_members"]["Row"];
+export type Character = Database["public"]["Tables"]["characters"]["Row"];
+export type DashboardWidget =
+  Database["public"]["Tables"]["dashboard_widgets"]["Row"];
 
 // Insert types
-export type UserInsert = Database['public']['Tables']['users']['Insert'];
-export type TeamInsert = Database['public']['Tables']['teams']['Insert'];
-export type TeamMemberInsert = Database['public']['Tables']['team_members']['Insert'];
-export type CharacterInsert = Database['public']['Tables']['characters']['Insert'];
-export type DashboardWidgetInsert = Database['public']['Tables']['dashboard_widgets']['Insert'];
+export type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
+export type TeamInsert = Database["public"]["Tables"]["teams"]["Insert"];
+export type TeamMemberInsert =
+  Database["public"]["Tables"]["team_members"]["Insert"];
+export type CharacterInsert =
+  Database["public"]["Tables"]["characters"]["Insert"];
+export type DashboardWidgetInsert =
+  Database["public"]["Tables"]["dashboard_widgets"]["Insert"];
 
 // Update types
-export type UserUpdate = Database['public']['Tables']['users']['Update'];
-export type TeamUpdate = Database['public']['Tables']['teams']['Update'];
-export type TeamMemberUpdate = Database['public']['Tables']['team_members']['Update'];
-export type CharacterUpdate = Database['public']['Tables']['characters']['Update'];
-export type DashboardWidgetUpdate = Database['public']['Tables']['dashboard_widgets']['Update'];
+export type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
+export type TeamUpdate = Database["public"]["Tables"]["teams"]["Update"];
+export type TeamMemberUpdate =
+  Database["public"]["Tables"]["team_members"]["Update"];
+export type CharacterUpdate =
+  Database["public"]["Tables"]["characters"]["Update"];
+export type DashboardWidgetUpdate =
+  Database["public"]["Tables"]["dashboard_widgets"]["Update"];
