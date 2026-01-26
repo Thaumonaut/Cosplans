@@ -25,6 +25,9 @@
   import type {
     MoodboardNode,
     ContainerType,
+    ColorPaletteMetadata,
+    MeasurementsMetadata,
+    FabricMetadata,
   } from "$lib/types/domain/moodboard";
   import { isSocialMediaMetadata } from "$lib/types/domain/moodboard";
 
@@ -34,6 +37,9 @@
     onEdit?: (node: MoodboardNode) => void;
     onDelete?: (node: MoodboardNode) => void;
     onMoveToContainer?: (nodeId: string, containerId: string) => void;
+    onDragStart?: (nodeId: string) => void;
+    onDragEnd?: () => void;
+    onclick?: () => void;
     variant?: "gallery" | "list";
   }
 
@@ -43,6 +49,9 @@
     onEdit,
     onDelete,
     onMoveToContainer,
+    onDragStart,
+    onDragEnd,
+    onclick,
     variant = "gallery",
   }: Props = $props();
 
@@ -133,7 +142,82 @@
   function handleClick() {
     if (isContainer && onDrillIn) {
       onDrillIn(node.id);
+    } else {
+      onclick?.();
     }
+  }
+
+  // T-016: Platform badge helpers
+  function getPlatformBadge(
+    n: MoodboardNode,
+  ): { icon: string; color: string; label: string } | null {
+    if (n.nodeType === "social_media" && isSocialMediaMetadata(n.metadata)) {
+      const platform = n.metadata.platform;
+      const badges: Record<
+        string,
+        { icon: string; color: string; label: string }
+      > = {
+        instagram: { icon: "📷", color: "bg-pink-500", label: "Instagram" },
+        tiktok: { icon: "🎵", color: "bg-black", label: "TikTok" },
+        pinterest: { icon: "📌", color: "bg-red-600", label: "Pinterest" },
+        youtube: { icon: "▶️", color: "bg-red-600", label: "YouTube" },
+        facebook: { icon: "👍", color: "bg-blue-600", label: "Facebook" },
+        google_maps: { icon: "📍", color: "bg-green-600", label: "Maps" },
+      };
+      return badges[platform] || null;
+    }
+    return null;
+  }
+
+  // T-016: Get link metadata for display
+  function getLinkMetadata(n: MoodboardNode): {
+    siteName?: string;
+    description?: string;
+  } {
+    if (
+      (n.nodeType === "link" || n.nodeType === "social_media") &&
+      n.metadata
+    ) {
+      const meta = n.metadata as any;
+      return {
+        siteName: meta.site_name || meta.platform,
+        description: meta.description || meta.caption,
+      };
+    }
+    return {};
+  }
+
+  // T-017: Type guards for design cards
+  function isColorPaletteMetadata(
+    metadata: any,
+  ): metadata is ColorPaletteMetadata {
+    return metadata && Array.isArray(metadata.colors);
+  }
+
+  function isMeasurementsMetadata(
+    metadata: any,
+  ): metadata is MeasurementsMetadata {
+    return metadata && Array.isArray(metadata.measurements);
+  }
+
+  // T-017: Copy color to clipboard
+  async function copyColorToClipboard(hex: string, e: Event) {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(hex);
+      // Could add a toast notification here
+      console.log(`Copied ${hex} to clipboard`);
+    } catch (err) {
+      console.error("Failed to copy color:", err);
+    }
+  }
+
+  // T-019: Type guard for fabric
+  function isFabricMetadata(metadata: any): metadata is FabricMetadata {
+    return (
+      metadata &&
+      (metadata.material_type !== undefined || metadata.color !== undefined)
+    );
   }
 
   function handleEdit(e: Event) {
@@ -167,6 +251,7 @@
         isContainer: isContainer,
       }),
     );
+    onDragStart?.(node.id);
   }
 
   function handleDragOver(e: DragEvent) {
@@ -195,6 +280,10 @@
       console.error("Failed to parse drop data:", error);
     }
   }
+
+  function handleDragEndEvent() {
+    onDragEnd?.();
+  }
 </script>
 
 {#if variant === "gallery"}
@@ -207,6 +296,7 @@
     class:dark:ring-primary-700={isDragOver}
     draggable={true}
     ondragstart={handleDragStart}
+    ondragend={handleDragEndEvent}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
@@ -225,6 +315,111 @@
           class="w-full h-full object-cover"
           onerror={(e) => (e.currentTarget.style.display = "none")}
         />
+      {:else if node.nodeType === "color_palette" && isColorPaletteMetadata(node.metadata)}
+        <!-- T-017: Color palette swatches -->
+        <div
+          class="w-full h-full p-3 flex flex-wrap gap-1 items-center justify-center"
+        >
+          {#each node.metadata.colors.slice(0, 12) as color}
+            <button
+              type="button"
+              class="w-8 h-8 rounded border-2 border-white dark:border-gray-600 shadow-sm hover:scale-110 transition-transform cursor-pointer"
+              style="background-color: {color.hex}"
+              title="{color.name || color.hex} - Click to copy"
+              onclick={(e) => copyColorToClipboard(color.hex, e)}
+            />
+          {/each}
+        </div>
+      {:else if node.nodeType === "measurements" && isMeasurementsMetadata(node.metadata)}
+        <!-- T-017: Measurements preview -->
+        <div class="w-full h-full p-3 flex flex-col justify-center text-left">
+          <div
+            class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2"
+          >
+            {node.metadata.measurement_type.charAt(0).toUpperCase() +
+              node.metadata.measurement_type.slice(1)} Measurements
+          </div>
+          <div class="space-y-1 text-xs text-gray-700 dark:text-gray-300">
+            {#each node.metadata.measurements.slice(0, 4) as measurement}
+              <div class="flex justify-between">
+                <span class="truncate mr-2">{measurement.label}:</span>
+                <span class="font-medium whitespace-nowrap"
+                  >{measurement.value}{measurement.unit}</span
+                >
+              </div>
+            {/each}
+            {#if node.metadata.measurements.length > 4}
+              <div class="text-gray-500 dark:text-gray-400">
+                +{node.metadata.measurements.length - 4} more
+              </div>
+            {/if}
+          </div>
+        </div>
+      {:else if node.nodeType === "budget_item"}
+        <!-- T-018: Budget item preview -->
+        <div
+          class="w-full h-full p-4 flex flex-col justify-center items-center text-center"
+        >
+          <div class="text-4xl mb-2">💰</div>
+          <div class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Budget Item
+          </div>
+          {#if node.title}
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {node.title}
+            </div>
+          {/if}
+        </div>
+      {:else if node.nodeType === "fabric" && isFabricMetadata(node.metadata)}
+        <!-- T-019: Fabric swatch preview -->
+        <div class="w-full h-full p-3 flex flex-col justify-center">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="text-2xl">🧵</div>
+            <div class="flex-1 min-w-0">
+              <div
+                class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate"
+              >
+                {node.metadata.material_type || "Fabric"}
+              </div>
+              {#if node.metadata.color}
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                  {node.metadata.color}
+                </div>
+              {/if}
+            </div>
+          </div>
+          <div class="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+            {#if node.metadata.stretch}
+              <div class="flex items-center gap-1">
+                <span>↔️</span>
+                <span>Stretch</span>
+              </div>
+            {/if}
+            {#if node.metadata.weight}
+              <div>{node.metadata.weight}</div>
+            {/if}
+            {#if node.metadata.price_per_yard}
+              <div class="font-medium text-gray-700 dark:text-gray-300">
+                ${node.metadata.price_per_yard.toFixed(2)}/yd
+              </div>
+            {/if}
+          </div>
+        </div>
+      {:else if node.nodeType === "contact"}
+        <!-- T-018: Contact preview -->
+        <div
+          class="w-full h-full p-4 flex flex-col justify-center items-center text-center"
+        >
+          <div class="text-4xl mb-2">👤</div>
+          <div class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Contact
+          </div>
+          {#if node.title}
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {node.title}
+            </div>
+          {/if}
+        </div>
       {:else}
         <span class="text-3xl">{getNodeEmoji(node)}</span>
       {/if}
@@ -249,6 +444,19 @@
           <ExternalLink class="w-4 h-4" />
         </button>
       {/if}
+
+      <!-- T-016: Platform badge for social media -->
+      {#if getPlatformBadge(node)}
+        {@const badge = getPlatformBadge(node)}
+        {#if badge}
+          <div
+            class="absolute top-2 left-2 {badge.color} text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1 shadow-sm"
+          >
+            <span>{badge.icon}</span>
+            <span>{badge.label}</span>
+          </div>
+        {/if}
+      {/if}
     </div>
 
     <!-- Info -->
@@ -262,6 +470,19 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
               {node.shortComment}
             </p>
+          {:else}
+            <!-- T-016: Show link metadata if available -->
+            {@const linkMeta = getLinkMetadata(node)}
+            {#if linkMeta.siteName}
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {linkMeta.siteName}
+              </p>
+            {/if}
+            {#if linkMeta.description}
+              <p class="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
+                {linkMeta.description}
+              </p>
+            {/if}
           {/if}
         </div>
 

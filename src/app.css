@@ -73,6 +73,11 @@
     .overflow-wrap-anywhere {
         overflow-wrap: anywhere;
     }
+
+    /* Handwriting font for moodboard notes */
+    .font-handwriting {
+        font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif;
+    }
 }
 
 :root {

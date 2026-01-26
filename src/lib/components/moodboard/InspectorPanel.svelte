@@ -6,13 +6,25 @@
      * Right-side panel (desktop) or bottom sheet (mobile) for inspecting
      * and editing selected node/container details.
      */
-    import type { MoodboardNode, MoodboardNodeUpdate } from "$lib/types/domain/moodboard";
+    import type {
+        MoodboardNode,
+        MoodboardNodeUpdate,
+    } from "$lib/types/domain/moodboard";
     import { Sheet } from "$lib/components/ui";
-    import { Tabs, TabsList, TabsTrigger, TabsContent } from "$lib/components/ui";
+    import {
+        Tabs,
+        TabsList,
+        TabsTrigger,
+        TabsContent,
+    } from "$lib/components/ui";
     import { Button, Badge, Spinner } from "flowbite-svelte";
     import InlineTextEditor from "$lib/components/base/InlineTextEditor.svelte";
     import TagSelector from "$lib/components/base/TagSelector.svelte";
-    import { XMarkSolid, PinSolid, PinOutline } from "flowbite-svelte-icons";
+    import {
+        CloseOutline,
+        ThumbtackSolid,
+        ThumbtackOutline,
+    } from "flowbite-svelte-icons";
     import { cn } from "$lib/utils";
 
     interface Props {
@@ -21,7 +33,10 @@
         pinned?: boolean;
         parentContext?: string | null; // Parent container name for context
         onClose?: () => void;
-        onUpdate?: (nodeId: string, updates: MoodboardNodeUpdate) => Promise<void>;
+        onUpdate?: (
+            nodeId: string,
+            updates: MoodboardNodeUpdate,
+        ) => Promise<void>;
         onTogglePin?: () => void;
         className?: string;
     }
@@ -126,7 +141,9 @@
         <div class="p-4 h-full flex flex-col">
             {#if node}
                 <!-- Header -->
-                <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <div
+                    class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700"
+                >
                     <div class="flex items-center gap-2">
                         <Badge color={getBadgeColor(node.nodeType)}>
                             {formatNodeType(node.nodeType)}
@@ -143,9 +160,9 @@
                             title={pinned ? "Unpin panel" : "Pin panel"}
                         >
                             {#if pinned}
-                                <PinSolid class="w-3 h-3" />
+                                <ThumbtackSolid class="w-3 h-3" />
                             {:else}
-                                <PinOutline class="w-3 h-3" />
+                                <ThumbtackOutline class="w-3 h-3" />
                             {/if}
                         </Button>
                     </div>
@@ -159,13 +176,23 @@
                 {/if}
 
                 <!-- Tabs -->
-                <Tabs bind:value={activeTab} className="flex-1 flex flex-col overflow-hidden">
+                <Tabs
+                    bind:value={activeTab}
+                    className="flex-1 flex flex-col overflow-hidden"
+                >
                     {#snippet children({ value, setValue })}
                         <TabsList class="mb-3">
-                            <TabsTrigger value="details" onclick={() => setValue("details")}>
+                            <TabsTrigger
+                                value="details"
+                                onclick={() => setValue("details")}
+                            >
                                 Details
                             </TabsTrigger>
-                            <TabsTrigger value="connections" onclick={() => setValue("connections")} disabled>
+                            <TabsTrigger
+                                value="connections"
+                                onclick={() => setValue("connections")}
+                                disabled
+                            >
                                 Connections
                             </TabsTrigger>
                         </TabsList>
@@ -175,33 +202,41 @@
                                 <div class="space-y-4">
                                     <!-- Title -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                        >
                                             Title
                                         </label>
                                         <InlineTextEditor
                                             bind:value={node.title}
                                             placeholder="Untitled"
                                             variant="body"
-                                            onSave={(val) => handleSave("title", val)}
+                                            onSave={(val) =>
+                                                handleSave("title", val)}
                                         />
                                     </div>
 
                                     <!-- Short comment -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                        >
                                             Comment
                                         </label>
                                         <InlineTextEditor
                                             bind:value={node.shortComment}
                                             placeholder="Add a short comment..."
                                             variant="caption"
-                                            onSave={(val) => handleSave("shortComment", val)}
+                                            onSave={(val) =>
+                                                handleSave("shortComment", val)}
                                         />
                                     </div>
 
                                     <!-- Long note -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                        >
                                             Notes
                                         </label>
                                         <InlineTextEditor
@@ -209,25 +244,31 @@
                                             placeholder="Add detailed notes..."
                                             variant="body"
                                             multiline
-                                            onSave={(val) => handleSave("longNote", val)}
+                                            onSave={(val) =>
+                                                handleSave("longNote", val)}
                                         />
                                     </div>
 
                                     <!-- Tags -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                        >
                                             Tags
                                         </label>
                                         <TagSelector
                                             bind:tags={node.tags}
-                                            onSave={(tags) => handleSave("tags", tags)}
+                                            onSave={(tags) =>
+                                                handleSave("tags", tags)}
                                         />
                                     </div>
 
                                     <!-- Content URL (if applicable) -->
                                     {#if node.contentUrl}
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Content URL
                                             </label>
                                             <a
@@ -244,10 +285,13 @@
                                     <!-- Metadata preview -->
                                     {#if node.metadata && Object.keys(node.metadata).length > 0}
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Metadata
                                             </label>
-                                            <pre class="text-xs bg-gray-50 dark:bg-gray-900 p-2 rounded overflow-auto max-h-32">
+                                            <pre
+                                                class="text-xs bg-gray-50 dark:bg-gray-900 p-2 rounded overflow-auto max-h-32">
 {JSON.stringify(node.metadata, null, 2)}
                                             </pre>
                                         </div>
@@ -256,8 +300,12 @@
                             </TabsContent>
 
                             <TabsContent value="connections">
-                                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                                    <p class="text-sm">Connections coming in v1.5</p>
+                                <div
+                                    class="text-center py-8 text-gray-500 dark:text-gray-400"
+                                >
+                                    <p class="text-sm">
+                                        Connections coming in v1.5
+                                    </p>
                                 </div>
                             </TabsContent>
                         </div>
@@ -265,13 +313,17 @@
                 </Tabs>
 
                 {#if saving}
-                    <div class="mt-3 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+                    <div
+                        class="mt-3 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400"
+                    >
                         <Spinner size="4" class="mr-2" />
                         Saving...
                     </div>
                 {/if}
             {:else}
-                <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                <div
+                    class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400"
+                >
                     <p>No node selected</p>
                 </div>
             {/if}
@@ -283,7 +335,7 @@
         <aside
             class={cn(
                 "fixed top-0 right-0 h-screen bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col shadow-lg z-40",
-                className
+                className,
             )}
             style="width: {panelWidth}px;"
         >
@@ -296,7 +348,9 @@
 
             {#if node}
                 <!-- Header -->
-                <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <div
+                    class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700"
+                >
                     <div class="flex items-center gap-2">
                         <Badge color={getBadgeColor(node.nodeType)}>
                             {formatNodeType(node.nodeType)}
@@ -313,9 +367,9 @@
                             title={pinned ? "Unpin panel" : "Pin panel"}
                         >
                             {#if pinned}
-                                <PinSolid class="w-3 h-3" />
+                                <ThumbtackSolid class="w-3 h-3" />
                             {:else}
-                                <PinOutline class="w-3 h-3" />
+                                <ThumbtackOutline class="w-3 h-3" />
                             {/if}
                         </Button>
                         <Button
@@ -324,27 +378,39 @@
                             onclick={handleClose}
                             title="Close panel"
                         >
-                            <XMarkSolid class="w-3 h-3" />
+                            <CloseOutline class="w-3 h-3" />
                         </Button>
                     </div>
                 </div>
 
                 <!-- Parent context (if inside container) -->
                 {#if parentContext}
-                    <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50">
+                    <div
+                        class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50"
+                    >
                         Inside: <span class="font-medium">{parentContext}</span>
                     </div>
                 {/if}
 
                 <!-- Tabs -->
                 <div class="flex-1 overflow-hidden flex flex-col">
-                    <Tabs bind:value={activeTab} className="flex-1 flex flex-col overflow-hidden">
+                    <Tabs
+                        bind:value={activeTab}
+                        className="flex-1 flex flex-col overflow-hidden"
+                    >
                         {#snippet children({ value, setValue })}
                             <TabsList class="mx-4 mt-3 mb-0">
-                                <TabsTrigger value="details" onclick={() => setValue("details")}>
+                                <TabsTrigger
+                                    value="details"
+                                    onclick={() => setValue("details")}
+                                >
                                     Details
                                 </TabsTrigger>
-                                <TabsTrigger value="connections" onclick={() => setValue("connections")} disabled>
+                                <TabsTrigger
+                                    value="connections"
+                                    onclick={() => setValue("connections")}
+                                    disabled
+                                >
                                     Connections
                                 </TabsTrigger>
                             </TabsList>
@@ -354,33 +420,44 @@
                                     <div class="space-y-4">
                                         <!-- Title -->
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Title
                                             </label>
                                             <InlineTextEditor
                                                 bind:value={node.title}
                                                 placeholder="Untitled"
                                                 variant="body"
-                                                onSave={(val) => handleSave("title", val)}
+                                                onSave={(val) =>
+                                                    handleSave("title", val)}
                                             />
                                         </div>
 
                                         <!-- Short comment -->
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Comment
                                             </label>
                                             <InlineTextEditor
                                                 bind:value={node.shortComment}
                                                 placeholder="Add a short comment..."
                                                 variant="caption"
-                                                onSave={(val) => handleSave("shortComment", val)}
+                                                onSave={(val) =>
+                                                    handleSave(
+                                                        "shortComment",
+                                                        val,
+                                                    )}
                                             />
                                         </div>
 
                                         <!-- Long note -->
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Notes
                                             </label>
                                             <InlineTextEditor
@@ -388,25 +465,31 @@
                                                 placeholder="Add detailed notes..."
                                                 variant="body"
                                                 multiline
-                                                onSave={(val) => handleSave("longNote", val)}
+                                                onSave={(val) =>
+                                                    handleSave("longNote", val)}
                                             />
                                         </div>
 
                                         <!-- Tags -->
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                            >
                                                 Tags
                                             </label>
                                             <TagSelector
                                                 bind:tags={node.tags}
-                                                onSave={(tags) => handleSave("tags", tags)}
+                                                onSave={(tags) =>
+                                                    handleSave("tags", tags)}
                                             />
                                         </div>
 
                                         <!-- Content URL (if applicable) -->
                                         {#if node.contentUrl}
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                >
                                                     Content URL
                                                 </label>
                                                 <a
@@ -423,10 +506,13 @@
                                         <!-- Metadata preview -->
                                         {#if node.metadata && Object.keys(node.metadata).length > 0}
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                >
                                                     Metadata
                                                 </label>
-                                                <pre class="text-xs bg-gray-50 dark:bg-gray-900 p-2 rounded overflow-auto max-h-32">
+                                                <pre
+                                                    class="text-xs bg-gray-50 dark:bg-gray-900 p-2 rounded overflow-auto max-h-32">
 {JSON.stringify(node.metadata, null, 2)}
                                                 </pre>
                                             </div>
@@ -435,8 +521,12 @@
                                 </TabsContent>
 
                                 <TabsContent value="connections">
-                                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                                        <p class="text-sm">Connections coming in v1.5</p>
+                                    <div
+                                        class="text-center py-8 text-gray-500 dark:text-gray-400"
+                                    >
+                                        <p class="text-sm">
+                                            Connections coming in v1.5
+                                        </p>
                                     </div>
                                 </TabsContent>
                             </div>
@@ -445,13 +535,17 @@
                 </div>
 
                 {#if saving}
-                    <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+                    <div
+                        class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400"
+                    >
                         <Spinner size="4" class="mr-2" />
                         Saving...
                     </div>
                 {/if}
             {:else}
-                <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                <div
+                    class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400"
+                >
                     <p>No node selected</p>
                 </div>
             {/if}

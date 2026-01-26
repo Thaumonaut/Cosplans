@@ -68,6 +68,9 @@
     let inspectorOpen = $state(false);
     let inspectorPinned = $state(false);
 
+    // Drag state tracking (T-015)
+    let draggedNodeId = $state<string | null>(null);
+
     // Load view preference from localStorage
     onMount(() => {
         const savedView = localStorage.getItem(`moodboard-view-${moodboardId}`);
@@ -428,7 +431,17 @@
         return `Are you sure you want to delete "${node.title || node.shortComment || "this item"}"?`;
     }
 
-    // Drag-and-drop handlers (T-037)
+    // Drag-and-drop handlers (T-015 completion)
+    function handleDragStart(nodeId: string) {
+        console.log("[Page] handleDragStart for node:", nodeId);
+        draggedNodeId = nodeId;
+    }
+
+    function handleDragEnd() {
+        console.log("[Page] handleDragEnd");
+        draggedNodeId = null;
+    }
+
     async function handleMoveToContainer(nodeId: string, containerId: string) {
         try {
             await moodboardsService.moveNode(nodeId, containerId);
@@ -440,10 +453,12 @@
         }
     }
 
-    async function handleMoveToParent(nodeId: string) {
+    async function handleMoveToParent() {
+        if (!draggedNodeId) return;
+
         try {
             // Get the current parent's parent (grandparent)
-            const currentNode = nodes.find((n) => n.id === nodeId);
+            const currentNode = nodes.find((n) => n.id === draggedNodeId);
             if (!currentNode) return;
 
             // Move to the parent of the current parent (or null for root)
@@ -453,7 +468,7 @@
                       null)
                     : null;
 
-            await moodboardsService.moveNode(nodeId, grandparentId);
+            await moodboardsService.moveNode(draggedNodeId, grandparentId);
             // Reload to reflect changes
             await loadMoodboard();
         } catch (err) {
@@ -579,13 +594,8 @@
                     {#if parentId}
                         <ContainerDropZone
                             visible={true}
-                            isDragging={false}
-                            onDrop={() => {
-                                // TODO: Track dragged node for canvas drop
-                                console.log(
-                                    "Canvas drop zone clicked - implement node tracking",
-                                );
-                            }}
+                            isDragging={draggedNodeId !== null}
+                            onDrop={handleMoveToParent}
                         />
                     {/if}
                     <MoodboardCanvas
@@ -650,6 +660,8 @@
                                     onEdit={openEditModal}
                                     onDelete={openDeleteConfirm}
                                     onMoveToContainer={handleMoveToContainer}
+                                    onDragStart={handleDragStart}
+                                    onDragEnd={handleDragEnd}
                                     onclick={() => handleSelectNode(node)}
                                 />
                             {/each}

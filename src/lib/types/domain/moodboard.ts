@@ -179,6 +179,42 @@ export interface ContainerDetailsMetadata {
   currency?: string;
 }
 
+// T-017: Design card metadata types
+export interface ColorPaletteMetadata {
+  colors: Array<{
+    hex: string;
+    name?: string;
+  }>;
+  palette_name?: string;
+  source?: string; // Where the palette came from (e.g., "Character reference", "Official art")
+}
+
+export interface MeasurementEntry {
+  label: string;
+  value: number;
+  unit: string; // "cm", "in", "mm"
+}
+
+export interface MeasurementsMetadata {
+  measurement_type: "body" | "garment" | "prop";
+  measurements: MeasurementEntry[];
+  date_recorded?: string;
+  notes?: string;
+}
+
+// T-019: Fabric metadata for moodboard nodes
+export interface FabricMetadata {
+  material_type?: string; // "Cotton", "Silk", "Polyester", etc.
+  color?: string;
+  stretch?: boolean;
+  weight?: string; // "Lightweight", "Medium", "Heavy"
+  width?: number;
+  width_unit?: "inches" | "cm";
+  price_per_yard?: number;
+  supplier?: string;
+  supplier_link?: string;
+}
+
 // Union type for all metadata
 export type MoodboardNodeMetadata =
   | SocialMediaMetadata
@@ -193,6 +229,9 @@ export type MoodboardNodeMetadata =
   | ContactMetadata
   | CharacterContainerMetadata
   | ContainerDetailsMetadata
+  | ColorPaletteMetadata // T-017
+  | MeasurementsMetadata // T-017
+  | FabricMetadata // T-019
   | Record<string, unknown>; // Fallback for unknown metadata
 
 // ============================================================================
