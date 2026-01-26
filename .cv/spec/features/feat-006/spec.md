@@ -16,6 +16,8 @@ Transform the Cosplans moodboard from a simple reference collection into a compr
 - Progress tracking and comparison (sequential chains, compare nodes, annotations)
 - Bulk operations and data interoperability (CSV import/export, templates)
 - Full accessibility (WCAG 2.1 AA via alternative views)
+- **Social Media Integration** (URL capture, native share target)
+- **Workflow Continuity** (Idea → Project conversion wizard)
 
 This feature addresses the core problem: creators currently bounce between multiple tools (Instagram for inspiration, Excel for planning, Calendar for scheduling, notes for annotations). The enhanced moodboard consolidates these workflows into one connected system.
 
@@ -24,6 +26,12 @@ This feature addresses the core problem: creators currently bounce between multi
 ## Scope
 
 ### In Scope
+
+**Social & Capture:**
+- Social media URL parsing (Instagram, TikTok, YouTube, Pinterest, etc.)
+- Metadata extraction (title, author, thumbnail)
+- PWA Share Target integration (Android)
+- Native Share Extension (iOS/Android via Capacitor)
 
 **Core Organization:**
 - Pile nodes (single-layer grouping, expand in-place)
@@ -69,7 +77,8 @@ This feature addresses the core problem: creators currently bounce between multi
 - Real-time collaboration (future: multi-user editing)
 - Cross-team project sharing with granular permissions (future enhancement)
 - AI-powered features (auto-tagging, budget estimation)
-- Video annotation (only image annotation)
+- Advanced animation/motion graphics tools
+- **Phase 2 Social APIs** (Start with generic metadata parsing, add official APIs in v2.0)
 - Voice input for quick capture
 - Advanced animation/motion graphics tools
 - Native mobile app (PWA focus first)
@@ -347,9 +356,21 @@ Single card component with compact/expanded density modes.
 **Status:** Specified  
 **File:** `capabilities/cap-020-accessibility.md`
 
-WCAG 2.1 AA compliance via List/Table/Gallery views, canvas with basic keyboard support.
-
----
+350: WCAG 2.1 AA compliance via List/Table/Gallery views, canvas with basic keyboard support.
+351: 
+352: ### CAP-021: Social Media Capture & Share Target
+353: **Status:** Specified
+354: **File:** `capabilities/cap-021-social-capture.md`
+355: 
+356: Extract metadata from social URLs and support native mobile sharing intake.
+357: 
+358: ### CAP-022: Idea-to-Project Conversion Wizard
+359: **Status:** Specified
+360: **File:** `capabilities/cap-022-project-conversion.md`
+361: 
+362: Workflow to promote an Idea (and its moodboard) into a fully tracked Project.
+363: 
+364: ---
 
 ## Checkpoints
 

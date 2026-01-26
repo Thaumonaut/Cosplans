@@ -106,29 +106,14 @@ The platform scales: start simple, unlock complexity as needed.
 *The differentiator. Start before the project.*
 
 **Moodboards & Ideation**
-- View modes:
-  - **Gallery**: Responsive grid of rich media cards
-    - Social media embeds (Instagram, TikTok, YouTube) displayed inline
-    - Platform badges with color coding for quick identification
-    - Image thumbnails with lightbox zoom on click
-    - Notes and captions shown below media content
-    - Unified card design across all contexts (ideas, projects, standalone moodboards)
-    - Modern hover states and shadows for depth
-  - **List**: Compact table view with sortable columns (v1.0 - basic list)
-  - **Canvas**: Infinite drag-and-drop workspace
-    - Drag nodes to position, snap to 20px grid
-    - Zoom and pan navigation
-    - 48px touch targets for mobile accessibility
-    - Resize handles visible on hover
-    - Context menu for quick actions
-    - No connections in v1.0 (added in v1.5)
-- Content types: images, social media embeds, notes, sketches, budget items, contacts, containers
+- View modes: Gallery, List, Simple Canvas (drag, position, zoom/pan — no connections yet)
+- Content types: images, social media embeds, notes, sketches, budget items, contacts
 - Tags for organization
-- Multi-character support with tab navigation (container nodes with drill-in)
+- Multi-character support with tab navigation
 - Share moodboards publicly (OAuth login to comment)
 - *v1.5: Full canvas with connections, piles, minimap*
-- *v2.0: Enhanced table view, Timeline view*
-- *v3.0: Graph view with relationship visualization*
+- *v2.0: Table view, Timeline view*
+- *v3.0: Graph view*
 
 **Research & Comparison**
 - Social media URL parsing (Instagram, TikTok, Pinterest, YouTube, Facebook)

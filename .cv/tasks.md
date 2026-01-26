@@ -10,14 +10,14 @@ Detailed task breakdowns for each feature:
 
 | Feature | File | Status |
 |---------|------|--------|
-| FEAT-006 | [`.cv/tasks/FEAT-006.tasks.md`](tasks/FEAT-006.tasks.md) | Active |
+| FEAT-006 | [`.cv/spec/features/feat-006/tasks.md`](spec/features/feat-006/tasks.md) | Active |
 
 ---
 
 ## Active (In Progress)
 
 ### [FEAT-006] Brainstorming & Moodboard
-> **Full task list:** `.cv/tasks/FEAT-006.tasks.md`
+> **Full task list:** `.cv/spec/features/feat-006/tasks.md`
 > **Spec version:** 3.0 (SFS-v2 — Hierarchical Architecture)
 
 
